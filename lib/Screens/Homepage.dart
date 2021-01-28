@@ -5,6 +5,7 @@ import 'package:postmaster/Screens/Signup.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Components/sizes_helpers.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -24,26 +25,30 @@ class _HomepageState extends State<Homepage> {
             margin: new EdgeInsets.only(top: 60, bottom: 20),
             child: Image(
               image: AssetImage('assets/images/login.jpg'),
-              height: 266.0,
-              width: 266.0,
+              height: displayHeight(context) * 0.33,
+              width: displayWidth(context) * 0.50,
             ),
           ),
           Container(
-            margin: new EdgeInsets.only(left: 75, right: 75, bottom: 20),
+            margin: new EdgeInsets.only(
+              left: displayWidth(context) * 0.2,
+              right: displayWidth(context) * 0.2,
+              bottom: displayHeight(context) * 0.04,
+            ),
             child: MaterialButton(
               // color: Color(0xFF27DEBF),
               onPressed: () {
                 Navigator.push(context, SlideLeftRoute(page: Login()));
               },
-              minWidth: 250.0,
+              minWidth: displayWidth(context) * 0.5,
               // shape: RoundedRectangleBorder(
               //     borderRadius: BorderRadius.circular(8.0)),
-              height: 45.0,
+              height: displayHeight(context) * 0.06,
               child: Text(
                 "Login",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: displayWidth(context) * 0.06,
                   fontFamily: 'roboto',
                 ),
               ),
@@ -55,22 +60,26 @@ class _HomepageState extends State<Homepage> {
                     colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
           ),
           Container(
-            margin: new EdgeInsets.only(left: 75, right: 75, bottom: 20),
+            margin: new EdgeInsets.only(
+              left: displayWidth(context) * 0.2,
+              right: displayWidth(context) * 0.2,
+              bottom: displayHeight(context) * 0.04,
+            ),
             child: MaterialButton(
               // color: Color(0xFF27DEBF),
 
               onPressed: () {
                 Navigator.push(context, SlideLeftRoute(page: Signup()));
               },
-              minWidth: 250.0,
+              minWidth: displayWidth(context) * 0.5,
               // shape: RoundedRectangleBorder(
               //     borderRadius: BorderRadius.circular(8.0)),
-              height: 45.0,
+              height: displayHeight(context) * 0.06,
               child: Text(
                 "Sign Up",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: displayWidth(context) * 0.06,
                   fontFamily: 'roboto',
                 ),
               ),
@@ -82,21 +91,25 @@ class _HomepageState extends State<Homepage> {
                     colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
           ),
           Container(
-            margin: new EdgeInsets.only(left: 75, right: 75, bottom: 20),
+            margin: new EdgeInsets.only(
+              left: displayWidth(context) * 0.2,
+              right: displayWidth(context) * 0.2,
+              bottom: displayHeight(context) * 0.04,
+            ),
             child: MaterialButton(
               // color: Color(0xFF27DEBF),
               onPressed: () {
                 Navigator.push(context, SlideLeftRoute(page: CreateOrder()));
               },
-              minWidth: 250.0,
+              minWidth: displayWidth(context) * 0.5,
               // shape: RoundedRectangleBorder(
               //     borderRadius: BorderRadius.circular(8.0)),
-              height: 45.0,
+              height: displayHeight(context) * 0.06,
               child: Text(
                 "Create Order",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 22.0,
+                  fontSize: displayWidth(context) * 0.06,
                   fontFamily: 'roboto',
                 ),
               ),
@@ -107,24 +120,33 @@ class _HomepageState extends State<Homepage> {
                     radius: 15,
                     colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
           ),
+          //Till here done with media query
           Container(
-            margin: new EdgeInsets.only(bottom: 30, top: 10.0),
+            margin: new EdgeInsets.only(
+                bottom: displayHeight(context) * 0.05,
+                top: displayHeight(context) * 0.01),
             child: Text(
               "- Or Sign in with -",
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF707070), fontSize: 16.0),
+              style: TextStyle(
+                color: Color(0xFF707070),
+                fontSize: displayWidth(context) * 0.04,
+              ),
             ),
           ),
+          //till here done with media query
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: 115),
+                margin: EdgeInsets.only(left: displayWidth(context) * 0.33),
                 child: FloatingActionButton(
                   heroTag: 'btn3',
                   onPressed: () {},
                   backgroundColor: Colors.white,
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: displayWidth(context) * 0.01,
+                        vertical: displayHeight(context) * 0.01),
                     child: SvgPicture.asset(
                       google_plus,
                       color: Color(0xFF465A64),
@@ -133,7 +155,7 @@ class _HomepageState extends State<Homepage> {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.only(left: 20),
+                  margin: EdgeInsets.only(left: displayWidth(context) * 0.05),
                   child: FloatingActionButton(
                     heroTag: 'btn4',
                     onPressed: () {},

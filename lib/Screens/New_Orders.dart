@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-class neworder extends StatefulWidget {
+class Neworder extends StatefulWidget {
   @override
-  _neworderState createState() => _neworderState();
+  _NeworderState createState() => _NeworderState();
 }
 
-class _neworderState extends State<neworder> {
+class _NeworderState extends State<Neworder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Screens/Createorder.dart';
+import 'package:postmaster/Screens/Homepage.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/animate.dart';
@@ -10,6 +11,8 @@ import 'package:postmaster/Screens/Chat.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Screens/Info.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -32,22 +35,31 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () {
-            Navigator.push(context, SlideRightRoute(page: Login()));
+          onPressed: () async {
+            exit(0);
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
         actions: [
-          Container(
-            margin: EdgeInsets.only(
-                right: displayWidth(context) * 0.05,
-                top: displayHeight(context) * 0.02),
-            child: Text(
-              "Log Out",
-              style: TextStyle(
-                  fontFamily: 'RobotoBold',
-                  fontSize: displayWidth(context) * 0.06,
-                  color: Color(0xFF2AD0B5)),
+          InkWell(
+            onTap: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              prefs.setString("token", null);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => Login()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: 5.0.w, top: 1.0.h),
+              child: Text(
+                "Log Out",
+                style: TextStyle(
+                    fontFamily: 'RobotoBold',
+                    fontSize: 18.0.sp,
+                    color: Color(0xFF2AD0B5)),
+              ),
             ),
           )
         ],

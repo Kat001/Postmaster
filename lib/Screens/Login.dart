@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:login/Screens/BottomAppbar.dart';
-import 'package:login/Screens/Homepage.dart';
-import 'package:login/Components/animate.dart';
+import 'package:postmaster/Screens/BottomAppbar.dart';
+import 'package:postmaster/Screens/Homepage.dart';
+import 'package:postmaster/Components/animate.dart';
 import 'package:http/http.dart';
 import 'package:email_validator/email_validator.dart';
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Screens/Createorder.dart';
-import 'package:login/Screens/Signup.dart';
-import 'package:login/Screens/Login.dart';
-import 'package:login/Components/customicons.dart';
-import 'package:login/Components/animate.dart';
+import 'package:postmaster/Screens/Createorder.dart';
+import 'package:postmaster/Screens/Signup.dart';
+import 'package:postmaster/Screens/Login.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Components/animate.dart';
 
 class Homepage extends StatefulWidget {
   @override

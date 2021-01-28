@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Screens/Createorder.dart';
-import 'package:login/Screens/Login.dart';
-import 'package:login/Components/customicons.dart';
-import 'package:login/Components/animate.dart';
-import 'package:login/Screens/Profile.dart';
-import 'package:login/Screens/New_Orders.dart';
-import 'package:login/Screens/Chat.dart';
+import 'package:postmaster/Screens/Createorder.dart';
+import 'package:postmaster/Screens/Login.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Profile.dart';
+import 'package:postmaster/Screens/New_Orders.dart';
+import 'package:postmaster/Screens/Chat.dart';
 import 'package:sizer/sizer.dart';
-import 'package:login/Screens/Info.dart';
+import 'package:postmaster/Screens/Info.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentstate = 0;
-  final List<Widget> _children = [neworder(), info(), Chat(), Profile()];
+  final List<Widget> _children = [neworder(), Info(), Chat(), Profile()];
   // void onTappedBar(int index) {
   //   setState(() {
   //     _currentstate = index;

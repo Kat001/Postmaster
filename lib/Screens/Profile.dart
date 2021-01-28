@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Components/customicons.dart';
-import 'package:login/Screens/Refer.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/Refer.dart';
 import 'package:sizer/sizer.dart';
-import 'package:login/Components/animate.dart';
+import 'package:postmaster/Components/animate.dart';
 
 class Profile extends StatefulWidget {
   @override

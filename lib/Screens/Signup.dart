@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Components/animate.dart';
-import 'package:login/Screens/Homepage.dart';
-import 'package:login/Screens/Otp.dart';
-import 'package:login/Components/customicons.dart';
+import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Homepage.dart';
+import 'package:postmaster/Screens/Otp.dart';
+import 'package:postmaster/Components/customicons.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:http/http.dart' as http;

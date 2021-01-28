@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:login/Components/animate.dart';
-import 'package:login/Screens/Otp.dart';
+import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Otp.dart';
 
 class Setpassword extends StatefulWidget {
   @override

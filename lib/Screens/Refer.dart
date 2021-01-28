@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Components/customicons.dart';
-import 'package:login/Screens/BottomAppbar.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:sizer/sizer.dart';
-import 'package:login/Components/animate.dart';
-import 'package:login/Screens/Profile.dart';
+import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Profile.dart';
 
 class Refer extends StatefulWidget {
   @override

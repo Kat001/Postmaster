@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:login/Components/customicons.dart';
-import 'package:login/Screens/SetPassword.dart';
-import 'package:login/Screens/Signup.dart';
-import 'package:login/Components/animate.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/SetPassword.dart';
+import 'package:postmaster/Screens/Signup.dart';
+import 'package:postmaster/Components/animate.dart';
 
 class Otpclass extends StatefulWidget {
   @override

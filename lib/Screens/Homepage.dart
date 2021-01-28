@@ -33,7 +33,10 @@ class _HomepageState extends State<Homepage> {
             child: MaterialButton(
               // color: Color(0xFF27DEBF),
               onPressed: () {
-                Navigator.push(context, SlideLeftRoute(page: Login()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => Login()));
               },
               minWidth: 250.0,
               // shape: RoundedRectangleBorder(

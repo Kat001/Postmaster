@@ -5,6 +5,13 @@ import 'package:postmaster/Screens/Homepage.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:http/http.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -13,6 +20,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   var _formKey = GlobalKey<FormState>();
+  final TextEditingController user_idController = TextEditingController();
+  final TextEditingController user_passController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -50,9 +59,10 @@ class _LoginState extends State<Login> {
                   margin: new EdgeInsets.only(left: 30, right: 30),
                   child: ListTile(
                     title: TextFormField(
+                      controller: user_idController,
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter the first name.";
+                          return "Please enter valid username.";
                         }
                         if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
@@ -72,6 +82,7 @@ class _LoginState extends State<Login> {
                   margin: new EdgeInsets.only(left: 30, right: 30, top: 15),
                   child: ListTile(
                     title: TextFormField(
+                      controller: user_passController,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return "Please enter the Password";
@@ -92,10 +103,7 @@ class _LoginState extends State<Login> {
                     // color: Color(0xFF27DEBF),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Dashboard();
-                        }));
+                        loginUser();
                       }
                     },
                     minWidth: 250.0,
@@ -153,5 +161,36 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+
+  Future<http.Response> loginUser() async {
+    String user_id = user_idController.text;
+    String user_pass = user_passController.text;
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "user_id": user_id,
+        "password": user_pass,
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData['success'] == 1) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token', responseData['token']);
+      //SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+    return res;
   }
 }

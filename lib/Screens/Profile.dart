@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/Refer.dart';
+import 'package:postmaster/Screens/privacy.dart';
+import 'package:postmaster/Screens/faq.dart';
+import 'package:postmaster/Screens/terms.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 
@@ -240,6 +243,51 @@ class _ProfileState extends State<Profile> {
               child: Divider(
                 color: Colors.black,
               )),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: Terms()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 65),
+              child: Text(
+                "Terms and Conditions",
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: Privacy()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 65),
+              child: Text(
+                "Privacy Policy",
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: faqs()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 65),
+              child: Text(
+                "FAQ",
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 17,
+                ),
+              ),
+            ),
+          ),
           Container(
             margin: EdgeInsets.only(top: 20, left: 65),
             child: Text(

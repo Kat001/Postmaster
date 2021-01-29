@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
+import 'package:postmaster/Screens/faq.dart';
+import 'package:postmaster/Screens/privacy.dart';
+import 'package:postmaster/Screens/terms.dart';
 import 'Screens/Homepage.dart';
 import 'Screens/Login.dart';
 import 'package:sizer/sizer.dart';
@@ -53,11 +56,11 @@ class _MyappState extends State<Myapp> {
             //initialize SizerUtil()
             SizerUtil().init(constraints, orientation); //initialize SizerUtil
             return MaterialApp(
-              debugShowCheckedModeBanner: false,
-              title: "Postman",
-              theme: ThemeData(primaryColor: Color(0xFF27DEBF)),
-              home: isLoggedIn ? Dashboard() : Homepage(),
-            );
+                debugShowCheckedModeBanner: false,
+                title: "Postman",
+                theme: ThemeData(primaryColor: Color(0xFF27DEBF)),
+                home: Terms() //isLoggedIn ? Dashboard() : Homepage(),
+                );
           },
         );
       },

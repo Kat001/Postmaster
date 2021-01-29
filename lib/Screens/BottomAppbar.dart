@@ -30,7 +30,9 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final _screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -65,11 +67,12 @@ class _DashboardState extends State<Dashboard> {
         ],
       ),
       bottomNavigationBar: Container(
-        margin: EdgeInsets.only(
-          bottom: displayHeight(context) * 0.01,
+        height: _screenSize.height * 0.12,
+        /*margin: EdgeInsets.only(
+          bottom: displayHeight(context) * 0.0,
           left: displayWidth(context) * 0.02,
           right: displayWidth(context) * 0.02,
-        ),
+        ),*/
         child: SizedBox(
           height: displayHeight(context) * 0.09,
           child: ClipRRect(
@@ -91,9 +94,8 @@ class _DashboardState extends State<Dashboard> {
                     },
                     child: Container(
                       margin: EdgeInsets.only(
-                        top: displayHeight(context) * 0.02,
+                        top: displaySize(context).height * 0.02,
                         left: displayWidth(context) * 0.05,
-                        right: displayHeight(context) * 0.00,
                       ),
                       child: Column(
                         children: [
@@ -222,7 +224,7 @@ class _DashboardState extends State<Dashboard> {
                         children: [
                           Container(
                             width: displayHeight(context) * 0.08,
-                            height: displayWidth(context) * 0.03,
+                            height: displayWidth(context) * 0.05,
                             margin: EdgeInsets.only(
                               bottom: displayHeight(context) * 0.005,
                             ),

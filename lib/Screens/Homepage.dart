@@ -126,7 +126,7 @@ class _HomepageState extends State<Homepage> {
           //Till here done with media query
           Container(
             margin: new EdgeInsets.only(
-                bottom: displayHeight(context) * 0.05,
+                bottom: displayHeight(context) * 0.02,
                 top: displayHeight(context) * 0.01),
             child: Text(
               "- Or Sign in with -",
@@ -141,7 +141,9 @@ class _HomepageState extends State<Homepage> {
           Row(
             children: [
               Container(
-                margin: EdgeInsets.only(left: displayWidth(context) * 0.33),
+                margin: EdgeInsets.only(
+                  left: displayWidth(context) * 0.33,
+                ),
                 child: FloatingActionButton(
                   heroTag: 'btn3',
                   onPressed: () {},

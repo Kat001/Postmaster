@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/Refer.dart';
-<<<<<<< HEAD
 import 'package:postmaster/Screens/privacy.dart';
 import 'package:postmaster/Screens/faq.dart';
 import 'package:postmaster/Screens/terms.dart';
-=======
 import 'package:postmaster/Screens/Topup.dart';
->>>>>>> bb3ce3789c55bd31a054d9de58b23c332d379114
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 

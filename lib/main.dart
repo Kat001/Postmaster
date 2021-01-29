@@ -56,11 +56,11 @@ class _MyappState extends State<Myapp> {
             //initialize SizerUtil()
             SizerUtil().init(constraints, orientation); //initialize SizerUtil
             return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                title: "Postman",
-                theme: ThemeData(primaryColor: Color(0xFF27DEBF)),
-                home: Terms() //isLoggedIn ? Dashboard() : Homepage(),
-                );
+              debugShowCheckedModeBanner: false,
+              title: "Postman",
+              theme: ThemeData(primaryColor: Color(0xFF27DEBF)),
+              home: isLoggedIn ? Dashboard() : Homepage(),
+            );
           },
         );
       },

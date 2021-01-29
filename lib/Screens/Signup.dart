@@ -30,6 +30,7 @@ class _SignupState extends State<Signup> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
+          resizeToAvoidBottomInset: false,
           backgroundColor: Colors.white,
           appBar: AppBar(
             backgroundColor: Colors.white,

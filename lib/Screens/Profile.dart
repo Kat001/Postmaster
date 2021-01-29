@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/Refer.dart';
+import 'package:postmaster/Screens/Topup.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 
@@ -96,7 +97,9 @@ class _ProfileState extends State<Profile> {
                     top: 18,
                   ),
                   child: MaterialButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(context, SlideLeftRoute(page: Topup()));
+                    },
                     minWidth: 250.0,
                     height: 10,
                     child: Text(

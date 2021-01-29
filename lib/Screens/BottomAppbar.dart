@@ -183,8 +183,8 @@ class _DashboardState extends State<Dashboard> {
                       child: Column(
                         children: [
                           Container(
-                            width: 8.0.w,
-                            height: 3.0.h,
+                            width: displayWidth(context) * 0.08,
+                            height: displayHeight(context) * 0.03,
                             margin: EdgeInsets.only(
                               bottom: displayHeight(context) * 0.005,
                             ),
@@ -217,14 +217,19 @@ class _DashboardState extends State<Dashboard> {
                     child: Container(
                       margin: EdgeInsets.only(
                         top: displayHeight(context) * 0.02,
-                        left: displayWidth(context) * 0.05,
+                        //left: displayWidth(context) * 0.05,
                         right: displayWidth(context) * 0.05,
                       ),
                       child: Column(
                         children: [
                           Container(
+<<<<<<< HEAD
                             width: displayHeight(context) * 0.08,
                             height: displayWidth(context) * 0.05,
+=======
+                            width: displayHeight(context) * 0.09,
+                            height: displayWidth(context) * 0.03,
+>>>>>>> bb3ce3789c55bd31a054d9de58b23c332d379114
                             margin: EdgeInsets.only(
                               bottom: displayHeight(context) * 0.005,
                             ),

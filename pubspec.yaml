@@ -83,6 +83,11 @@ flutter:
     - assets/images/whatsapp.svg
     - assets/images/translate.svg
     - assets/images/information.svg
+    - assets/images/placeholder.svg
+    - assets/images/shopping-cart.svg
+    - assets/images/subscription.svg
+    - assets/images/rupee-indian.svg
+    - assets/images/right-arrow.svg
 
 
 

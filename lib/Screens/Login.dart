@@ -29,6 +29,7 @@ class _LoginState extends State<Login> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,

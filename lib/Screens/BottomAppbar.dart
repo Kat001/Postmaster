@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 //import 'package:postmaster/Screens/Homepage.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Components/customicons.dart';
-//import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/Profile.dart';
 import 'package:postmaster/Screens/New_Orders.dart';
 import 'package:postmaster/Screens/Chat.dart';
@@ -72,7 +72,7 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: _screenSize.height * 0.1,
+        height: _screenSize.height * 0.12,
         child: SizedBox(
           height: displayHeight(context) * 0.05,
           child: BottomAppBar(

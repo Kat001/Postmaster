@@ -16,15 +16,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:convert';
 
-class Login extends StatefulWidget {
+class SetPassword extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SetPasswordState createState() => _SetPasswordState();
 }
 
-class _LoginState extends State<Login> {
+class _SetPasswordState extends State<SetPassword> {
   var _formKey = GlobalKey<FormState>();
-  final TextEditingController user_idController = TextEditingController();
-  final TextEditingController user_passController = TextEditingController();
+  final TextEditingController passController = TextEditingController();
+  final TextEditingController confirmpassController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -63,18 +63,16 @@ class _LoginState extends State<Login> {
                   margin: new EdgeInsets.only(left: 30, right: 30),
                   child: ListTile(
                     title: TextFormField(
-                      controller: user_idController,
+                      controller: passController,
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter valid username.";
+                          return "Please enter password.";
                         }
-                        if (!EmailValidator.validate(value)) {
-                          return "Enter valid email";
-                        }
+
                         //return "";
                       },
                       decoration: InputDecoration(
-                        labelText: 'Email or Phone Numbers',
+                        labelText: 'Enter password',
                       ),
                       style: TextStyle(
                         fontFamily: 'Roboto',
@@ -87,15 +85,16 @@ class _LoginState extends State<Login> {
                   margin: new EdgeInsets.only(left: 30, right: 30, top: 15),
                   child: ListTile(
                     title: TextFormField(
-                      controller: user_passController,
+                      controller: confirmpassController,
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please enter the Password";
+                          return "Please enter the Confirm Password";
                         }
                         //return "";
                       },
                       obscureText: true,
-                      decoration: InputDecoration(labelText: 'Password'),
+                      decoration:
+                          InputDecoration(labelText: 'Confirm Password'),
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 18,
@@ -110,7 +109,7 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       print("login clicked..");
                       if (_formKey.currentState.validate()) {
-                        loginUser();
+                        setforgotPassword();
                       }
                     },
                     minWidth: 250.0,
@@ -118,7 +117,7 @@ class _LoginState extends State<Login> {
                     //     borderRadius: BorderRadius.circular(8.0)),
                     height: 45.0,
                     child: Text(
-                      "Sign In",
+                      "Set Password",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.0,
@@ -132,42 +131,6 @@ class _LoginState extends State<Login> {
                           radius: 15,
                           colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
                 ),
-                Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: new EdgeInsets.only(
-                            bottom: 30, top: 40.0, left: 75),
-                        child: Text(
-                          "- Forgot Password -",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Color(0xFF707070), fontSize: 16.0),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context, SlideLeftRoute(page: ForgotPassword()));
-                        },
-                        child: Container(
-                          margin: new EdgeInsets.only(
-                            bottom: 30,
-                            top: 40.0,
-                          ),
-                          child: Text(
-                            " Click Here",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Color(0xFF27DEBF),
-                                fontSize: 16.0,
-                                fontFamily: 'Roboto'),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
           ),
@@ -176,11 +139,21 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<http.Response> loginUser() async {
-    String user_id = user_idController.text;
-    String user_pass = user_passController.text;
+  Future<void /*http.Response*/ > setforgotPassword() async {
+    String pass = passController.text;
+    String confirmPass = confirmpassController.text;
 
-    http.Response res = await http.post(
+    if (pass == confirmPass) {
+      print("done");
+      Navigator.pushReplacement(context, SlideLeftRoute(page: SetPassword()));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) => CustomDialogError("Error",
+              "Confirm Password should be same as  Password!", "Cancel"));
+    }
+
+    /*http.Response res = await http.post(
       'https://www.mitrahtechnology.in/apis/mitrah-api/login.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -203,7 +176,7 @@ class _LoginState extends State<Login> {
           context: context,
           builder: (context) =>
               CustomDialogError("Error", responseData['message'], "Cancel"));
-    }
-    return res;
+    }*/
+    //return res;
   }
 }

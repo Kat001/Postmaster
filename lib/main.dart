@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
+import 'package:postmaster/Screens/Forgot_pass.dart';
+import 'package:postmaster/Screens/Location.dart';
 //import 'package:postmaster/Screens/faq.dart';
 //import 'package:postmaster/Screens/privacy.dart';
 //import 'package:postmaster/Screens/terms.dart';

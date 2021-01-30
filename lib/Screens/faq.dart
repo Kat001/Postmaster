@@ -38,7 +38,7 @@ class _faqsState extends State<faqs> {
           elevation: 0,
           leading: IconButton(
             onPressed: () {
-              Navigator.push(context, SlideRightRoute(page: Dashboard()));
+              Navigator.pop(context);
             },
             icon: Icon(Icons.arrow_back_ios),
           )),

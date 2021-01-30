@@ -4,7 +4,6 @@ import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
-import 'package:postmaster/Screens/Profile.dart';
 
 class Refer extends StatefulWidget {
   @override

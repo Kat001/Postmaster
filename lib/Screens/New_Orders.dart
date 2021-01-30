@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
-import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 
 class Neworder extends StatefulWidget {
@@ -14,50 +13,45 @@ class _NeworderState extends State<Neworder> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4,
+      length: 3,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
             appBar: TabBar(
               onTap: (index) {},
               indicatorColor: Color(0xFF2BCDB4),
+              indicator: BoxDecoration(
+                color: Color(0xFF2BCDB4),
+                borderRadius: BorderRadius.circular(15),
+              ),
               tabs: [
                 Tab(
                   child: Text(
                     "Create Order ",
                     style: TextStyle(
-                        color: Color(0xFF2BCDB4),
+                        color: Color(0xFF465A64),
                         fontFamily: "RobotoBold",
-                        fontSize: displayWidth(context) * 0.029),
+                        fontSize: displayWidth(context) * 0.04),
                   ),
                 ),
                 Tab(
                   child: Text(
                     "Active",
                     style: TextStyle(
-                        color: Color(0xFF2BCDB4),
+                        color: Color(0xFF465A64),
                         fontFamily: "RobotoBold",
-                        fontSize: displayWidth(context) * 0.029),
+                        fontSize: displayWidth(context) * 0.04),
                   ),
                 ),
                 Tab(
                   child: Text(
                     "Completed",
                     style: TextStyle(
-                        color: Color(0xFF2BCDB4),
+                        color: Color(0xFF465A64),
                         fontFamily: "RobotoBold",
-                        fontSize: displayWidth(context) * 0.029),
+                        fontSize: displayWidth(context) * 0.04),
                   ),
                 ),
-                Tab(
-                  child: Text(
-                    "I am , Receipent",
-                    style: TextStyle(
-                        color: Color(0xFF2BCDB4),
-                        fontFamily: "RobotoBold",
-                        fontSize: displayWidth(context) * 0.029),
-                  ),
-                )
               ],
             ),
             body: TabBarView(children: [
@@ -391,11 +385,6 @@ class _NeworderState extends State<Neworder> {
               Center(
                 child: Container(
                   child: Text("Completed Orders"),
-                ),
-              ),
-              Center(
-                child: Container(
-                  child: Text("I am Receipent"),
                 ),
               ),
             ])),

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
+<<<<<<< HEAD
 import 'package:postmaster/Screens/NewOrdertest.dart';
+=======
+import 'package:postmaster/Screens/Forgot_pass.dart';
+import 'package:postmaster/Screens/Location.dart';
+>>>>>>> 38b84f1c863a9b91de25f8cd50facac55341ca92
 //import 'package:postmaster/Screens/faq.dart';
 //import 'package:postmaster/Screens/privacy.dart';
 //import 'package:postmaster/Screens/terms.dart';

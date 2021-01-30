@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Screens/Refer.dart';
 import 'package:postmaster/Screens/privacy.dart';
 import 'package:postmaster/Screens/faq.dart';
@@ -8,6 +9,7 @@ import 'package:postmaster/Screens/terms.dart';
 import 'package:postmaster/Screens/Topup.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -301,13 +303,21 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 20, left: 65),
-            child: Text(
-              "Logout",
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 17,
+          InkWell(
+            onTap: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              prefs.setString("token", null);
+              Navigator.push(context, SlideLeftRoute(page: Login()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 65),
+              child: Text(
+                "Logout",
+                style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: 17,
+                ),
               ),
             ),
           ),

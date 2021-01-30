@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
-import 'package:postmaster/Screens/faq.dart';
-import 'package:postmaster/Screens/privacy.dart';
-import 'package:postmaster/Screens/terms.dart';
+//import 'package:postmaster/Screens/faq.dart';
+//import 'package:postmaster/Screens/privacy.dart';
+//import 'package:postmaster/Screens/terms.dart';
 import 'Screens/Homepage.dart';
-import 'Screens/Login.dart';
+//import 'Screens/Login.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:postmaster/Components/animate.dart';
-import 'package:flutter/scheduler.dart';
+//import 'package:postmaster/Components/animate.dart';
+//import 'package:flutter/scheduler.dart';
 
 void main() => runApp(Myapp());
 
@@ -79,7 +79,7 @@ class _MyappState extends State<Myapp> {
   }*/
 }
 
-// Widget build(BuildContext context) {
+/*// Widget build(BuildContext context) {
 //     return LayoutBuilder(                           //return LayoutBuilder
 //       builder: (context, constraints) {
 //         return OrientationBuilder(                  //return OrientationBuilder
@@ -96,4 +96,4 @@ class _MyappState extends State<Myapp> {
 //         );
 //       },
 //     );
-//   }
+//   }*/

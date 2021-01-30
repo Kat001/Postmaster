@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:postmaster/Screens/Homepage.dart';
 import 'package:postmaster/Components/animate.dart';
-import 'package:http/http.dart';
+//import 'package:http/http.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/services.dart';
+//import 'package:flutter/services.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,6 +68,7 @@ class _LoginState extends State<Login> {
                         if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
                         }
+                        return "";
                       },
                       decoration: InputDecoration(
                         labelText: 'Email or Phone Numbers',
@@ -88,6 +89,7 @@ class _LoginState extends State<Login> {
                         if (value.isEmpty) {
                           return "Please enter the Password";
                         }
+                        return "";
                       },
                       obscureText: true,
                       decoration: InputDecoration(labelText: 'Password'),

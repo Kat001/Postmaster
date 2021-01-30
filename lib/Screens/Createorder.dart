@@ -17,6 +17,14 @@ class _CreateOrderState extends State<CreateOrder> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+          title: Text(
+            "Create order",
+            style: TextStyle(
+                fontFamily: "RobotoBold",
+                fontSize: 20.0,
+                color: Color(0xFF2AD0B5),
+                letterSpacing: 2),
+          ),
           backgroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
@@ -31,17 +39,6 @@ class _CreateOrderState extends State<CreateOrder> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                  margin: new EdgeInsets.only(left: 30, right: 30, top: 10),
-                  child: Center(
-                    child: Text(
-                      "Create order",
-                      style: TextStyle(
-                        fontFamily: 'RobotoBold',
-                        fontSize: 35,
-                      ),
-                    ),
-                  )),
               Container(
                 margin: new EdgeInsets.only(left: 30, right: 30, top: 20),
                 child: ListTile(

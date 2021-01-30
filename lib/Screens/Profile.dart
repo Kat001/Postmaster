@@ -278,7 +278,7 @@ class _ProfileState extends State<Profile> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: faqs()));
+              Navigator.push(context, SlideLeftRoute(page: Faqs()));
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 65),

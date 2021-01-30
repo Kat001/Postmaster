@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
-import 'package:sizer/sizer.dart';
+//import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 
 class Neworder extends StatefulWidget {

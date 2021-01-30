@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 
-class faqs extends StatefulWidget {
+class Faqs extends StatefulWidget {
   @override
-  _faqsState createState() => _faqsState();
+  _FaqsState createState() => _FaqsState();
 }
 
-class _faqsState extends State<faqs> {
+class _FaqsState extends State<Faqs> {
   Widget questionText(String text) {
     return Text(
       text,

@@ -1,5 +1,15 @@
 PODS:
   - Flutter (1.0.0)
+  - geocoder (0.0.1):
+    - Flutter
+  - google_maps_flutter (0.0.1):
+    - Flutter
+    - GoogleMaps (< 3.10)
+  - GoogleMaps (3.9.0):
+    - GoogleMaps/Maps (= 3.9.0)
+  - GoogleMaps/Base (3.9.0)
+  - GoogleMaps/Maps (3.9.0):
+    - GoogleMaps/Base
   - integration_test (0.0.1):
     - Flutter
   - shared_preferences (0.0.1):
@@ -7,12 +17,22 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - geocoder (from `.symlinks/plugins/geocoder/ios`)
+  - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+
+SPEC REPOS:
+  trunk:
+    - GoogleMaps
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  geocoder:
+    :path: ".symlinks/plugins/geocoder/ios"
+  google_maps_flutter:
+    :path: ".symlinks/plugins/google_maps_flutter/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
   shared_preferences:
@@ -20,6 +40,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
+  google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
   integration_test: 5ed24a436eb7ec17b6a13046e9bf7ca4a404e59e
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
 

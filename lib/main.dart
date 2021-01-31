@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/Favroite_store.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
-import 'package:postmaster/Screens/NewOrdertest.dart';
+import 'package:postmaster/Screens/NewOrderrest.dart';
 import 'package:postmaster/Screens/Forgot_pass.dart';
 import 'package:postmaster/Screens/Location.dart';
 //import 'package:postmaster/Screens/faq.dart';

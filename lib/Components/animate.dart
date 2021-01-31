@@ -226,7 +226,7 @@ class CustomDialogError extends StatelessWidget {
                     //     borderRadius: BorderRadius.circular(8.0)),
                     height: 45.0,
                     child: Text(
-                      "Redo",
+                      "Retry",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.0,
@@ -249,9 +249,9 @@ class CustomDialogError extends StatelessWidget {
           left: 16.0,
           right: 16.0,
           child: CircleAvatar(
-            backgroundColor: Colors.blueAccent,
+            backgroundColor: Colors.white,
             radius: 50.0,
-            backgroundImage: AssetImage('assets/images/error.gif'),
+            backgroundImage: AssetImage('assets/images/error.png'),
           ),
         )
       ],

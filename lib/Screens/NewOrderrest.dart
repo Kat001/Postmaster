@@ -3,7 +3,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 
-class NewOrderStore extends StatelessWidget {
+class NewOrder extends StatefulWidget {
+  @override
+  _NewOrderState createState() => _NewOrderState();
+}
+
+class _NewOrderState extends State<NewOrder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +76,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                 ),
                 maintainState: true,
-                key: PageStorageKey("tests"),
+                key: PageStorageKey("test"),
                 title: Text(
                   "Pickup Point",
                   style: TextStyle(color: _textColor),
@@ -87,7 +92,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Address",
                       ),
-                      key: PageStorageKey("tests2"),
+                      key: PageStorageKey("test2"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -105,7 +110,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Phone Number",
                       ),
-                      key: PageStorageKey("tests3"),
+                      key: PageStorageKey("test3"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -123,7 +128,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Arrival",
                       ),
-                      key: PageStorageKey("tests4"),
+                      key: PageStorageKey("test4"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -141,7 +146,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Comment",
                       ),
-                      key: PageStorageKey("tests5"),
+                      key: PageStorageKey("test5"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -171,7 +176,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
                 ),
                 maintainState: true,
-                key: PageStorageKey("tests6"),
+                key: PageStorageKey("test6"),
                 title: Text(
                   "Drop Point",
                   style: TextStyle(color: _textColor),
@@ -187,7 +192,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Address",
                       ),
-                      key: PageStorageKey("tests7"),
+                      key: PageStorageKey("test7"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -205,7 +210,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Phone Number",
                       ),
-                      key: PageStorageKey("tests8"),
+                      key: PageStorageKey("test8"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -223,7 +228,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Arrival",
                       ),
-                      key: PageStorageKey("tests9"),
+                      key: PageStorageKey("test9"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';
@@ -241,107 +246,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       decoration: InputDecoration(
                         hintText: "Comment",
                       ),
-                      key: PageStorageKey("tests0"),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ]),
-            //Store Detailes
-            ExpansionTile(
-                onExpansionChanged: (Expanded) {
-                  setState(() {
-                    if (Expanded) {
-                      _textColor = Color(0xFF2BCDB4);
-                    } else {
-                      _textColor = Color(0xFF465A64);
-                    }
-                  });
-                },
-                leading: Container(
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    pickuppoint,
-                    color: _textColor,
-                  ),
-                ),
-                maintainState: true,
-                key: PageStorageKey("tests11"),
-                title: Text(
-                  "Store details",
-                  style: TextStyle(color: _textColor),
-                  textAlign: TextAlign.start,
-                ),
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: displayHeight(context) * 0.01,
-                        left: displayWidth(context) * 0.15,
-                        right: displayWidth(context) * 0.05),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Address",
-                      ),
-                      key: PageStorageKey("tests12"),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: displayHeight(context) * 0.01,
-                        left: displayWidth(context) * 0.15,
-                        right: displayWidth(context) * 0.05),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Phone Number",
-                      ),
-                      key: PageStorageKey("tests13"),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: displayHeight(context) * 0.01,
-                        left: displayWidth(context) * 0.15,
-                        right: displayWidth(context) * 0.05),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Arrival",
-                      ),
-                      key: PageStorageKey("tests14"),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: displayWidth(context) * 0.15,
-                        right: displayWidth(context) * 0.05,
-                        top: displayHeight(context) * 0.01),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "Comment",
-                      ),
-                      key: PageStorageKey("tests15"),
+                      key: PageStorageKey("test0"),
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Please enter some text';

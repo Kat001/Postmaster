@@ -272,12 +272,41 @@ class _ProfileState extends State<Profile> {
               )),
           InkWell(
             onTap: () async {
-              //SharedPreferences.setMockInitialValues({});
-
-              final SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
-              prefs.setString("token", null);
-              Navigator.push(context, SlideLeftRoute(page: Login()));
+              return showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text('Are you sure?',
+                          style: TextStyle(
+                              fontFamily: "Roboto", color: Color(0xFF465A64))),
+                      content: Text('Do you want to Logout from an App',
+                          style: TextStyle(
+                              fontFamily: "Roboto", color: Color(0xFF465A64))),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: () async {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString("token", null);
+                            Navigator.push(
+                                context, SlideLeftRoute(page: Login()));
+                          },
+                          child: Text('Yes',
+                              style: TextStyle(
+                                  fontFamily: "RobotoBold",
+                                  color: Color(0xFF2BCDB4))),
+                        ),
+                        FlatButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          /*Navigator.of(context).pop(true)*/
+                          child: Text('No',
+                              style: TextStyle(
+                                  fontFamily: "RobotoBold",
+                                  color: Color(0xFF2BCDB4))),
+                        ),
+                      ],
+                    ),
+                  ) ??
+                  false;
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 65),

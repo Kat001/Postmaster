@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:postmaster/Favroite_store.dart';
+import 'package:postmaster/Screens/Favroite_store.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:postmaster/Screens/NewOrdertest.dart';
 import 'package:postmaster/Screens/Forgot_pass.dart';
@@ -12,6 +12,8 @@ import 'Screens/Homepage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Subscription.dart';
+import 'package:postmaster/Screens/Profile.dart';
 //import 'package:flutter/scheduler.dart';
 
 void main() => runApp(Myapp());
@@ -66,7 +68,8 @@ class _MyappState extends State<Myapp> {
                 primaryColor: Color(0xFF27DEBF),
                 dividerColor: Colors.transparent,
               ),
-              home: isLoggedIn ? Dashboard() : Homepage(),
+              home:
+                  /*Subscription() */ isLoggedIn ? Dashboard() : Homepage(),
             );
           },
         );

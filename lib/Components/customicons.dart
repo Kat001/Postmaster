@@ -28,3 +28,4 @@ const pickuppoint = 'assets/images/pickup.svg';
 const faq = 'assets/images/faq.svg';
 const privacy_policy = 'assets/images/privacy-policy(1).svg';
 const terms_and_conditions = 'assets/images/terms-and-conditions.svg';
+const subscription_pic = 'assets/images/subscribe.svg';

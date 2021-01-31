@@ -192,7 +192,9 @@ class _LoginState extends State<Login> {
     var responseData = json.decode(res.body);
     print(responseData['token']);
     if (responseData['success'] == 1) {
+      //SharedPreferences.setMockInitialValues({});
       SharedPreferences prefs = await SharedPreferences.getInstance();
+
       prefs.setString('token', responseData['token']);
       //SharedPreferences prefs = await SharedPreferences.getInstance();
 

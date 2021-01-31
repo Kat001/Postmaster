@@ -44,7 +44,7 @@ dependencies:
   
 
 flutter_localizations:
-      sdk: flutter
+  sdk: flutter
   
   
 
@@ -62,7 +62,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -103,6 +102,7 @@ flutter:
     - assets/images/location.svg
     - assets/images/pickup.svg
     - assets/images/faq.svg
+    - assets/images/history.svg
     - assets/images/privacy-policy(1).svg
     - assets/images/terms-and-conditions.svg
 
@@ -124,7 +124,6 @@ flutter:
     - family: Roboto
       fonts:
         - asset: assets/fonts/Roboto-Regular.ttf
-
     - family: RobotoMedium
       fonts:
         - asset: assets/fonts/Roboto-Medium.ttf

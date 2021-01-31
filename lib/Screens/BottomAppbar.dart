@@ -21,12 +21,12 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  int _currentstate = 0;
+  int _currentstate = 1;
   final List<Widget> _children = [
+    Info(),
     Neworder(),
     Chat(),
     Profile(),
-    Info(),
   ];
   // void onTappedBar(int index) {
   //   setState(() {
@@ -102,13 +102,13 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: _screenSize.height * 0.12,
+        height: _screenSize.height * 0.10,
         child: SizedBox(
           height: displayHeight(context) * 0.05,
           child: BottomAppBar(
             color: Color(0XFF2BCDB4),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.max,
               children: [
                 //New Orders
@@ -120,8 +120,49 @@ class _DashboardState extends State<Dashboard> {
                   },
                   child: Container(
                     margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.02,
+                      //left: displayWidth(context) * 0.05,
+                      //right: displayWidth(context) * 0.05,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: displayWidth(context) * 0.08,
+                          height: displayHeight(context) * 0.03,
+                          margin: EdgeInsets.only(
+                            bottom: displayHeight(context) * 0.005,
+                          ),
+                          child: SvgPicture.asset(
+                            info,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: displayHeight(context) * 0.005,
+                          ),
+                          child: Text(
+                            "Info",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: displayHeight(context) * 0.015,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _currentstate = 1;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
                       top: displaySize(context).height * 0.02,
-                      left: displayWidth(context) * 0.05,
+                      //left: displayWidth(context) * 0.05,
                     ),
                     child: Column(
                       children: [
@@ -157,14 +198,14 @@ class _DashboardState extends State<Dashboard> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _currentstate = 1;
+                      _currentstate = 2;
                     });
                   },
                   child: Container(
                     margin: EdgeInsets.only(
                       top: displayHeight(context) * 0.02,
-                      left: displayWidth(context) * 0.05,
-                      right: displayWidth(context) * 0.05,
+                      // left: displayWidth(context) * 0.05,
+                      // right: displayWidth(context) * 0.05,
                     ),
                     child: Column(
                       children: [
@@ -197,14 +238,14 @@ class _DashboardState extends State<Dashboard> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _currentstate = 2;
+                      _currentstate = 3;
                     });
                   },
                   child: Container(
                     margin: EdgeInsets.only(
                       top: displayHeight(context) * 0.02,
                       //left: displayWidth(context) * 0.05,
-                      right: displayWidth(context) * 0.05,
+                      //right: displayWidth(context) * 0.05,
                     ),
                     child: Column(
                       children: [
@@ -230,47 +271,6 @@ class _DashboardState extends State<Dashboard> {
                                 fontSize: displayHeight(context) * 0.015,
                               ),
                             ))
-                      ],
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _currentstate = 3;
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      top: displayHeight(context) * 0.02,
-                      left: displayWidth(context) * 0.05,
-                      right: displayWidth(context) * 0.05,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            info,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: displayHeight(context) * 0.005,
-                          ),
-                          child: Text(
-                            "Info",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: displayHeight(context) * 0.015,
-                            ),
-                          ),
-                        )
                       ],
                     ),
                   ),

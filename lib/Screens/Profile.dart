@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/Language.dart';
+import 'package:postmaster/Screens/Personal_details.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Screens/Refer.dart';
+import 'package:postmaster/Screens/Region.dart';
 import 'package:postmaster/Screens/privacy.dart';
 import 'package:postmaster/Screens/faq.dart';
 import 'package:postmaster/Screens/terms.dart';
@@ -140,52 +143,63 @@ class _ProfileState extends State<Profile> {
           ),
           Container(
             margin: EdgeInsets.only(top: 40, left: 20),
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    profile_icon,
-                    color: Color(0xFF465A64),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    "Personal Details",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 17,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context, SlideLeftRoute(page: PersonalDetails()));
+              },
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      profile_icon,
+                      color: Color(0xFF465A64),
                     ),
                   ),
-                )
-              ],
+                  Container(
+                    child: Text(
+                      "Personal Details",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 25, left: 20),
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    region,
-                    color: Color(0xFF465A64),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    "Region",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 17,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, SlideLeftRoute(page: Region()));
+              },
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      region,
+                      color: Color(0xFF465A64),
                     ),
                   ),
-                )
-              ],
+                  Container(
+                    child: Text(
+                      "Region",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           InkWell(
@@ -220,27 +234,32 @@ class _ProfileState extends State<Profile> {
           ),
           Container(
             margin: EdgeInsets.only(top: 25, left: 20),
-            child: Row(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(right: 20),
-                  width: 25,
-                  height: 25,
-                  child: SvgPicture.asset(
-                    language,
-                    color: Color(0xFF465A64),
-                  ),
-                ),
-                Container(
-                  child: Text(
-                    "Language",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 17,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, SlideLeftRoute(page: Language()));
+              },
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      language,
+                      color: Color(0xFF465A64),
                     ),
                   ),
-                )
-              ],
+                  Container(
+                    child: Text(
+                      "Language",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
           Container(
@@ -249,62 +268,9 @@ class _ProfileState extends State<Profile> {
                 color: Colors.black,
               )),
           InkWell(
-            onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: Terms()));
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 20, left: 65),
-              child: Text(
-                "Terms and Conditions",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 17,
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: Privacy()));
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 20, left: 65),
-              child: Text(
-                "Privacy Policy",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 17,
-                ),
-              ),
-            ),
-          ),
-          InkWell(
-            onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: Faqs()));
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 20, left: 65),
-              child: Text(
-                "FAQ",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 17,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 20, left: 65),
-            child: Text(
-              "App Version",
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 17,
-              ),
-            ),
-          ),
-          InkWell(
             onTap: () async {
+              //SharedPreferences.setMockInitialValues({});
+
               final SharedPreferences prefs =
                   await SharedPreferences.getInstance();
               prefs.setString("token", null);

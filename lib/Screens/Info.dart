@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/App_version.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Screens/Refer.dart';
 import 'package:postmaster/Screens/privacy.dart';
@@ -105,6 +106,36 @@ class _InfoState extends State<Info> {
                   Container(
                     child: Text(
                       "FAQ",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: AppVersion()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 20),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      version,
+                      color: Color(0xFF465A64),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "App Version",
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 17,

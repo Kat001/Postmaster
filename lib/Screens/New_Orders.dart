@@ -5,10 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:postmaster/Components/animate.dart';
-<<<<<<< HEAD
 import 'package:postmaster/Screens/NewOrdertest.dart';
-=======
->>>>>>> 05c47375a834cbea151a29956738b955dc81d714
 
 class Neworder extends StatefulWidget {
   @override

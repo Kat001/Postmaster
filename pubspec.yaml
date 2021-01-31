@@ -39,13 +39,16 @@ dependencies:
   google_maps_flutter: ^0.5.30
   geocoder: ^0.2.1
   geolocator: ^5.3.1
+  hive: ^1.4.1+1
+  hive_flutter: ^0.3.0+2
+  path_provider: ^1.6.11
   #google_maps_flutter: ^1.1.1
   #google_map_location_picker: ^3.3.4
+
   
 
 flutter_localizations:
   sdk: flutter
-  
   
 
 dev_dependencies:

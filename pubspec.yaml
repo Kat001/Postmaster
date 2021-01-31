@@ -102,6 +102,9 @@ flutter:
     - assets/images/right-arrow.svg
     - assets/images/location.svg
     - assets/images/pickup.svg
+    - assets/images/faq.svg
+    - assets/images/privacy-policy(1).svg
+    - assets/images/terms-and-conditions.svg
 
 
 

@@ -25,3 +25,6 @@ const rupee = 'assets/images/rupee-indian.svg';
 const arrow = 'assets/images/right-arrow.svg';
 const droppoint = 'assets/images/location.svg';
 const pickuppoint = 'assets/images/pickup.svg';
+const faq = 'assets/images/faq.svg';
+const privacy_policy = 'assets/images/privacy-policy(1).svg';
+const terms_and_conditions = 'assets/images/terms-and-conditions.svg';

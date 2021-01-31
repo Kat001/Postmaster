@@ -123,6 +123,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+<<<<<<< HEAD
+=======
+  flutter_localizations:
+    dependency: "direct main"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
+>>>>>>> 05c47375a834cbea151a29956738b955dc81d714
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

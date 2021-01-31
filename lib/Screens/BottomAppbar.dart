@@ -12,6 +12,7 @@ import 'package:sizer/sizer.dart';
 import 'package:postmaster/Screens/Info.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:postmaster/Screens/Refer.dart';
 import 'dart:io';
 
 class Dashboard extends StatefulWidget {
@@ -35,6 +36,30 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: Refer()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(
+                  top: displayHeight(context) * 0.023,
+                  right: displayWidth(context) * 0.04),
+              child: Text(
+                "Invite",
+                style: TextStyle(
+                  color: Color(0xFF27DEBF),
+                  fontFamily: 'RobotoBold',
+                  fontSize: displayWidth(context) * 0.05,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(right: displayWidth(context) * 0.02),
+            child: Icon(Icons.language),
+          )
+        ],
         leading: IconButton(
           onPressed: () async {
             // exit(0);

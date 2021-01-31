@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
-<<<<<<< HEAD
 import 'package:postmaster/Screens/NewOrdertest.dart';
-=======
 import 'package:postmaster/Screens/Forgot_pass.dart';
 import 'package:postmaster/Screens/Location.dart';
->>>>>>> 38b84f1c863a9b91de25f8cd50facac55341ca92
 //import 'package:postmaster/Screens/faq.dart';
 //import 'package:postmaster/Screens/privacy.dart';
 //import 'package:postmaster/Screens/terms.dart';
@@ -64,7 +61,10 @@ class _MyappState extends State<Myapp> {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               title: "Postman",
-              theme: ThemeData(primaryColor: Color(0xFF27DEBF)),
+              theme: ThemeData(
+                primaryColor: Color(0xFF27DEBF),
+                dividerColor: Colors.transparent,
+              ),
               home: isLoggedIn ? Dashboard() : Homepage(),
             );
           },

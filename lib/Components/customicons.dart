@@ -23,3 +23,5 @@ const gps = 'assets/images/placeholder.svg';
 const subscription = 'assets/images/subscription.svg';
 const rupee = 'assets/images/rupee-indian.svg';
 const arrow = 'assets/images/right-arrow.svg';
+const droppoint = 'assets/images/location.svg';
+const pickuppoint = 'assets/images/pickup.svg';

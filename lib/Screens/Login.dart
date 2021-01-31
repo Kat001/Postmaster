@@ -190,7 +190,7 @@ class _LoginState extends State<Login> {
     );
     print(res.body);
     var responseData = json.decode(res.body);
-
+    print(responseData['token']);
     if (responseData['success'] == 1) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token', responseData['token']);

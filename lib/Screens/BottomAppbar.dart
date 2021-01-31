@@ -21,7 +21,12 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentstate = 0;
-  final List<Widget> _children = [Neworder(), Info(), Chat(), Profile()];
+  final List<Widget> _children = [
+    Neworder(),
+    Chat(),
+    Profile(),
+    Info(),
+  ];
   // void onTappedBar(int index) {
   //   setState(() {
   //     _currentstate = index;
@@ -122,52 +127,12 @@ class _DashboardState extends State<Dashboard> {
                 ),
                 //till here done with mediaquery
                 //Info
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _currentstate = 1;
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(
-                      top: displayHeight(context) * 0.02,
-                      left: displayWidth(context) * 0.05,
-                      right: displayWidth(context) * 0.05,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            info,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: displayHeight(context) * 0.005,
-                          ),
-                          child: Text(
-                            "Info",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: displayHeight(context) * 0.015,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+
                 //Chat
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _currentstate = 2;
+                      _currentstate = 1;
                     });
                   },
                   child: Container(
@@ -207,7 +172,7 @@ class _DashboardState extends State<Dashboard> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      _currentstate = 3;
+                      _currentstate = 2;
                     });
                   },
                   child: Container(
@@ -240,6 +205,47 @@ class _DashboardState extends State<Dashboard> {
                                 fontSize: displayHeight(context) * 0.015,
                               ),
                             ))
+                      ],
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _currentstate = 3;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.02,
+                      left: displayWidth(context) * 0.05,
+                      right: displayWidth(context) * 0.05,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: displayWidth(context) * 0.08,
+                          height: displayHeight(context) * 0.03,
+                          margin: EdgeInsets.only(
+                            bottom: displayHeight(context) * 0.005,
+                          ),
+                          child: SvgPicture.asset(
+                            info,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: displayHeight(context) * 0.005,
+                          ),
+                          child: Text(
+                            "Info",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: displayHeight(context) * 0.015,
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

@@ -49,7 +49,7 @@ class _DashboardState extends State<Dashboard> {
             child: Container(
               margin: EdgeInsets.only(
                   top: displayHeight(context) * 0.023,
-                  right: displayWidth(context) * 0.04),
+                  right: displayWidth(context) * 0.06),
               child: Text(
                 "Invite",
                 style: TextStyle(
@@ -61,8 +61,13 @@ class _DashboardState extends State<Dashboard> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(right: displayWidth(context) * 0.02),
-            child: Icon(Icons.language),
+            margin: EdgeInsets.only(right: displayWidth(context) * 0.05),
+            width: 25,
+            height: 25,
+            child: SvgPicture.asset(
+              language,
+              color: Color(0xFF465A64),
+            ),
           )
         ],
         leading: IconButton(

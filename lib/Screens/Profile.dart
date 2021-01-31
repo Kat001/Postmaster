@@ -13,6 +13,7 @@ import 'package:postmaster/Screens/Topup.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:postmaster/Components/sizes_helpers.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -98,12 +99,14 @@ class _ProfileState extends State<Profile> {
                   ),
                 ),
                 Container(
-                  height: 40,
-                  margin: new EdgeInsets.only(
-                    left: 60,
-                    right: 60,
-                    top: 18,
-                  ),
+                  height: displayHeight(context) * 0.05,
+                  // padding: const EdgeInsets.only(top: ),
+                  // margin: new EdgeInsets.only(
+                  //   left: 60,
+                  //   right: 60,
+                  //   top: 18,
+                  // ),
+                  margin: EdgeInsets.all(displayHeight(context) * 0.02),
                   child: MaterialButton(
                     onPressed: () {
                       Navigator.push(context, SlideLeftRoute(page: Topup()));

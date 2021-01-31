@@ -12,6 +12,8 @@ import 'Screens/Homepage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Subscription.dart';
+import 'package:postmaster/Screens/Profile.dart';
 //import 'package:flutter/scheduler.dart';
 
 void main() => runApp(Myapp());
@@ -66,7 +68,8 @@ class _MyappState extends State<Myapp> {
                 primaryColor: Color(0xFF27DEBF),
                 dividerColor: Colors.transparent,
               ),
-              home: isLoggedIn ? Dashboard() : Homepage(),
+              home:
+                  /*Subscription() */ isLoggedIn ? Dashboard() : Homepage(),
             );
           },
         );

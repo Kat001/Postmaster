@@ -9,11 +9,13 @@ import 'package:postmaster/Screens/Region.dart';
 import 'package:postmaster/Screens/privacy.dart';
 import 'package:postmaster/Screens/faq.dart';
 import 'package:postmaster/Screens/terms.dart';
+import 'package:postmaster/Screens/Mysubscription.dart';
 import 'package:postmaster/Screens/Topup.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:postmaster/Screens/App_version.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -179,6 +181,36 @@ class _ProfileState extends State<Profile> {
             margin: EdgeInsets.only(top: 25, left: 20),
             child: InkWell(
               onTap: () {
+                Navigator.push(context, SlideLeftRoute(page: Mysubscription()));
+              },
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    child: SvgPicture.asset(
+                      subscription,
+                      color: Color(0xFF465A64),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "My subscription",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 25, left: 20),
+            child: InkWell(
+              onTap: () {
                 Navigator.push(context, SlideLeftRoute(page: Region()));
               },
               child: Row(
@@ -270,6 +302,36 @@ class _ProfileState extends State<Profile> {
               child: Divider(
                 color: Colors.black,
               )),
+          InkWell(
+            onTap: () {
+              Navigator.push(context, SlideLeftRoute(page: AppVersion()));
+            },
+            child: Container(
+              margin: EdgeInsets.only(top: 20, left: 20),
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(right: 20),
+                    width: 25,
+                    height: 25,
+                    // child: SvgPicture.asset(
+                    //   //version,
+                    //   color: Color(0xFF465A64),
+                    // ),
+                  ),
+                  Container(
+                    child: Text(
+                      "App Version",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 17,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
           InkWell(
             onTap: () async {
               return showDialog(

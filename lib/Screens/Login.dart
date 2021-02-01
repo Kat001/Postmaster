@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:postmaster/Screens/Homepage.dart';
-
+import 'package:postmaster/Components/toast_utils.dart';
 import 'package:postmaster/Components/animate.dart';
 
 import 'package:postmaster/Screens/Forgot_pass.dart';
@@ -200,6 +200,8 @@ class _LoginState extends State<Login> {
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
+
+      ToastUtils.showCustomToast(context, "SignIn Successfful");
     } else {
       showDialog(
           context: context,

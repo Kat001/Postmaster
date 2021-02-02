@@ -142,22 +142,31 @@ class _SignupState extends State<Signup> {
                       title: TextFormField(
                         controller: phoneController,
                         onChanged: (value) {
+                          print(value);
+                          //int cursorPos = phoneController.selection.base.offset;
+                          //print(cursorPos);
+                          /*if (cursorPos == 0) {
+                            phoneController.value = phoneController.value
+                                .copyWith(
+                                    text: phoneController.text.replaceRange(
+                                        cursorPos, cursorPos, '+91 '),
+                                    selection: TextSelection.fromPosition(
+                                        TextPosition(offset: 4)));
+                          }*/
+
+                          /*final val = TextSelection.collapsed(
+                              offset: phoneController.text.length);
+                          phoneController.selection = val;
+                          phoneController.text = "+91";
+                          phoneController.selection =
+                              TextSelection.fromPosition(TextPosition(
+                                  offset: phoneController.text.length));*/
                           if (phoneController.text.contains("+91 ")) {
                             print("hiii");
                           } else {
                             phoneController.text = "+91 ";
                           }
                         },
-                        onTap: () {
-                          setState(() {
-                            phoneController.text = "+91 ";
-                          });
-                        },
-                        keyboardType: TextInputType.number,
-                        maxLength: 14,
-                        inputFormatters: [
-                          //FilteringTextInputFormatter.digitsOnly,
-                        ],
                         validator: (String value) {
                           if (value.isEmpty) {
                             return "Please enter the phone no.";

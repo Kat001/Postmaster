@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:postmaster/Components/toast_animation.dart';
 import 'package:flutter/material.dart';
 
@@ -33,16 +34,19 @@ class ToastUtils {
             decoration: BoxDecoration(
                 color: Color(0xFF2AD0B5),
                 borderRadius: BorderRadius.circular(10)),
-            child: Align(
-              alignment: Alignment.center,
+            child: Container(
+              //margin: EdgeInsets.only(left: displayWidth(context) * 0.21),
+
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(
                     'assets/images/ic_done.png',
                     height: 50,
                     width: 50,
                   ),
+                  SizedBox(width: 15.0),
                   Text(
                     message,
                     textAlign: TextAlign.center,

@@ -206,7 +206,7 @@ class _LoginState extends State<Login> {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (BuildContext context) => Dashboard()));
 
-      ToastUtils.showCustomToast(context, "SignIn Successfful");
+      ToastUtils.showCustomToast(context, "Sign in Successfully");
     } else {
       showDialog(
           context: context,

@@ -40,7 +40,6 @@ class _MysubscriptionState extends State<Mysubscription> {
             },
             icon: Icon(Icons.arrow_back_ios),
           )),
-<<<<<<< HEAD
       body: Container(
         //height: MediaQuery.of(context).copyWith().size.height / 3,
         child: Column(
@@ -336,7 +335,6 @@ class _MysubscriptionState extends State<Mysubscription> {
               ],
             ),
           ],
-=======
       body: SingleChildScrollView(
         child: Container(
           child: Column(
@@ -658,7 +656,6 @@ class _MysubscriptionState extends State<Mysubscription> {
                   spreadRadius: 5.0,
                 ),
               ]),
->>>>>>> fec5162576b4d13679601d913d210f92710cc5a2
         ),
       ),
     );

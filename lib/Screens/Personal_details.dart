@@ -38,7 +38,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       _firstNameController.text = prefs.getString("first_name");
       _lastNameController.text = prefs.getString("last_name");
       _emailController.text = prefs.getString("email");
-      _phoneController.text = prefs.getString("phn_number");
+      _phoneController.text = "+91 " + prefs.getString("phn_number");
     });
   }
 

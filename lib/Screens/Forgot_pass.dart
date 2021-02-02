@@ -17,6 +17,18 @@ class ForgotPassword extends StatefulWidget {
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   TextEditingController _phnController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setdata();
+  }
+
+  void setdata() {
+    _phnController.text = "+91 ";
+  }
+
   var _formKey1 = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -75,11 +87,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 key: _formKey1,
                 child: TextFormField(
                   controller: _phnController,
-                  maxLength: 10,
+
+                  onChanged: (value) {
+                    if (_phnController.text.contains("+91 ")) {
+                      print("hiii");
+                    } else {
+                      _phnController.text = "+91 ";
+                    }
+                  },
+                  onTap: () {
+                    setState(() {
+                      _phnController.text = "+91 ";
+                    });
+                  },
+                  maxLength: 14,
                   inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
+                    //FilteringTextInputFormatter.digitsOnly,
                   ],
                   keyboardType: TextInputType.number,
+                  //initialValue: "+91",
                   validator: (String value) {
                     if (value.isEmpty) {
                       return "Enter phone number";

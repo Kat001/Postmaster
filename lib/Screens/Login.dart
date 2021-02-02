@@ -192,10 +192,15 @@ class _LoginState extends State<Login> {
     var responseData = json.decode(res.body);
     print(responseData['token']);
     if (responseData['success'] == 1) {
+      var data = responseData["user_details"];
       //SharedPreferences.setMockInitialValues({});
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       prefs.setString('token', responseData['token']);
+      prefs.setString('first_name', data['first_name']);
+      prefs.setString('last_name', data['last_name']);
+      prefs.setString('email', data['email']);
+      prefs.setString('phn_number', data['phn_number']);
       //SharedPreferences prefs = await SharedPreferences.getInstance();
 
       Navigator.pushReplacement(context,

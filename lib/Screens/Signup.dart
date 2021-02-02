@@ -256,7 +256,7 @@ class _SignupState extends State<Signup> {
       "password": "dev12345",
       "phn_number": phn_number
     };
-    String body = json.encode(data);
+    var body = json.encode(data);
 
     http.Response res = await http.post(
       'https://www.mitrahtechnology.in/apis/mitrah-api/register.php',

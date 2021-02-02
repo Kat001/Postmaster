@@ -18,6 +18,30 @@ class PersonalDetails extends StatefulWidget {
 }
 
 class _PersonalDetailsState extends State<PersonalDetails> {
+  TextEditingController _firstNameController = TextEditingController();
+  TextEditingController _lastNameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInformation();
+  }
+
+  Future fetchInformation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //firstName = prefs.getString("first_name");
+    //print("first:" + firstName);
+
+    setState(() {
+      _firstNameController.text = prefs.getString("first_name");
+      _lastNameController.text = prefs.getString("last_name");
+      _emailController.text = prefs.getString("email");
+      _phoneController.text = prefs.getString("phn_number");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +69,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         ),
         child: Column(children: <Widget>[
           TextFormField(
+            controller: _firstNameController,
             /*controller: emailController,
             validator: (String value) {
               if (value.isEmpty) {
@@ -54,7 +79,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 return "Enter valid email";
               }
             },*/
-            initialValue: "Kamlesh",
+            //initialValue: "data(1)",
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(bottom: 0),
               labelText: 'First name',
@@ -66,28 +91,8 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           ),
           SizedBox(height: 15.0),
           TextFormField(
-            initialValue: "Kumar",
-            /*controller: emailController,
-            validator: (String value) {
-              if (value.isEmpty) {
-                return "Please enter the email.";
-              }
-              if (!EmailValidator.validate(value)) {
-                return "Enter valid email";
-              }
-            },*/
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.only(bottom: 0),
-              labelText: 'Middle name',
-            ),
-            style: TextStyle(
-              fontFamily: 'roboto',
-              fontSize: 18,
-            ),
-          ),
-          SizedBox(height: 15.0),
-          TextFormField(
-            initialValue: "Bisnoi",
+            controller: _lastNameController,
+            //initialValue: "lastName",
             /*controller: emailController,
             validator: (String value) {
               if (value.isEmpty) {
@@ -108,7 +113,28 @@ class _PersonalDetailsState extends State<PersonalDetails> {
           ),
           SizedBox(height: 15.0),
           TextFormField(
-            initialValue: "devil@gmail.com",
+            controller: _phoneController,
+            /*controller: emailController,
+            validator: (String value) {
+              if (value.isEmpty) {
+                return "Please enter the email.";
+              }
+              if (!EmailValidator.validate(value)) {
+                return "Enter valid email";
+              }
+            },*/
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(bottom: 0),
+              labelText: 'Phone number',
+            ),
+            style: TextStyle(
+              fontFamily: 'roboto',
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(height: 15.0),
+          TextFormField(
+            controller: _emailController,
             /*controller: emailController,
             validator: (String value) {
               if (value.isEmpty) {

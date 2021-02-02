@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:postmaster/models/user_data.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/Language.dart';
@@ -15,6 +17,18 @@ import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:postmaster/Components/animate.dart';
+
+import 'package:postmaster/Screens/Forgot_pass.dart';
+//import 'package:http/http.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:http/http.dart' as http;
+//import 'package:flutter/services.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+import 'dart:convert';
 import 'package:postmaster/Screens/App_version.dart';
 
 class Profile extends StatefulWidget {
@@ -23,6 +37,63 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  String firstName = "";
+  String middleName = "";
+  String lastName = "";
+  String email = "";
+  String phon = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchInformation();
+  }
+
+  Future fetchInformation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      firstName = prefs.getString("first_name");
+      lastName = prefs.getString("last_name");
+      email = prefs.getString("email");
+      phon = prefs.getString("phn_number");
+    });
+  }
+
+  /* Future<http.Response> fetchInformation() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+    if (token != null) {
+      res = await http.get(
+        'https://www.mitrahtechnology.in/apis/mitrah-api/user-info.php',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          "Authorization": token,
+        },
+      );
+      print(res.body);
+      var responseData = json.decode(res.body);
+
+      var data = responseData["message"];
+
+      setState(() {
+        firstName = data["first_name"];
+        lastName = data["last_name"];
+        email = data["email"];
+        phon = data["phn_number"];
+      });
+    } else {}
+
+    /*} else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }*/
+    return res;
+  */
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +105,7 @@ class _ProfileState extends State<Profile> {
           Container(
             margin: EdgeInsets.only(top: 20, left: 10),
             child: Text(
-              "XYZ,",
+              "$firstName $lastName",
               style: TextStyle(
                   fontFamily: "RobotoBold",
                   fontSize: 28.0.sp,
@@ -44,7 +115,7 @@ class _ProfileState extends State<Profile> {
           Container(
             margin: EdgeInsets.only(top: 15, left: 10),
             child: Text(
-              "+91 1234567890",
+              "+91 $phon",
               style: TextStyle(
                   fontFamily: "Roboto", fontSize: 18, color: Color(0xFF465A64)),
             ),
@@ -151,7 +222,9 @@ class _ProfileState extends State<Profile> {
             child: InkWell(
               onTap: () {
                 Navigator.push(
-                    context, SlideLeftRoute(page: PersonalDetails()));
+                  context,
+                  SlideLeftRoute(page: PersonalDetails()),
+                );
               },
               child: Row(
                 children: [

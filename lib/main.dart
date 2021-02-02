@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Screens/Subscription.dart';
 import 'package:postmaster/Screens/Profile.dart';
 //import 'package:flutter/scheduler.dart';
+import 'package:flutter_otp/flutter_otp.dart';
 
 void main() => runApp(Myapp());
 

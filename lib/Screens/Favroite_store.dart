@@ -43,11 +43,11 @@ class _FavoriteStoreState extends State<FavoriteStore> {
         elevation: 0,
       ),
       body: Container(
-        margin: new EdgeInsets.only(top: 1, right: 35, left: 35),
+        //margin: new EdgeInsets.only(top: 1, right: 35, left: 35),
         child: Image(
           image: AssetImage('assets/images/maps.png   '),
-          height: 266.0,
-          width: 266.0,
+          //height: 266.0,
+          //width: 266.0,
         ),
       ),
     );

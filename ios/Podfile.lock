@@ -16,7 +16,15 @@ PODS:
     - Flutter
   - "location_permissions (3.0.0+1)":
     - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - share (0.0.1):
+    - Flutter
   - shared_preferences (0.0.1):
+    - Flutter
+  - sms (0.0.1):
+    - Flutter
+  - social_share (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -26,7 +34,11 @@ DEPENDENCIES:
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sms (from `.symlinks/plugins/sms/ios`)
+  - social_share (from `.symlinks/plugins/social_share/ios`)
 
 SPEC REPOS:
   trunk:
@@ -45,8 +57,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/integration_test/ios"
   location_permissions:
     :path: ".symlinks/plugins/location_permissions/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  share:
+    :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  sms:
+    :path: ".symlinks/plugins/sms/ios"
+  social_share:
+    :path: ".symlinks/plugins/social_share/ios"
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
@@ -56,7 +76,11 @@ SPEC CHECKSUMS:
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
   integration_test: 5ed24a436eb7ec17b6a13046e9bf7ca4a404e59e
   location_permissions: 7e0f9aa0f60deb8ff93ddf0e2a164c7e8197bc94
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  sms: 1e6c3082da09f2a4961d61bc254cc86865993ffd
+  social_share: 702a5e3842addd22db515aa9e1e00a4b80a0296d
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 

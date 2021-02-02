@@ -23,6 +23,18 @@ class _SignupState extends State<Signup> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setdata();
+  }
+
+  void setdata() {
+    phoneController.text = "+91 ";
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -129,10 +141,22 @@ class _SignupState extends State<Signup> {
                     child: ListTile(
                       title: TextFormField(
                         controller: phoneController,
+                        onChanged: (value) {
+                          if (phoneController.text.contains("+91 ")) {
+                            print("hiii");
+                          } else {
+                            phoneController.text = "+91 ";
+                          }
+                        },
+                        onTap: () {
+                          setState(() {
+                            phoneController.text = "+91 ";
+                          });
+                        },
                         keyboardType: TextInputType.number,
-                        maxLength: 10,
+                        maxLength: 14,
                         inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                          //FilteringTextInputFormatter.digitsOnly,
                         ],
                         validator: (String value) {
                           if (value.isEmpty) {
@@ -247,7 +271,9 @@ class _SignupState extends State<Signup> {
     String firstName = firstNameController.text;
     String lastName = lastNameController.text;
     String email = emailController.text;
-    String phn_number = phoneController.text;
+    String phn_number1 = phoneController.text;
+    String phn_number = phn_number1.substring(3);
+    print(phn_number);
 
     Map data = {
       "first_name": firstName,

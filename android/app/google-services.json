@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "793936269530",
+    "project_id": "poatmaster-f0ad9",
+    "storage_bucket": "poatmaster-f0ad9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793936269530:android:41de8374b0fca874c955e3",
+        "android_client_info": {
+          "package_name": "com.example.postmaster"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "793936269530-4o1mt8vp752fsf09alhgr2p8bs1ur9vl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.postmaster",
+            "certificate_hash": "281aaa8e44037da995a5f1d8231eeff4de884589"
+          }
+        },
+        {
+          "client_id": "793936269530-7hrag89nt3nl25g4reg14pnuh68jdvev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3LB_m1_ogpruFE03Zpd3dEOJet3WgvgM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793936269530-7hrag89nt3nl25g4reg14pnuh68jdvev.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

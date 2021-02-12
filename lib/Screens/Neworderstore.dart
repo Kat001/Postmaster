@@ -51,6 +51,115 @@ class MyCustomFormState extends State<MyCustomForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Container(
+                child: Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.02,
+                          top: displayHeight(context) * 0.01),
+                      height: displayHeight(context) * 0.06,
+                      width: displayWidth(context) * 0.4,
+                      child: Text(
+                        "Up to 1 kg",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.white,
+                          fontSize: displayWidth(context) * 0.06,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Color(0xFF27DEBF)),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.02,
+                          top: displayHeight(context) * 0.01),
+                      height: displayHeight(context) * 0.06,
+                      width: displayWidth(context) * 0.4,
+                      child: Text(
+                        "Up to 5 kg",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.white,
+                          fontSize: displayWidth(context) * 0.06,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Color(0xFF27DEBF)),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.02,
+                          top: displayHeight(context) * 0.01),
+                      height: displayHeight(context) * 0.06,
+                      width: displayWidth(context) * 0.4,
+                      child: Text(
+                        "Up to 10 kg",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.white,
+                          fontSize: displayWidth(context) * 0.06,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Color(0xFF27DEBF)),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.02,
+                          top: displayHeight(context) * 0.01),
+                      height: displayHeight(context) * 0.06,
+                      width: displayWidth(context) * 0.4,
+                      child: Text(
+                        "Up to 15 kg",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.white,
+                          fontSize: displayWidth(context) * 0.06,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Color(0xFF27DEBF)),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          left: displayWidth(context) * 0.02,
+                          top: displayHeight(context) * 0.01),
+                      height: displayHeight(context) * 0.06,
+                      width: displayWidth(context) * 0.4,
+                      child: Text(
+                        "Up to 20 kg",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.white,
+                          fontSize: displayWidth(context) * 0.06,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Color(0xFF27DEBF)),
+                    )
+                  ],
+                ),
+              ),
+            ),
             //Pickup Point
             ExpansionTile(
                 onExpansionChanged: (Expanded) {

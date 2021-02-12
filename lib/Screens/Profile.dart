@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:postmaster/Screens/example.dart';
 import 'package:postmaster/models/user_data.dart';
 import 'package:postmaster/Components/toast_utils.dart';
 import 'package:postmaster/Components/toast_utils.dart';
@@ -378,7 +379,7 @@ class _ProfileState extends State<Profile> {
               )),
           InkWell(
             onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: AppVersion()));
+              Navigator.push(context, SlideLeftRoute(page: Example()));
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 20),

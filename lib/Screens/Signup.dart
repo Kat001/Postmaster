@@ -28,11 +28,6 @@ class _SignupState extends State<Signup> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setdata();
-  }
-
-  void setdata() {
-    phoneController.text = "+91 ";
   }
 
   @override
@@ -141,32 +136,6 @@ class _SignupState extends State<Signup> {
                     child: ListTile(
                       title: TextFormField(
                         controller: phoneController,
-                        onChanged: (value) {
-                          print(value);
-                          //int cursorPos = phoneController.selection.base.offset;
-                          //print(cursorPos);
-                          /*if (cursorPos == 0) {
-                            phoneController.value = phoneController.value
-                                .copyWith(
-                                    text: phoneController.text.replaceRange(
-                                        cursorPos, cursorPos, '+91 '),
-                                    selection: TextSelection.fromPosition(
-                                        TextPosition(offset: 4)));
-                          }*/
-
-                          /*final val = TextSelection.collapsed(
-                              offset: phoneController.text.length);
-                          phoneController.selection = val;
-                          phoneController.text = "+91";
-                          phoneController.selection =
-                              TextSelection.fromPosition(TextPosition(
-                                  offset: phoneController.text.length));*/
-                          if (phoneController.text.contains("+91 ")) {
-                            print("hiii");
-                          } else {
-                            phoneController.text = "+91 ";
-                          }
-                        },
                         validator: (String value) {
                           if (value.isEmpty) {
                             return "Please enter the phone no.";
@@ -175,6 +144,8 @@ class _SignupState extends State<Signup> {
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(bottom: 0),
                           labelText: 'Phone Number',
+                          prefixText: '+91 ',
+                          //prefixStyle: TextStyle(color: Colors.transparent),
                         ),
                         style: TextStyle(
                           fontFamily: 'roboto',
@@ -259,22 +230,6 @@ class _SignupState extends State<Signup> {
           )),
     );
   }
-
-  /* Future<http.Response> createUser() {
-    return http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/register.php',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        "first_name": "mieethvhg",
-        "last_name": "teceeehbjhghj",
-        "email": "acbdevcdtc@t.com",
-        "password": "dev12345",
-        "phn_number": "9012101240"
-      }),
-    );
-  }*/
 
   Future<http.Response> createUser() async {
     String firstName = firstNameController.text;

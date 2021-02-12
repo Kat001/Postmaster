@@ -105,7 +105,7 @@ class CustomDialog extends StatelessWidget {
               Text(description, style: TextStyle(fontSize: 16.0)),
               SizedBox(height: 24.0),
               Align(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.center,
                 child: Container(
                   // margin: new EdgeInsets.only(left: 75, right: 75, top: 40),
                   child: MaterialButton(
@@ -208,7 +208,7 @@ class CustomDialogError extends StatelessWidget {
               Text(description, style: TextStyle(fontSize: 16.0)),
               SizedBox(height: 24.0),
               Align(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.center,
                 child: Container(
                   // margin: new EdgeInsets.only(left: 75, right: 75, top: 40),
                   child: MaterialButton(
@@ -251,7 +251,7 @@ class CustomDialogError extends StatelessWidget {
           child: CircleAvatar(
             backgroundColor: Colors.white,
             radius: 50.0,
-            backgroundImage: AssetImage('assets/images/error.png'),
+            backgroundImage: AssetImage('assets/images/wrong.gif'),
           ),
         )
       ],

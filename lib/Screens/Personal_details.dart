@@ -8,6 +8,7 @@ import 'package:postmaster/Screens/privacy.dart';
 import 'package:postmaster/Screens/faq.dart';
 import 'package:postmaster/Screens/terms.dart';
 import 'package:postmaster/Screens/Topup.dart';
+import 'package:postmaster/Screens/Setnewpassword.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -192,14 +193,11 @@ class _PersonalDetailsState extends State<PersonalDetails> {
                 ),
                 InkWell(
                   onTap: () {
-                    //Navigator.push(
-                    //context, SlideLeftRoute(page: ForgotPassword()));
+                    Navigator.push(
+                        context, SlideLeftRoute(page: SetNewPassword()));
                   },
                   child: Container(
-                    margin: new EdgeInsets.only(
-                      bottom: 30,
-                      top: 30.0,
-                    ),
+                    margin: new EdgeInsets.only(bottom: 30, top: 30.0),
                     child: Text(
                       " Click Here",
                       textAlign: TextAlign.center,

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/Screens/Otp.dart';
 import 'package:postmaster/Screens/Set_New_pass.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -146,7 +147,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Future<void /*http.Response*/ > cheakUser() async {
     String phonNo = _phnController.text;
     print(phonNo);
-    Navigator.push(context, SlideLeftRoute(page: SetPassword()));
+    Navigator.push(context, SlideLeftRoute(page: Otpclass()));
+    //Navigator.push(context, SlideLeftRoute(page: SetPassword()));
 
     /*Map data = {
       "phn_number": phonNo

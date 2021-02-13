@@ -115,6 +115,9 @@ flutter:
     - assets/images/terms-and-conditions.svg
     - assets/images/subscribe.jpg
     - assets/images/error.svg
+    - assets/images/wallet.svg
+    - assets/images/money.svg
+    - assets/images/mobile-payment.svg
     - assets/images/error.png
     - assets/images/store.svg
     - assets/images/ic_done.png

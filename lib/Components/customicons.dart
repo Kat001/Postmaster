@@ -31,3 +31,6 @@ const privacy_policy = 'assets/images/privacy-policy(1).svg';
 const terms_and_conditions = 'assets/images/terms-and-conditions.svg';
 const subscription_pic = 'assets/images/subscribe.svg';
 const error = 'assets/images/error.svg';
+const wallet = 'assets/images/wallet.svg';
+const money = 'assets/images/money.svg';
+const mobilepayment = 'assets/images/mobile-payment.svg';

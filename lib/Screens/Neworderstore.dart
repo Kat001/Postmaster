@@ -40,6 +40,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
+  bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +62,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                       margin: EdgeInsets.only(
                           left: displayWidth(context) * 0.02,
                           top: displayHeight(context) * 0.01),
-                      height: displayHeight(context) * 0.06,
-                      width: displayWidth(context) * 0.4,
+                      height: displayHeight(context) * 0.05,
+                      width: displayWidth(context) * 0.3,
                       child: Text(
                         "Up to 1 kg",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'RobotoBold',
                           color: Colors.white,
-                          fontSize: displayWidth(context) * 0.06,
+                          fontSize: displayWidth(context) * 0.05,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -81,15 +82,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                       margin: EdgeInsets.only(
                           left: displayWidth(context) * 0.02,
                           top: displayHeight(context) * 0.01),
-                      height: displayHeight(context) * 0.06,
-                      width: displayWidth(context) * 0.4,
+                      height: displayHeight(context) * 0.05,
+                      width: displayWidth(context) * 0.3,
                       child: Text(
                         "Up to 5 kg",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'RobotoBold',
                           color: Colors.white,
-                          fontSize: displayWidth(context) * 0.06,
+                          fontSize: displayWidth(context) * 0.05,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -101,15 +102,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                       margin: EdgeInsets.only(
                           left: displayWidth(context) * 0.02,
                           top: displayHeight(context) * 0.01),
-                      height: displayHeight(context) * 0.06,
-                      width: displayWidth(context) * 0.4,
+                      height: displayHeight(context) * 0.05,
+                      width: displayWidth(context) * 0.3,
                       child: Text(
                         "Up to 10 kg",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'RobotoBold',
                           color: Colors.white,
-                          fontSize: displayWidth(context) * 0.06,
+                          fontSize: displayWidth(context) * 0.05,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -121,15 +122,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                       margin: EdgeInsets.only(
                           left: displayWidth(context) * 0.02,
                           top: displayHeight(context) * 0.01),
-                      height: displayHeight(context) * 0.06,
-                      width: displayWidth(context) * 0.4,
+                      height: displayHeight(context) * 0.05,
+                      width: displayWidth(context) * 0.3,
                       child: Text(
                         "Up to 15 kg",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'RobotoBold',
                           color: Colors.white,
-                          fontSize: displayWidth(context) * 0.06,
+                          fontSize: displayWidth(context) * 0.05,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -141,15 +142,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                       margin: EdgeInsets.only(
                           left: displayWidth(context) * 0.02,
                           top: displayHeight(context) * 0.01),
-                      height: displayHeight(context) * 0.06,
-                      width: displayWidth(context) * 0.4,
+                      height: displayHeight(context) * 0.05,
+                      width: displayWidth(context) * 0.3,
                       child: Text(
                         "Up to 20 kg",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'RobotoBold',
                           color: Colors.white,
-                          fontSize: displayWidth(context) * 0.06,
+                          fontSize: displayWidth(context) * 0.05,
                         ),
                       ),
                       decoration: BoxDecoration(
@@ -460,19 +461,305 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                   ),
                 ]),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: RaisedButton(
-                onPressed: () {
-                  // Validate returns true if the form is valid, or false
-                  // otherwise.
-                  if (_formKey.currentState.validate()) {
-                    // If the form is valid, display a Snackbar.
-                    Scaffold.of(context).showSnackBar(
-                        SnackBar(content: Text('Processing Data')));
+            Column(children: [
+              Container(
+                margin: EdgeInsets.only(
+                    left: displayWidth(context) * 0.15,
+                    right: displayWidth(context) * 0.05,
+                    top: displayHeight(context) * 0.01),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "What are you sending",
+                  ),
+                  key: PageStorageKey("tests16"),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            left: displayWidth(context) * 0.15,
+                            top: displayHeight(context) * 0.01),
+                        height: displayHeight(context) * 0.05,
+                        width: displayWidth(context) * 0.3,
+                        child: Text(
+                          "Documents",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            color: Colors.white,
+                            fontSize: displayWidth(context) * 0.05,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: Color(0xFF27DEBF)),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            left: displayWidth(context) * 0.02,
+                            top: displayHeight(context) * 0.01),
+                        height: displayHeight(context) * 0.05,
+                        width: displayWidth(context) * 0.3,
+                        child: Text(
+                          "Food",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            color: Colors.white,
+                            fontSize: displayWidth(context) * 0.05,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: Color(0xFF27DEBF)),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            left: displayWidth(context) * 0.02,
+                            top: displayHeight(context) * 0.01),
+                        height: displayHeight(context) * 0.05,
+                        width: displayWidth(context) * 0.3,
+                        child: Text(
+                          "Cloths",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            color: Colors.white,
+                            fontSize: displayWidth(context) * 0.05,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: Color(0xFF27DEBF)),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            left: displayWidth(context) * 0.02,
+                            top: displayHeight(context) * 0.01),
+                        height: displayHeight(context) * 0.05,
+                        width: displayWidth(context) * 0.3,
+                        child: Text(
+                          "Groceries",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            color: Colors.white,
+                            fontSize: displayWidth(context) * 0.05,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: Color(0xFF27DEBF)),
+                      ),
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            left: displayWidth(context) * 0.02,
+                            top: displayHeight(context) * 0.01),
+                        height: displayHeight(context) * 0.05,
+                        width: displayWidth(context) * 0.3,
+                        child: Text(
+                          "Flowers",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'RobotoBold',
+                            color: Colors.white,
+                            fontSize: displayWidth(context) * 0.05,
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50.0),
+                            color: Color(0xFF27DEBF)),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ]),
+            Container(
+              margin: EdgeInsets.only(
+                  left: displayWidth(context) * 0.15,
+                  right: displayWidth(context) * 0.05,
+                  top: displayHeight(context) * 0.01),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Parcel Value",
+                ),
+                key: PageStorageKey("tests16"),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter some text';
                   }
+                  return null;
                 },
-                child: Text('Submit'),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: displayWidth(context) * 0.15,
+                  right: displayWidth(context) * 0.05,
+                  top: displayHeight(context) * 0.01),
+              child: TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Promo Code",
+                ),
+                key: PageStorageKey("tests16"),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Container(
+              child: Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: displayHeight(context) * 0.03,
+                      left: displayWidth(context) * 0.15,
+                    ),
+                    child: Text("Notify recipient by SMS",
+                        style: TextStyle(
+                          fontFamily: 'RobotoBold',
+                          color: Colors.grey,
+                          fontSize: displayWidth(context) * 0.05,
+                        )),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: displayWidth(context) * 0.1,
+                        top: displayHeight(context) * 0.03),
+                    child: Switch(
+                      value: isSwitched,
+                      onChanged: (value) {
+                        setState(() {
+                          isSwitched = value;
+                          print(isSwitched);
+                        });
+                      },
+                      activeTrackColor: Colors.lightGreenAccent,
+                      activeColor: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 25, left: 50),
+                    child: InkWell(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 20),
+                            width: 25,
+                            height: 25,
+                            child: SvgPicture.asset(
+                              money,
+                              color: Color(0xFF465A64),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              "Cash",
+                              style: TextStyle(
+                                fontFamily: 'RobotoBold',
+                                fontSize: 17,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 25, left: 50),
+                    child: InkWell(
+                      onTap: () {},
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(right: 20),
+                            width: 25,
+                            height: 25,
+                            child: SvgPicture.asset(
+                              wallet,
+                              color: Color(0xFF465A64),
+                            ),
+                          ),
+                          Container(
+                            child: Text(
+                              "Balance",
+                              style: TextStyle(
+                                fontFamily: 'RobotoBold',
+                                fontSize: 17,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 25, left: 50),
+                          child: InkWell(
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 20),
+                                  width: 25,
+                                  height: 25,
+                                  child: SvgPicture.asset(
+                                    mobilepayment,
+                                    color: Color(0xFF465A64),
+                                  ),
+                                ),
+                                Container(
+                                  child: Text(
+                                    "Onlne ",
+                                    style: TextStyle(
+                                      fontFamily: 'RobotoBold',
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

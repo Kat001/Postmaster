@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -136,6 +137,11 @@ class _SignupState extends State<Signup> {
                     child: ListTile(
                       title: TextFormField(
                         controller: phoneController,
+                        maxLength: 10,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
                         validator: (String value) {
                           if (value.isEmpty) {
                             return "Please enter the phone no.";

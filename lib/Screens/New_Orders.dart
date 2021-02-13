@@ -8,6 +8,12 @@ import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/NewOrderrest.dart';
 import 'package:postmaster/Screens/NewOrderstore.dart';
 import 'package:postmaster/Screens/Subscription.dart';
+import 'package:http/http.dart' as http;
+import 'package:postmaster/Components/animate.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+import 'dart:convert';
 
 class Neworder extends StatefulWidget {
   @override
@@ -15,6 +21,43 @@ class Neworder extends StatefulWidget {
 }
 
 class _NeworderState extends State<Neworder> {
+  bool _isdata = true;
+  Future<List<dynamic>> weightData;
+  Future<List<dynamic>> itemData;
+
+  @override
+  void initState() {
+    super.initState();
+    weightData = fetchInitialData();
+    //print(weightData);
+  }
+
+  Future<List<dynamic>> fetchInitialData() async {
+    http.Response res = await http.get(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/order/getdetail.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "user": "admin",
+        "password": "1234",
+        "table_name": "item"
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData["status"] == 200) {}
+
+    //print(responseData);
+    /*
+    */
+
+    setState(() {
+      _isdata = false;
+    });
+
+    return json.decode(res.body)['message'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -59,365 +102,393 @@ class _NeworderState extends State<Neworder> {
                 ),
               ],
             ),
-            body: TabBarView(children: [
-              SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      //Buy from store
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context, SlideLeftRoute(page: NewOrder()));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 5.0.h, left: 8.0.w, right: 8.0.w),
-                          width: 120.0.w,
-                          height: 12.0.h,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF0F0F0),
-                                  blurRadius: 5.0,
-                                  spreadRadius: 5.0,
-                                ),
-                              ]),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05),
-                                  width: displayWidth(context) * 0.1,
-                                  height: displayHeight(context) * 0.05,
-                                  child: SvgPicture.asset(
-                                    box,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05,
-                                      top: displayHeight(context) * 0.015),
-                                  child: Column(
+            body: _isdata
+                ? Center(child: CircularProgressIndicator())
+                : TabBarView(children: [
+                    SingleChildScrollView(
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            //Buy from store
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    SlideLeftRoute(
+                                        page:
+                                            NewOrder(weightData: weightData)));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 5.0.h, left: 8.0.w, right: 8.0.w),
+                                width: 120.0.w,
+                                height: 12.0.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFF0F0F0),
+                                        blurRadius: 5.0,
+                                        spreadRadius: 5.0,
+                                      ),
+                                    ]),
+                                child: Container(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         margin: EdgeInsets.only(
-                                            bottom:
-                                                displayHeight(context) * 0.01),
-                                        child: Text(
-                                          "Send Your Package",
-                                          style: TextStyle(
-                                            fontFamily: "RobotoBold",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                            left: displayWidth(context) * 0.05),
+                                        width: displayWidth(context) * 0.1,
+                                        height: displayHeight(context) * 0.05,
+                                        child: SvgPicture.asset(
+                                          box,
+                                          color: Colors.black,
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(),
-                                        child: Text(
-                                          "Deliver Or Receive Items Such",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                        margin: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.05,
+                                            top:
+                                                displayHeight(context) * 0.015),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom:
+                                                      displayHeight(context) *
+                                                          0.01),
+                                              child: Text(
+                                                "Send Your Package",
+                                                style: TextStyle(
+                                                  fontFamily: "RobotoBold",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(),
+                                              child: Text(
+                                                "Deliver Or Receive Items Such",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                "Gifts, Documents etc.",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          "Gifts, Documents etc.",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
-                                        ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      //Favrouite store
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context, SlideLeftRoute(page: NewOrderStore()));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 5.0.h, left: 8.0.w, right: 8.0.w),
-                          width: 120.0.w,
-                          height: 12.0.h,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF0F0F0),
-                                  blurRadius: 5.0,
-                                  spreadRadius: 5.0,
-                                ),
-                              ]),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05),
-                                  width: displayWidth(context) * 0.1,
-                                  height: displayHeight(context) * 0.05,
-                                  child: SvgPicture.asset(
-                                    gps,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05,
-                                      top: displayHeight(context) * 0.015),
-                                  child: Column(
+                            //Favrouite store
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    SlideLeftRoute(page: NewOrderStore()));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 5.0.h, left: 8.0.w, right: 8.0.w),
+                                width: 120.0.w,
+                                height: 12.0.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFF0F0F0),
+                                        blurRadius: 5.0,
+                                        spreadRadius: 5.0,
+                                      ),
+                                    ]),
+                                child: Container(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         margin: EdgeInsets.only(
-                                            bottom:
-                                                displayHeight(context) * 0.01),
-                                        child: Text(
-                                          "Buy from your Favorite store",
-                                          style: TextStyle(
-                                            fontFamily: "RobotoBold",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                            left: displayWidth(context) * 0.05),
+                                        width: displayWidth(context) * 0.1,
+                                        height: displayHeight(context) * 0.05,
+                                        child: SvgPicture.asset(
+                                          gps,
+                                          color: Colors.black,
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(),
-                                        child: Text(
-                                          "Didn't Ordered Yet ? Order Now",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                        margin: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.05,
+                                            top:
+                                                displayHeight(context) * 0.015),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom:
+                                                      displayHeight(context) *
+                                                          0.01),
+                                              child: Text(
+                                                "Buy from your Favorite store",
+                                                style: TextStyle(
+                                                  fontFamily: "RobotoBold",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(),
+                                              child: Text(
+                                                "Didn't Ordered Yet ? Order Now",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                "Will Deliver To Your Door-Step.",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          "Will Deliver To Your Door-Step.",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
-                                        ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      //Subscription
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context, SlideLeftRoute(page: Subscription()));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            top: 5.0.h,
-                            left: 8.0.w,
-                            right: 8.0.w,
-                          ),
-                          width: 120.0.w,
-                          height: 12.0.h,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF0F0F0),
-                                  blurRadius: 5.0,
-                                  spreadRadius: 5.0,
+                            //Subscription
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    SlideLeftRoute(page: Subscription()));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 5.0.h,
+                                  left: 8.0.w,
+                                  right: 8.0.w,
                                 ),
-                              ]),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05),
-                                  width: displayWidth(context) * 0.1,
-                                  height: displayHeight(context) * 0.05,
-                                  child: SvgPicture.asset(
-                                    subscription,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05,
-                                      top: displayHeight(context) * 0.015),
-                                  child: Column(
+                                width: 120.0.w,
+                                height: 12.0.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFF0F0F0),
+                                        blurRadius: 5.0,
+                                        spreadRadius: 5.0,
+                                      ),
+                                    ]),
+                                child: Container(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         margin: EdgeInsets.only(
-                                            bottom:
-                                                displayHeight(context) * 0.01),
-                                        child: Text(
-                                          "Subscription",
-                                          style: TextStyle(
-                                            fontFamily: "RobotoBold",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                            left: displayWidth(context) * 0.05),
+                                        width: displayWidth(context) * 0.1,
+                                        height: displayHeight(context) * 0.05,
+                                        child: SvgPicture.asset(
+                                          subscription,
+                                          color: Colors.black,
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(),
-                                        child: Text(
-                                          "Enroll and get amazing cashbacks!",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                        margin: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.05,
+                                            top:
+                                                displayHeight(context) * 0.015),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom:
+                                                      displayHeight(context) *
+                                                          0.01),
+                                              child: Text(
+                                                "Subscription",
+                                                style: TextStyle(
+                                                  fontFamily: "RobotoBold",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(),
+                                              child: Text(
+                                                "Enroll and get amazing cashbacks!",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      //Buy from store
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context, SlideLeftRoute(page: FavoriteStore()));
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                              top: 5.0.h,
-                              left: 8.0.w,
-                              right: 8.0.w,
-                              bottom: 4.0.h),
-                          width: 120.0.w,
-                          height: 12.0.h,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFFF0F0F0),
-                                  blurRadius: 5.0,
-                                  spreadRadius: 5.0,
-                                ),
-                              ]),
-                          child: Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05),
-                                  width: displayWidth(context) * 0.1,
-                                  height: displayHeight(context) * 0.05,
-                                  child: SvgPicture.asset(
-                                    cart,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.05,
-                                      top: displayHeight(context) * 0.015),
-                                  child: Column(
+                            //Buy from store
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(context,
+                                    SlideLeftRoute(page: FavoriteStore()));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    top: 5.0.h,
+                                    left: 8.0.w,
+                                    right: 8.0.w,
+                                    bottom: 4.0.h),
+                                width: 120.0.w,
+                                height: 12.0.h,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFF0F0F0),
+                                        blurRadius: 5.0,
+                                        spreadRadius: 5.0,
+                                      ),
+                                    ]),
+                                child: Container(
+                                  child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         margin: EdgeInsets.only(
-                                            bottom:
-                                                displayHeight(context) * 0.01),
-                                        child: Text(
-                                          "Buy from your Favorite Restro.",
-                                          style: TextStyle(
-                                            fontFamily: "RobotoBold",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                            left: displayWidth(context) * 0.05),
+                                        width: displayWidth(context) * 0.1,
+                                        height: displayHeight(context) * 0.05,
+                                        child: SvgPicture.asset(
+                                          cart,
+                                          color: Colors.black,
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(),
-                                        child: Text(
-                                          "Deliver or receive items such",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
+                                        margin: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.05,
+                                            top:
+                                                displayHeight(context) * 0.015),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  bottom:
+                                                      displayHeight(context) *
+                                                          0.01),
+                                              child: Text(
+                                                "Buy from your Favorite Restro.",
+                                                style: TextStyle(
+                                                  fontFamily: "RobotoBold",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(),
+                                              child: Text(
+                                                "Deliver or receive items such",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: Text(
+                                                "as gifts, documents, keys",
+                                                style: TextStyle(
+                                                  fontFamily: "Roboto",
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.04,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          "as gifts, documents, keys",
-                                          style: TextStyle(
-                                            fontFamily: "Roboto",
-                                            fontSize:
-                                                displayWidth(context) * 0.04,
-                                          ),
-                                        ),
-                                      ),
+                                      )
                                     ],
                                   ),
-                                )
-                              ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
+                          ]),
+                    ),
+                    Center(
+                      child: Container(
+                        child: Text("Active Orders"),
                       ),
-                    ]),
-              ),
-              Center(
-                child: Container(
-                  child: Text("Active Orders"),
-                ),
-              ),
-              Center(
-                child: Container(
-                  child: Text("Completed Orders"),
-                ),
-              ),
-            ])),
+                    ),
+                    Center(
+                      child: Container(
+                        child: Text("Completed Orders"),
+                      ),
+                    ),
+                  ])),
       ),
     );
   }

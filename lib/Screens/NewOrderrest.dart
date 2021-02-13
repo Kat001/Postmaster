@@ -11,13 +11,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class NewOrder extends StatefulWidget {
+  NewOrder({
+    Key key,
+    this.weightData,
+  }) : super(key: key);
+
+  final Future<List<dynamic>> weightData;
+
   @override
   _NewOrderState createState() => _NewOrderState();
 }
 
 class _NewOrderState extends State<NewOrder> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,7 +187,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         );
                       },
                       decoration: InputDecoration(
-                        hintText: "Address",
+                        labelText: 'address',
                       ),
                       key: PageStorageKey("test2"),
                       validator: (value) {
@@ -190,9 +204,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                         left: displayWidth(context) * 0.15,
                         right: displayWidth(context) * 0.05),
                     child: TextFormField(
-                      controller: _pickupCommentController,
+                      controller: _pickupPhoneController,
+                      maxLength: 10,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       decoration: InputDecoration(
-                        hintText: "Phone Number",
+                        labelText: 'Phone number',
+                        prefixText: '+91 ',
                       ),
                       key: PageStorageKey("test3"),
                       validator: (value) {
@@ -211,7 +231,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _pickupArrivalController,
                       decoration: InputDecoration(
-                        hintText: "Arrival",
+                        labelText: "Arrival",
                       ),
                       key: PageStorageKey("test4"),
                       validator: (value) {
@@ -230,7 +250,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _pickupCommentController,
                       decoration: InputDecoration(
-                        hintText: "Comment",
+                        labelText: 'Comment',
                       ),
                       key: PageStorageKey("test5"),
                       validator: (value) {
@@ -277,7 +297,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _dropAddressController,
                       decoration: InputDecoration(
-                        hintText: "Address",
+                        labelText: 'Address',
                       ),
                       key: PageStorageKey("test7"),
                       validator: (value) {
@@ -296,7 +316,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _dropPhoneController,
                       decoration: InputDecoration(
-                        hintText: "Phone Number",
+                        labelText: 'Phone number',
                       ),
                       key: PageStorageKey("test8"),
                       validator: (value) {
@@ -315,7 +335,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _dropArrivalController,
                       decoration: InputDecoration(
-                        hintText: "Arrival",
+                        labelText: 'Arrival',
                       ),
                       key: PageStorageKey("test9"),
                       validator: (value) {
@@ -334,7 +354,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _dropCommentController,
                       decoration: InputDecoration(
-                        hintText: "Comment",
+                        labelText: 'Comment',
                       ),
                       key: PageStorageKey("test0"),
                       validator: (value) {

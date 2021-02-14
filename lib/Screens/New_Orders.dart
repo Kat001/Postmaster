@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/Favroite_store.dart';
+import 'package:postmaster/Screens/Neworderstore.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/NewOrderrest.dart';
-import 'package:postmaster/Screens/NewOrderstore.dart';
+
 import 'package:postmaster/Screens/Subscription.dart';
 import 'package:http/http.dart' as http;
 import 'package:postmaster/Components/animate.dart';
@@ -24,15 +25,67 @@ class _NeworderState extends State<Neworder> {
   bool _isdata = true;
   Future<List<dynamic>> weightData;
   Future<List<dynamic>> itemData;
+  Future<String> rate;
 
   @override
   void initState() {
     super.initState();
+
     weightData = fetchInitialData();
     //print(weightData);
+    itemData = fetchItemData();
+    rate = rateData();
+    print(rate);
+  }
+
+  Future<String> rateData() async {
+    http.Response res = await http.get(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/order/getdetail.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "user": "admin",
+        "password": "1234",
+        "table_name": "rate"
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+    print(responseData['message'][0]['rate']);
+
+    /*if (responseData["status"] == 200) {
+      String price1 = responseData["message"][0]["rate"];
+      String price = price1.substring(0, price1.length - 1);
+      double fPrice = double.parse(price);
+
+      //price + parcelValue;
+
+    }*/
+    return json.decode(res.body)['message'][0]['rate'];
   }
 
   Future<List<dynamic>> fetchInitialData() async {
+    http.Response res = await http.get(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/order/getdetail.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "user": "admin",
+        "password": "1234",
+        "table_name": "weight"
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData["status"] == 200) {}
+
+    //print(responseData);
+    /*
+    */
+
+    return json.decode(res.body)['message'];
+  }
+
+  Future<List<dynamic>> fetchItemData() async {
     http.Response res = await http.get(
       'https://www.mitrahtechnology.in/apis/mitrah-api/order/getdetail.php',
       headers: <String, String>{
@@ -50,7 +103,6 @@ class _NeworderState extends State<Neworder> {
     //print(responseData);
     /*
     */
-
     setState(() {
       _isdata = false;
     });
@@ -116,8 +168,10 @@ class _NeworderState extends State<Neworder> {
                                 Navigator.push(
                                     context,
                                     SlideLeftRoute(
-                                        page:
-                                            NewOrder(weightData: weightData)));
+                                        page: NewOrder(
+                                            weightData: weightData,
+                                            itemData: itemData,
+                                            rate: rate)));
                               },
                               child: Container(
                                 margin: EdgeInsets.only(
@@ -208,8 +262,13 @@ class _NeworderState extends State<Neworder> {
                             //Favrouite store
                             InkWell(
                               onTap: () {
-                                Navigator.push(context,
-                                    SlideLeftRoute(page: NewOrderStore()));
+                                Navigator.push(
+                                    context,
+                                    SlideLeftRoute(
+                                        page: NewOrderStore(
+                                            weightData: weightData,
+                                            itemData: itemData,
+                                            rate: rate)));
                               },
                               child: Container(
                                 margin: EdgeInsets.only(
@@ -384,8 +443,12 @@ class _NeworderState extends State<Neworder> {
                             //Buy from store
                             InkWell(
                               onTap: () {
-                                Navigator.push(context,
-                                    SlideLeftRoute(page: FavoriteStore()));
+                                Navigator.push(
+                                    context,
+                                    SlideLeftRoute(
+                                        page: FavoriteStore(
+                                            weightData: weightData,
+                                            itemData: itemData)));
                               },
                               child: Container(
                                 margin: EdgeInsets.only(

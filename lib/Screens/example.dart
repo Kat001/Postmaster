@@ -5,6 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Components/sizes_helpers.dart';
 
 class Example extends StatefulWidget {
   @override
@@ -124,7 +127,7 @@ class _ExampleState extends State<Example> {
                       setState(() {
                         isApply = true;
                         CustomDialog("Success",
-                            "You saved $responseData['amount']", "Cancel");
+                            "You saved $responseData['amount']", "Cancel", 3);
                       });
                     }
                   },
@@ -168,6 +171,26 @@ class _ExampleState extends State<Example> {
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 spacing: 20,
                 children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(
+                        left: displayWidth(context) * 0.02,
+                        top: displayHeight(context) * 0.01),
+                    height: displayHeight(context) * 0.05,
+                    width: displayWidth(context) * 0.3,
+                    child: Text(
+                      "Up to 100 kg ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'RobotoBold',
+                        color: Colors.white,
+                        fontSize: displayWidth(context) * 0.05,
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50.0),
+                        color: Color(0xFF27DEBF)),
+                  ),
                   item("bu"),
                   item("butvhgfdwqeweeawreawreawreawrerere"),
                   item("button3"),

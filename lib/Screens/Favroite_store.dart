@@ -15,6 +15,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
 class FavoriteStore extends StatefulWidget {
+  FavoriteStore({
+    Key key,
+    this.weightData,
+    this.itemData,
+  }) : super(key: key);
+
+  final Future<List<dynamic>> weightData;
+  final Future<List<dynamic>> itemData;
   @override
   _FavoriteStoreState createState() => _FavoriteStoreState();
 }

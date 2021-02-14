@@ -145,7 +145,7 @@ class _CreateOrderState extends State<CreateOrder> {
                     showDialog(
                       context: context,
                       builder: (context) => CustomDialog(
-                          "Success", "Order Placed Successfully", "Okay"),
+                          "Success", "Order Placed Successfully", "Okay", 1),
                     );
                   },
                   minWidth: 250.0,

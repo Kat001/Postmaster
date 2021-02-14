@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/example.dart';
 import 'package:postmaster/models/user_data.dart';
 import 'package:postmaster/Components/toast_utils.dart';
-import 'package:postmaster/Components/toast_utils.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Screens/Language.dart';
@@ -10,11 +10,10 @@ import 'package:postmaster/Screens/Personal_details.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Screens/Refer.dart';
 import 'package:postmaster/Screens/Region.dart';
-import 'package:postmaster/Screens/privacy.dart';
-import 'package:postmaster/Screens/faq.dart';
-import 'package:postmaster/Screens/terms.dart';
+
 import 'package:postmaster/Screens/Mysubscription.dart';
 import 'package:postmaster/Screens/Topup.dart';
+import 'package:postmaster/Screens/example.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -379,7 +378,12 @@ class _ProfileState extends State<Profile> {
               )),
           InkWell(
             onTap: () {
-              Navigator.push(context, SlideLeftRoute(page: Example()));
+              Navigator.push(context, SlideLeftRoute(page: AppVersion()));
+              showDialog(
+                context: context,
+                builder: (context) => CustomDialog(
+                    "Success", "Password Created Successfully", "Okay", 1),
+              );
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 20),

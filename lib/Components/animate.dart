@@ -56,9 +56,10 @@ class SlideRightRoute extends PageRouteBuilder {
 
 class CustomDialog extends StatelessWidget {
   final String title, description, buttontext;
+  final int screnpop;
   //final Image image;
 
-  CustomDialog(this.title, this.description, this.buttontext);
+  CustomDialog(this.title, this.description, this.buttontext, this.screnpop);
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -112,8 +113,21 @@ class CustomDialog extends StatelessWidget {
                   child: MaterialButton(
                     // color: Color(0xFF27DEBF),
                     onPressed: () {
-                      Navigator.push(
-                          context, SlideRightRoute(page: Homepage()));
+                      if (screnpop == 1) {
+                        Navigator.push(
+                            context, SlideRightRoute(page: Homepage()));
+                      }
+                      if (screnpop == 2) {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      }
+                      if (screnpop == 3) {
+                        Navigator.pop(context);
+                      }
+                      if (screnpop == 4) {}
+
+                      /*Navigator.push(
+                          context, SlideRightRoute(page: Homepage()));*/
                       // Navigator.push(context,
                       //     MaterialPageRoute(builder: (context) {
                       //   return Dashboard();
@@ -124,7 +138,7 @@ class CustomDialog extends StatelessWidget {
                     //     borderRadius: BorderRadius.circular(8.0)),
                     height: 45.0,
                     child: Text(
-                      "Confirm",
+                      "Exit",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.0,
@@ -215,8 +229,8 @@ class CustomDialogError extends StatelessWidget {
                   child: MaterialButton(
                     // color: Color(0xFF27DEBF),
                     onPressed: () {
-                      Navigator.push(
-                          context, SlideRightRoute(page: Homepage()));
+                      Navigator.pop(context);
+
                       // Navigator.push(context,
                       //     MaterialPageRoute(builder: (context) {
                       //   return Dashboard();
@@ -227,7 +241,7 @@ class CustomDialogError extends StatelessWidget {
                     //     borderRadius: BorderRadius.circular(8.0)),
                     height: 45.0,
                     child: Text(
-                      "Retry",
+                      "Exit",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22.0,

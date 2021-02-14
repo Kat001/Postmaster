@@ -78,8 +78,8 @@ class _SetpasswordState extends State<Setpassword> {
                     onPressed: () {
                       showDialog(
                         context: context,
-                        builder: (context) => CustomDialog(
-                            "Success", "Password Created Successfully", "Okay"),
+                        builder: (context) => CustomDialog("Success",
+                            "Password Created Successfully", "Okay", 1),
                       );
                     },
                     minWidth: 250.0,

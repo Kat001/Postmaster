@@ -50,7 +50,7 @@ class _NeworderState extends State<Neworder> {
     );
     print(res.body);
     var responseData = json.decode(res.body);
-    print(responseData['message'][0]['rate']);
+    print(responseData['message'][0]['gst']);
 
     /*if (responseData["status"] == 200) {
       String price1 = responseData["message"][0]["rate"];
@@ -60,7 +60,7 @@ class _NeworderState extends State<Neworder> {
       //price + parcelValue;
 
     }*/
-    return json.decode(res.body)['message'][0]['rate'];
+    return json.decode(res.body)['message'][0]['gst'];
   }
 
   Future<List<dynamic>> fetchInitialData() async {
@@ -448,7 +448,8 @@ class _NeworderState extends State<Neworder> {
                                     SlideLeftRoute(
                                         page: FavoriteStore(
                                             weightData: weightData,
-                                            itemData: itemData)));
+                                            itemData: itemData,
+                                            rate: rate)));
                               },
                               child: Container(
                                 margin: EdgeInsets.only(

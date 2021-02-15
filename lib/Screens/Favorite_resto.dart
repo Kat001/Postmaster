@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/models/restaurant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -10,23 +11,27 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:postmaster/Components/animate.dart';
 
-class NewOrderStore extends StatefulWidget {
-  NewOrderStore({
+class FavoriteResto extends StatefulWidget {
+  FavoriteResto({
     Key key,
     this.weightData,
     this.itemData,
     this.rate,
+    this.restoName,
+    this.obj,
   }) : super(key: key);
 
   final Future<List<dynamic>> weightData;
   final Future<List<dynamic>> itemData;
   final Future<String> rate;
+  final String restoName;
+  final Restaurant obj;
 
   @override
-  _NewOrderStoreState createState() => _NewOrderStoreState();
+  _FavoriteRestoState createState() => _FavoriteRestoState();
 }
 
-class _NewOrderStoreState extends State<NewOrderStore> {
+class _FavoriteRestoState extends State<FavoriteResto> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +55,9 @@ class _NewOrderStoreState extends State<NewOrderStore> {
       body: MyCustomForm(
           weightData: widget.weightData,
           itemData: widget.itemData,
-          rate: widget.rate),
+          rate: widget.rate,
+          restoName: widget.restoName,
+          obj: widget.obj),
     );
   }
 }
@@ -62,11 +69,15 @@ class MyCustomForm extends StatefulWidget {
     this.weightData,
     this.itemData,
     this.rate,
+    this.restoName,
+    this.obj,
   }) : super(key: key);
 
   final Future<List<dynamic>> weightData;
   final Future<List<dynamic>> itemData;
   final Future<String> rate;
+  final String restoName;
+  final Restaurant obj;
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
@@ -95,12 +106,15 @@ class MyCustomFormState extends State<MyCustomForm> {
   int _promoCodePayment = 0;
   double ratePercent;
 
-  final TextEditingController _shopNameController = TextEditingController();
+  final TextEditingController _hotelNameController = TextEditingController();
   final TextEditingController _pickupAddressController =
       TextEditingController();
-  final TextEditingController _costOfItemController = TextEditingController();
-  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _pickupPhonenumberController =
+      TextEditingController();
+  final TextEditingController _pickupCommentController =
+      TextEditingController();
 
+  final TextEditingController _dropNameController = TextEditingController();
   final TextEditingController _dropAddressController = TextEditingController();
   final TextEditingController _dropPhoneNumberController =
       TextEditingController();
@@ -123,7 +137,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   @override
   void initState() {
     super.initState();
-
+    _hotelNameController.text = widget.obj.name;
+    _pickupAddressController.text = widget.obj.address;
+    _pickupPhonenumberController.text = widget.obj.contact;
     _parcelValueController.addListener(_printLatestValue);
 
     widget.rate.then((data) {
@@ -157,7 +173,7 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   void _changeWeightPrice(String weight, String price) {
-    _weightController.text = weight + price;
+    _weightController.text = weight;
     print(price);
 
     setState(() {
@@ -343,14 +359,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            controller: _shopNameController,
+                            readOnly: true,
+                            controller: _hotelNameController,
                             decoration: InputDecoration(
-                              labelText: "Shop name",
+                              hintText: "Hotel name",
                             ),
                             key: PageStorageKey("tests2"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the shop name';
+                                return 'Please enter hotel name';
                               }
                               return null;
                             },
@@ -362,14 +379,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
+                            readOnly: true,
                             controller: _pickupAddressController,
                             decoration: InputDecoration(
-                              labelText: "Address",
+                              hintText: "Hotel address",
                             ),
                             key: PageStorageKey("tests3"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the address';
+                                return 'Please enter the hotel address';
                               }
                               return null;
                             },
@@ -381,18 +399,15 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            controller: _costOfItemController,
+                            readOnly: true,
+                            controller: _pickupPhonenumberController,
                             decoration: InputDecoration(
-                              labelText: "Cost of item",
+                              hintText: "Contact number",
                             ),
                             key: PageStorageKey("tests4"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the cost of item';
+                                return 'Please enter the contact number';
                               }
                               return null;
                             },
@@ -404,14 +419,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05,
                               top: displayHeight(context) * 0.01),
                           child: TextFormField(
-                            controller: _itemNameController,
+                            controller: _pickupCommentController,
                             decoration: InputDecoration(
-                              labelText: "Item name",
+                              hintText: "Comments",
                             ),
                             key: PageStorageKey("tests5"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter item name';
+                                return 'Please enter some comments';
                               }
                               return null;
                             },
@@ -451,14 +466,33 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            controller: _dropAddressController,
+                            controller: _dropNameController,
                             decoration: InputDecoration(
-                              labelText: "Address",
+                              hintText: "Name",
                             ),
                             key: PageStorageKey("tests7"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter drop address';
+                                return 'Please enter the name';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              top: displayHeight(context) * 0.01,
+                              left: displayWidth(context) * 0.15,
+                              right: displayWidth(context) * 0.05),
+                          child: TextFormField(
+                            controller: _dropAddressController,
+                            decoration: InputDecoration(
+                              hintText: "Address",
+                            ),
+                            key: PageStorageKey("tests8"),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter the name';
                               }
                               return null;
                             },
@@ -471,14 +505,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
                             controller: _dropPhoneNumberController,
-                            maxLength: 10,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
                             decoration: InputDecoration(
-                                labelText: "Phone Number", prefixText: "+91 "),
-                            key: PageStorageKey("tests8"),
+                              hintText: "Contact Number",
+                            ),
+                            key: PageStorageKey("tests9"),
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Please enter phone number';
@@ -493,63 +523,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            readOnly: true,
-                            onTap: () {
-                              showDatePicker(
-                                      context: context,
-                                      initialDate: _dateTime == null
-                                          ? DateTime.now()
-                                          : _dateTime,
-                                      firstDate: DateTime(2001),
-                                      lastDate: DateTime(2022))
-                                  .then((date) {
-                                setState(() {
-                                  //_dateTime = date;
-                                  if (date != null) {
-                                    _deliveryDateController.text =
-                                        date.toString().substring(0, 10);
-                                  }
-                                });
-                              });
-                            },
-                            controller: _deliveryDateController,
+                            controller: _dropPhoneNumberController,
                             decoration: InputDecoration(
-                              labelText: "Delivery date",
+                              hintText: "Comments",
                             ),
-                            key: PageStorageKey("tests9"),
+                            key: PageStorageKey("tests10"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please select delivery date';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05,
-                              top: displayHeight(context) * 0.01),
-                          child: TextFormField(
-                            readOnly: true,
-                            onTap: () async {
-                              TimeOfDay picked = await showTimePicker(
-                                  context: context, initialTime: _time);
-                              if (picked != null) {
-                                setState(() {
-                                  _deliveryTimeController.text =
-                                      picked.toString().substring(10, 15);
-                                });
-                              }
-                            },
-                            controller: _deliveryTimeController,
-                            decoration: InputDecoration(
-                              labelText: "Delivery time",
-                            ),
-                            key: PageStorageKey("tests0"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please select delivery time';
+                                return 'Please enter comments';
                               }
                               return null;
                             },
@@ -590,7 +571,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Address",
+                              hintText: "Address",
                             ),
                             key: PageStorageKey("tests12"),
                             validator: (value) {
@@ -608,7 +589,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Phone Number",
+                              hintText: "Phone Number",
                             ),
                             key: PageStorageKey("tests13"),
                             validator: (value) {
@@ -626,7 +607,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Arrival",
+                              hintText: "Arrival",
                             ),
                             key: PageStorageKey("tests14"),
                             validator: (value) {
@@ -644,7 +625,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               top: displayHeight(context) * 0.01),
                           child: TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Delivery time",
+                              hintText: "Delivery time",
                             ),
                             key: PageStorageKey("tests15"),
                             validator: (value) {
@@ -656,7 +637,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                           ),
                         ),
                       ]),*/
-                  Padding(
+                  /*Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
                     child: TextFormField(
@@ -679,17 +660,17 @@ class MyCustomFormState extends State<MyCustomForm> {
                       ),
                     ),
                   ),
-                  itemWidget(),
+                  itemWidget(),*/
 
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
                     child: TextFormField(
+                      controller: _parcelValueController,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         WhitelistingTextInputFormatter.digitsOnly
                       ],
-                      controller: _parcelValueController,
 
                       /*controller: emailController,*/
                       validator: (String value) {
@@ -990,33 +971,40 @@ class MyCustomFormState extends State<MyCustomForm> {
     String token = prefs.getString("token");
 
     Map data = {
-      "weight": _weightController.text,
+      "weight": "UP TO 5",
       "pickup_point": [
         {
-          "shop_name": _shopNameController.text,
-          "item_name": _itemNameController.text,
-          "address": _pickupAddressController.text,
-          "cost_of_item": _costOfItemController.text,
+          "restaurant_name": "Restaurant ABC",
+          "address": "aaa",
+          "phn_number": "12345678",
+          "comment": "jjjjjjjjjjjjjaaaaaaaaa",
         }
       ],
       "delivery_point": [
         {
-          "address": _dropAddressController.text,
-          "phn_number": _dropPhoneNumberController.text,
-          "delivery_date": _deliveryDateController.text,
-          "delivery_time": _deliveryTimeController.text,
+          "address": "aaa",
+          "phn_number": "12345678",
+          "delivery_date": "07th Feb 2021",
+          "delivery_time": "12:12"
+        },
+        {
+          "address": "aaa",
+          "phn_number": "123456789",
+          "delivery_date": "09th Feb 2021",
+          "delivery_time": "10:12"
         }
       ],
-      "promo_code": _promoCodeController.text,
+      "is_notified": 0,
+      "promo_code": "TTTT",
       "comment": "jjjjjjjjjjjjjaaaaaaaaa",
-      "parcel_value": _parcelValueController.text,
+      "parcel_value": "15.00",
       "tax_amount": 0.80,
-      "order_amount": _totalPayment.round().toString()
+      "order_amount": 1000
     };
     var body = json.encode(data);
 
     http.Response res = await http.post(
-        'https://www.mitrahtechnology.in/apis/mitrah-api/buy_from_store.php',
+        'https://www.mitrahtechnology.in/apis/mitrah-api/buy_from_restaurant.php',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Authorization": token,

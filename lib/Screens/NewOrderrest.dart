@@ -168,7 +168,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   void _changeWeightPrice(String weight, String price) {
-    _weightController.text = weight;
+    setState(() {
+      _weightController.text = weight;
+    });
     print(price);
 
     setState(() {
@@ -190,37 +192,40 @@ class MyCustomFormState extends State<MyCustomForm> {
                   padding: EdgeInsets.all(8),
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            String weight = snapshot.data[index]["weight"];
-                            String price = snapshot.data[index]["price"];
-                            _changeWeightPrice(weight, price);
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(
-                                left: displayWidth(context) * 0.02,
-                                top: displayHeight(context) * 0.01),
-                            height: displayHeight(context) * 0.05,
-                            width: displayWidth(context) * 0.3,
-                            child: Text(
-                              snapshot.data[index]["weight"],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'RobotoBold',
-                                color: Colors.white,
-                                fontSize: displayWidth(context) * 0.05,
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50.0),
-                                color: Color(0xFF27DEBF)),
-                          ),
-                        )
-                      ],
-                    );
+                    return index == 0
+                        ? Container()
+                        : Row(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  String weight =
+                                      snapshot.data[index]["weight"];
+                                  String price = snapshot.data[index]["price"];
+                                  _changeWeightPrice(weight, price);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(
+                                      left: displayWidth(context) * 0.02,
+                                      top: displayHeight(context) * 0.01),
+                                  height: displayHeight(context) * 0.05,
+                                  width: displayWidth(context) * 0.3,
+                                  child: Text(
+                                    snapshot.data[index]["weight"],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'RobotoBold',
+                                      color: Colors.white,
+                                      fontSize: displayWidth(context) * 0.05,
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      color: Color(0xFF27DEBF)),
+                                ),
+                              )
+                            ],
+                          );
                   }),
             );
           } else {
@@ -242,35 +247,38 @@ class MyCustomFormState extends State<MyCustomForm> {
                   padding: EdgeInsets.all(8),
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            _itemController.text = snapshot.data[index]["item"];
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(
-                                left: displayWidth(context) * 0.02,
-                                top: displayHeight(context) * 0.01),
-                            height: displayHeight(context) * 0.05,
-                            width: displayWidth(context) * 0.3,
-                            child: Text(
-                              snapshot.data[index]["item"],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'RobotoBold',
-                                color: Colors.white,
-                                fontSize: displayWidth(context) * 0.05,
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50.0),
-                                color: Color(0xFF27DEBF)),
-                          ),
-                        )
-                      ],
-                    );
+                    return index == 0
+                        ? Container()
+                        : Row(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  _itemController.text =
+                                      snapshot.data[index]["item"];
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(
+                                      left: displayWidth(context) * 0.02,
+                                      top: displayHeight(context) * 0.01),
+                                  height: displayHeight(context) * 0.05,
+                                  width: displayWidth(context) * 0.3,
+                                  child: Text(
+                                    snapshot.data[index]["item"],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'RobotoBold',
+                                      color: Colors.white,
+                                      fontSize: displayWidth(context) * 0.05,
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      color: Color(0xFF27DEBF)),
+                                ),
+                              )
+                            ],
+                          );
                   }),
             );
           } else {
@@ -748,6 +756,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
                     child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly
+                      ],
                       controller: _parcelValueController,
 
                       /*controller: emailController,*/
@@ -1084,7 +1096,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       "is_notified": isSwitched ? 1 : 0,
       "is_accept": 0,
       "tax_amount": 12.80,
-      "order_amount": _totalPayment.round(),
+      "order_amount": _totalPayment,
     };
     var body = json.encode(data);
 

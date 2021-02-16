@@ -11,7 +11,7 @@ import 'package:postmaster/Screens/New_Orders.dart';
 import 'package:postmaster/models/restaurant.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Screens/Info.dart';
-import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:postmaster/Components/customicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'dart:async';
@@ -220,7 +220,17 @@ class _FavoriteStoreState extends State<FavoriteStore> {
           ),
         ),
       ),
-      body: _isdata ? Center(child: CircularProgressIndicator()) : restaurant(),
+      body: _isdata
+          ? Center(child: CircularProgressIndicator())
+          : restaurant(), /*Column(
+        children: [
+          Container(
+            width: 400.0,
+            height: 300.0,
+            child: Image.asset('assets/images/mapp.jpg'),
+          ),
+        ],
+      ),*/ //_isdata ? Center(child: CircularProgressIndicator()) : restaurant(),
     );
   }
 }

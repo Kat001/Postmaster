@@ -104,6 +104,7 @@ flutter:
     - assets/images/tag.svg
     - assets/images/add.svg
     - assets/images/refer.png
+    - assets/images/mapp.png
     - assets/images/giftbox.svg
     - assets/images/box.svg
     - assets/images/error.gif
@@ -128,8 +129,9 @@ flutter:
     - assets/images/mobile-payment.svg
     - assets/images/error.png
     - assets/images/store.svg
+    - assets/images/point.svg
     - assets/images/ic_done.png
-    - assets/images/maps.png
+    - assets/images/mapp.jpg
     - assets/images/wrong.gif
 
 

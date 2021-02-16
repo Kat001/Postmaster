@@ -132,26 +132,30 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            info,
-                            color: Colors.white,
+                        Expanded(
+                          child: Container(
+                            width: displayWidth(context) * 0.08,
+                            height: displayHeight(context) * 0.03,
+                            margin: EdgeInsets.only(
+                              bottom: displayHeight(context) * 0.005,
+                            ),
+                            child: SvgPicture.asset(
+                              info,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: displayHeight(context) * 0.005,
-                          ),
-                          child: Text(
-                            "Info",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: displayHeight(context) * 0.015,
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              top: displayHeight(context) * 0.005,
+                            ),
+                            child: Text(
+                              "Info",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: displayHeight(context) * 0.015,
+                              ),
                             ),
                           ),
                         )
@@ -172,26 +176,30 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            add,
-                            color: Colors.white,
+                        Expanded(
+                          child: Container(
+                            width: displayWidth(context) * 0.08,
+                            height: displayHeight(context) * 0.03,
+                            margin: EdgeInsets.only(
+                              bottom: displayHeight(context) * 0.005,
+                            ),
+                            child: SvgPicture.asset(
+                              add,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: displayHeight(context) * 0.005,
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              top: displayHeight(context) * 0.005,
+                            ),
+                            child: Text("New Orders",
+                                style: TextStyle(
+                                  fontSize: displayHeight(context) * 0.015,
+                                  color: Colors.white,
+                                )),
                           ),
-                          child: Text("New Orders",
-                              style: TextStyle(
-                                fontSize: displayHeight(context) * 0.015,
-                                color: Colors.white,
-                              )),
                         )
                       ],
                     ),
@@ -215,26 +223,30 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            chaticon,
-                            color: Colors.white,
+                        Expanded(
+                          child: Container(
+                            width: displayWidth(context) * 0.08,
+                            height: displayHeight(context) * 0.03,
+                            margin: EdgeInsets.only(
+                              bottom: displayHeight(context) * 0.005,
+                            ),
+                            child: SvgPicture.asset(
+                              chaticon,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                            top: displayHeight(context) * 0.005,
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              top: displayHeight(context) * 0.005,
+                            ),
+                            child: Text("Chat",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: displayHeight(context) * 0.015,
+                                )),
                           ),
-                          child: Text("Chat",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: displayHeight(context) * 0.015,
-                              )),
                         )
                       ],
                     ),
@@ -255,28 +267,32 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: displayWidth(context) * 0.08,
-                          height: displayHeight(context) * 0.03,
-                          margin: EdgeInsets.only(
-                            bottom: displayHeight(context) * 0.005,
-                          ),
-                          child: SvgPicture.asset(
-                            profile_icon,
-                            color: Colors.white,
+                        Expanded(
+                          child: Container(
+                            width: displayWidth(context) * 0.08,
+                            height: displayHeight(context) * 0.03,
+                            margin: EdgeInsets.only(
+                              bottom: displayHeight(context) * 0.005,
+                            ),
+                            child: SvgPicture.asset(
+                              profile_icon,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                        Container(
-                            margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.005,
-                            ),
-                            child: Text(
-                              'Profile',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: displayHeight(context) * 0.015,
+                        Expanded(
+                          child: Container(
+                              margin: EdgeInsets.only(
+                                top: displayHeight(context) * 0.005,
                               ),
-                            ))
+                              child: Text(
+                                'Profile',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: displayHeight(context) * 0.015,
+                                ),
+                              )),
+                        )
                       ],
                     ),
                   ),

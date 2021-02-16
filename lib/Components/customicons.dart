@@ -33,4 +33,6 @@ const subscription_pic = 'assets/images/subscribe.svg';
 const error = 'assets/images/error.svg';
 const wallet = 'assets/images/wallet.svg';
 const money = 'assets/images/money.svg';
+const point = 'assets/images/point.svg';
+const mapimage = 'assets/images/mapp.png';
 const mobilepayment = 'assets/images/mobile-payment.svg';

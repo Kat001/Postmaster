@@ -101,9 +101,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   bool isApply = true;
   double _totalPayment = 0;
 
-  int _weightPayment = 0;
+  double _weightPayment = 0;
   double _parcelValuePayment = 0;
-  int _promoCodePayment = 0;
+  double _promoCodePayment = 0;
   double ratePercent;
 
   final TextEditingController _hotelNameController = TextEditingController();
@@ -116,6 +116,7 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   final TextEditingController _dropNameController = TextEditingController();
   final TextEditingController _dropAddressController = TextEditingController();
+  final TextEditingController _dropCommentController = TextEditingController();
   final TextEditingController _dropPhoneNumberController =
       TextEditingController();
   final TextEditingController _deliveryDateController = TextEditingController();
@@ -177,7 +178,7 @@ class MyCustomFormState extends State<MyCustomForm> {
     print(price);
 
     setState(() {
-      _weightPayment = int.parse(price);
+      _weightPayment = double.parse(price);
       _totalPayment = _weightPayment + _parcelValuePayment - _promoCodePayment;
     });
   }
@@ -505,6 +506,11 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
                             controller: _dropPhoneNumberController,
+                            maxLength: 10,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter.digitsOnly
+                            ],
                             decoration: InputDecoration(
                               hintText: "Contact Number",
                             ),
@@ -523,7 +529,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            controller: _dropPhoneNumberController,
+                            controller: _dropCommentController,
                             decoration: InputDecoration(
                               hintText: "Comments",
                             ),
@@ -643,7 +649,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _itemController,
                       readOnly: true,
-                      /*controller: emailController,*/
+                      controller: emailController,
                       validator: (String value) {
                         if (value.isEmpty) {
                           return "Please select the item";
@@ -665,28 +671,90 @@ class MyCustomFormState extends State<MyCustomForm> {
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
-                    child: TextFormField(
-                      controller: _parcelValueController,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ],
+                    child: Stack(
+                      alignment: Alignment.centerRight,
+                      children: [
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            WhitelistingTextInputFormatter.digitsOnly
+                          ],
+                          controller: _parcelValueController,
 
-                      /*controller: emailController,*/
-                      validator: (String value) {
-                        if (value.isEmpty) {
-                          return "Please enter parcel value";
-                        }
-                      },
-                      //initialValue: "data(1)",
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(bottom: 0),
-                        labelText: 'Parcel value',
-                      ),
-                      style: TextStyle(
-                        fontFamily: 'roboto',
-                        fontSize: 18,
-                      ),
+                          /*controller: emailController,*/
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return "Please enter the parcel value.";
+                            }
+                          },
+                          //initialValue: "data(1)",
+                          style: TextStyle(
+                            fontFamily: 'roboto',
+                            fontSize: 18,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.only(bottom: 0),
+                            labelText: 'Parcel value',
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: Stack(
+                                        overflow: Overflow.visible,
+                                        children: <Widget>[
+                                          Positioned(
+                                            right: -40.0,
+                                            top: -40.0,
+                                            child: InkResponse(
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: CircleAvatar(
+                                                child: Icon(Icons.close),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                          Form(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "We will compensate the value of los items with in three working days according to the rules. Maximum compensation - ₹50000",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Robotobold',
+                                                      fontSize: 17,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    "You may set your parcel value up Rs 50000/- To secure your order," +
+                                                        ratePercent.toString() +
+                                                        "% of declared Parcel Value plus GST will be added to the delivery cost.In casr of loss or damage,the declared parcel value of the order will be rembursed.",
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                      fontSize: 17,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            },
+                            icon: Icon(Icons.info_outline)),
+                      ],
                     ),
                   ),
                   Padding(
@@ -729,7 +797,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                               if (responseData['status'] == 200) {
                                 setState(() {
                                   isApply = true;
-                                  var amount = int.parse(
+                                  var amount = double.parse(
                                       responseData["message"][0]["amount"]);
                                   _promoCodePayment = amount;
                                   _totalPayment = _weightPayment +
@@ -971,21 +1039,21 @@ class MyCustomFormState extends State<MyCustomForm> {
     String token = prefs.getString("token");
 
     Map data = {
-      "weight": "UP TO 5",
+      "weight": _weightController.text,
       "pickup_point": [
         {
-          "restaurant_name": "Restaurant ABC",
-          "address": "aaa",
-          "phn_number": "12345678",
-          "comment": "jjjjjjjjjjjjjaaaaaaaaa",
+          "restaurant_name": _hotelNameController.text,
+          "address": _pickupAddressController.text,
+          "phn_number": _pickupPhonenumberController.text,
+          "comment": _pickupCommentController.text,
         }
       ],
       "delivery_point": [
         {
-          "address": "aaa",
-          "phn_number": "12345678",
-          "delivery_date": "07th Feb 2021",
-          "delivery_time": "12:12"
+          "address": _dropAddressController.text,
+          "phn_number": _dropPhoneNumberController.text,
+          "delivery_date": _deliveryDateController.text,
+          "delivery_time": _deliveryTimeController.text
         },
         {
           "address": "aaa",
@@ -994,12 +1062,12 @@ class MyCustomFormState extends State<MyCustomForm> {
           "delivery_time": "10:12"
         }
       ],
-      "is_notified": 0,
-      "promo_code": "TTTT",
+      "is_notified": isSwitched ? 1 : 0,
+      "promo_code": _promoCodeController.text,
       "comment": "jjjjjjjjjjjjjaaaaaaaaa",
-      "parcel_value": "15.00",
-      "tax_amount": 0.80,
-      "order_amount": 1000
+      "parcel_value": _parcelValueController.text,
+      "tax_amount": ratePercent,
+      "order_amount": _totalPayment
     };
     var body = json.encode(data);
 

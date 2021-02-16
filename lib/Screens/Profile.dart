@@ -94,6 +94,35 @@ class _ProfileState extends State<Profile> {
     }*/
     return res;
   */
+  Widget rowWidget(String str1, String str2) {
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            str1,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 17,
+            ),
+          ),
+        ),
+        //SizedBox(width: 40.0),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(left: 85.0),
+            child: Text(
+              str2,
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 17,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,102 +150,71 @@ class _ProfileState extends State<Profile> {
                   fontFamily: "Roboto", fontSize: 18, color: Color(0xFF465A64)),
             ),
           ),
-          Container(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 20, left: 15),
-                  child: Row(
+          Column(
+            children: [
+              new Container(
+                margin: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFF0F0F0),
+                        blurRadius: 5.0,
+                        spreadRadius: 5.0,
+                      )
+                    ]),
+                child: Container(
+                  margin: EdgeInsets.all(8.0),
+                  child: Column(
+                    //mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Current Balance",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 17,
+                      rowWidget("Current Balance:", "₹0"),
+                      SizedBox(height: 12.0),
+                      rowWidget("Available Balance:", "₹0"),
+                      SizedBox(height: 12.0),
+                      Center(
+                        child: Container(
+                          height: displayHeight(context) * 0.05,
+                          // padding: const EdgeInsets.only(top: ),
+                          // margin: new EdgeInsets.only(
+                          //   left: 60,
+                          //   right: 60,
+                          //   top: 18,
+                          // ),
+                          margin: EdgeInsets.all(displayHeight(context) * 0.01),
+                          child: MaterialButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context, SlideLeftRoute(page: Topup()));
+                            },
+                            minWidth: 250.0,
+                            height: 10,
+                            child: Text(
+                              "Top Up Balance",
+                              style: TextStyle(
+                                fontFamily: 'RobotoBold',
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15.0)),
+                              gradient: RadialGradient(radius: 15, colors: [
+                                Color(0xFF27DEBF),
+                                Color(0xFF465A64)
+                              ])),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(left: 130, right: 10),
-                        child: Text(
-                          "₹0",
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 20, left: 15),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Available Balance",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 17,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 118, right: 10),
-                        child: Text(
-                          "₹0",
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontSize: 18,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  height: displayHeight(context) * 0.05,
-                  // padding: const EdgeInsets.only(top: ),
-                  // margin: new EdgeInsets.only(
-                  //   left: 60,
-                  //   right: 60,
-                  //   top: 18,
-                  // ),
-                  margin: EdgeInsets.all(displayHeight(context) * 0.02),
-                  child: MaterialButton(
-                    onPressed: () {
-                      Navigator.push(context, SlideLeftRoute(page: Topup()));
-                    },
-                    minWidth: 250.0,
-                    height: 10,
-                    child: Text(
-                      "Top Up Balance",
-                      style: TextStyle(
-                        fontFamily: 'RobotoBold',
-                        fontSize: 18,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      gradient: RadialGradient(
-                          radius: 15,
-                          colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
-                ),
-              ],
-            ),
-            margin: EdgeInsets.only(top: 3.0.h, left: 5.0.w, right: 5.0.w),
-            width: 150.0.w,
-            height: 20.0.h,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0xFFF0F0F0),
-                    blurRadius: 5.0,
-                    spreadRadius: 5.0,
-                  ),
-                ]),
+              ),
+            ],
           ),
           Container(
             margin: EdgeInsets.only(top: 40, left: 20),

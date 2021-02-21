@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 
-import 'package:postmaster/Screens/Topup.dart';
-import 'package:sizer/sizer.dart';
-import 'package:postmaster/Components/animate.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
-import 'package:postmaster/Components/animate.dart';
-
-import 'package:postmaster/Screens/Forgot_pass.dart';
-//import 'package:http/http.dart';
-import 'package:email_validator/email_validator.dart';
-import 'package:http/http.dart' as http;
-//import 'package:flutter/services.dart';
 
 class Mysubscription extends StatefulWidget {
   @override
@@ -20,6 +15,31 @@ class Mysubscription extends StatefulWidget {
 }
 
 class _MysubscriptionState extends State<Mysubscription> {
+  Future<dynamic> activeOrders() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res = await http.get(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/active_order.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token
+      },
+    );
+    //print(res.body);
+    var responseData = json.decode(res.body);
+    print(responseData['message']);
+
+    /*if (responseData["status"] == 200) {
+      String price1 = responseData["message"][0]["rate"];
+      String price = price1.substring(0, price1.length - 1);
+      double fPrice = double.parse(price);
+
+      //price + parcelValue;
+
+    }*/
+    return json.decode(res.body)['message'];
+  }
+
   Widget rowWidget(String str1, String str2) {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.start,

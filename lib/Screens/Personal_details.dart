@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:postmaster/Components/customicons.dart';
+
 import 'package:postmaster/Components/sizes_helpers.dart';
-import 'package:postmaster/Screens/Login.dart';
-import 'package:postmaster/Screens/Refer.dart';
-import 'package:postmaster/Screens/privacy.dart';
-import 'package:postmaster/Screens/faq.dart';
-import 'package:postmaster/Screens/terms.dart';
-import 'package:postmaster/Screens/Topup.dart';
-import 'package:postmaster/Screens/Setnewpassword.dart';
-import 'package:sizer/sizer.dart';
-import 'package:postmaster/Components/animate.dart';
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:postmaster/Screens/Setnewpassword.dart';
+
+import 'package:postmaster/Components/animate.dart';
 
 class PersonalDetails extends StatefulWidget {
   @override
@@ -39,7 +37,7 @@ class _PersonalDetailsState extends State<PersonalDetails> {
       _firstNameController.text = prefs.getString("first_name");
       _lastNameController.text = prefs.getString("last_name");
       _emailController.text = prefs.getString("email");
-      _phoneController.text = "+91 " + prefs.getString("phn_number");
+      _phoneController.text = prefs.getString("phn_number");
     });
   }
 
@@ -159,7 +157,9 @@ class _PersonalDetailsState extends State<PersonalDetails> {
               margin: new EdgeInsets.only(top: 40),
               child: MaterialButton(
                 // color: Color(0xFF27DEBF),
-                onPressed: () {},
+                onPressed: () {
+                  updateUser();
+                },
                 minWidth: 250.0,
                 // shape: RoundedRectangleBorder(
                 //     borderRadius: BorderRadius.circular(8.0)),
@@ -214,5 +214,53 @@ class _PersonalDetailsState extends State<PersonalDetails> {
         ]),
       ),
     );
+  }
+
+  Future<http.Response> updateUser() async {
+    Map data = {
+      "first_name": _firstNameController.text,
+      "last_name": _lastNameController.text,
+      "email": _emailController.text,
+      "phn_number": _phoneController.text,
+    };
+    var body = json.encode(data);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String token = prefs.getString("token");
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/update_personal_details.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': token,
+      },
+      body: body,
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      prefs.setString("first_name", _firstNameController.text);
+      prefs.setString("last_name", _lastNameController.text);
+      prefs.setString("email", _emailController.text);
+      prefs.setString("phn_number", _phoneController.text);
+      showDialog(
+        context: context,
+        builder: (context) =>
+            CustomDialog("Success", responseData['message'], "Okay", 2),
+      );
+      //Navigator.push(context, SlideLeftRoute(page: Profile()));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", "User already Exists", "Cancel"));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+    return res;
   }
 }

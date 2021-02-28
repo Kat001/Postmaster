@@ -26,9 +26,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setdata();
   }
 
-  void setdata() {
-    _phnController.text = "+91 ";
-  }
+  void setdata() {}
 
   var _formKey1 = GlobalKey<FormState>();
   @override
@@ -88,33 +86,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 key: _formKey1,
                 child: TextFormField(
                   controller: _phnController,
-
-                  onChanged: (value) {
-                    if (_phnController.text.contains("+91 ")) {
-                      print("hiii");
-                    } else {
-                      _phnController.text = "+91 ";
-                    }
-                  },
-                  onTap: () {
-                    setState(() {
-                      _phnController.text = "+91 ";
-                    });
-                  },
-                  maxLength: 14,
+                  maxLength: 10,
                   inputFormatters: [
                     //FilteringTextInputFormatter.digitsOnly,
                   ],
                   keyboardType: TextInputType.number,
-                  //initialValue: "+91",
                   validator: (String value) {
                     if (value.isEmpty) {
                       return "Enter phone number";
                     }
                   },
                   decoration: InputDecoration(
-                    labelText: 'Enter phone no',
-                  ),
+                      labelText: 'Enter phone no', prefixText: "+91 "),
                   style: TextStyle(
                     fontFamily: 'Roboto',
                     fontSize: 18,
@@ -144,41 +127,35 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     );
   }
 
-  Future<void /*http.Response*/ > cheakUser() async {
+  Future<http.Response> cheakUser() async {
     String phonNo = _phnController.text;
     print(phonNo);
-    Navigator.push(context, SlideLeftRoute(page: Otpclass()));
+    //Navigator.push(context, SlideLeftRoute(page: Otpclass()));
     //Navigator.push(context, SlideLeftRoute(page: SetPassword()));
 
-    /*Map data = {
-      "phn_number": phonNo
-    };
-    
+    Map data = {"phn_number": phonNo};
+
     //String body = json.encode(data);
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/register.php',
-      /* headers: <String, String>{
+      'https://www.mitrahtechnology.in/apis/mitrah-api/forgot_password.php',
+      headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-      },*/
-      body: body,
-    );*/
+        'phn_number': phonNo,
+      },
+    );
 
-    //print(res.body);
-    /*var responseData = json.decode(res.body);
-    if (responseData['success'] == 1) {
-      Navigator.push(context, SlideLeftRoute(page: Otpclass()));
-    } else if (responseData['status'] == 500) {
-      showDialog(
-          context: context,
-          builder: (context) =>
-              CustomDialogError("Error", "User already Exists", "Cancel"));
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      Navigator.push(
+          context, SlideLeftRoute(page: Otpclass(phn_number: phonNo)));
     } else {
       showDialog(
           context: context,
           builder: (context) =>
-              CustomDialogError("Error", responseData['message'], "Cancel"));
-    }*/
-    //return res;
+              CustomDialogError("Error", "User does not exists", "Cancel"));
+    }
+    return res;
   }
 }

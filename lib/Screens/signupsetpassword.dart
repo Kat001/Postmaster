@@ -6,18 +6,24 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class Setpassword extends StatefulWidget {
-  Setpassword({
+class Signupsetpassword extends StatefulWidget {
+  Signupsetpassword({
     Key key,
     this.phn_number,
+    this.first_name,
+    this.last_name,
+    this.email,
   }) : super(key: key);
 
   final String phn_number;
+  final String first_name;
+  final String last_name;
+  final String email;
   @override
-  _SetpasswordState createState() => _SetpasswordState();
+  _SignupsetpasswordState createState() => _SignupsetpasswordState();
 }
 
-class _SetpasswordState extends State<Setpassword> {
+class _SignupsetpasswordState extends State<Signupsetpassword> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
@@ -139,16 +145,24 @@ class _SetpasswordState extends State<Setpassword> {
     //Navigator.push(context, SlideLeftRoute(page: Otpclass()));
     //Navigator.push(context, SlideLeftRoute(page: SetPassword()));
 
-    //String body = json.encode(data);
+    Map data = {
+      "first_name": widget.first_name,
+      "last_name": widget.last_name,
+      "email": widget.email,
+      "password": _passwordController.text,
+      "phn_number": widget.phn_number,
+    };
+
+    String body = json.encode(data);
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/forgot_password_update.php',
-      headers: <String, String>{
+        'https://www.mitrahtechnology.in/apis/mitrah-api/register.php',
+        /*headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'phn_number': widget.phn_number,
         'new_password': _passwordController.text,
-      },
-    );
+      },*/
+        body: body);
 
     print(res.body);
     var responseData = json.decode(res.body);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:postmaster/Screens/Favroite_store.dart';
 import 'package:postmaster/Screens/Neworderstore.dart';
 import 'package:postmaster/Screens/active_orders.dart';
+import 'package:postmaster/Screens/completed_orders.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
@@ -546,10 +547,8 @@ class _NeworderState extends State<Neworder> {
                     Container(
                       child: ActiveOrders(),
                     ),
-                    Center(
-                      child: Container(
-                        child: Text("Completed Orders"),
-                      ),
+                    Container(
+                      child: Completedorders(),
                     ),
                   ])),
       ),

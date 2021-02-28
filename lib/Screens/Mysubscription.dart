@@ -15,11 +15,18 @@ class Mysubscription extends StatefulWidget {
 }
 
 class _MysubscriptionState extends State<Mysubscription> {
-  Future<dynamic> activeOrders() async {
+  Future<List<dynamic>> mySubscription;
+  @override
+  void initState() {
+    super.initState();
+    mySubscription = mySubscriptionData();
+  }
+
+  Future<List<dynamic>> mySubscriptionData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
-    http.Response res = await http.get(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/active_order.php',
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/my_subscription.php',
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         "Authorization": token
@@ -90,151 +97,186 @@ class _MysubscriptionState extends State<Mysubscription> {
               },
               icon: Icon(Icons.arrow_back_ios),
             )),
-        body: Column(
-          children: [
-            new Container(
-              margin: const EdgeInsets.all(15),
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFFF0F0F0),
-                      blurRadius: 5.0,
-                      spreadRadius: 5.0,
-                    )
-                  ]),
-              child: Container(
-                margin: EdgeInsets.all(8.0),
-                child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    rowWidget("Subscription plan:", "plan1"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Status:", "True"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Starting date:", "20-12-1910"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Expiry date:", "20-12-2021"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Order completed:", "10"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Order pending to reach goal:", "2"),
-                    SizedBox(height: 12.0),
-                    rowWidget("Total cashback:", "₹1000"),
-                    SizedBox(height: 12.0),
-                    Center(
-                      child: Container(
-                        height: displayHeight(context) * 0.05,
-                        // padding: const EdgeInsets.only(top: ),
-                        // margin: new EdgeInsets.only(
-                        //   left: 60,
-                        //   right: 60,
-                        //   top: 18,
-                        // ),
-                        margin: EdgeInsets.all(displayHeight(context) * 0.01),
-                        child: MaterialButton(
-                          onPressed: () {
-                            /*Navigator.push(
+        body: FutureBuilder<List<dynamic>>(
+          future: mySubscription,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              return ListView.builder(
+                  padding: EdgeInsets.all(8),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                      child: Column(
+                        children: <Widget>[
+                          Column(
+                            children: [
+                              new Container(
+                                margin: const EdgeInsets.all(15),
+                                padding: const EdgeInsets.all(5.0),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFFF0F0F0),
+                                        blurRadius: 5.0,
+                                        spreadRadius: 5.0,
+                                      )
+                                    ]),
+                                child: Container(
+                                  margin: EdgeInsets.all(8.0),
+                                  child: Column(
+                                    //mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      rowWidget("Subscription plan:",
+                                          snapshot.data[index]['plan']),
+                                      SizedBox(height: 12.0),
+                                      rowWidget("Status:", "True"),
+                                      SizedBox(height: 12.0),
+                                      rowWidget("Starting date:", "20-12-1910"),
+                                      SizedBox(height: 12.0),
+                                      rowWidget("Expiry date:", "20-12-2021"),
+                                      SizedBox(height: 12.0),
+                                      rowWidget("Order completed:", "10"),
+                                      SizedBox(height: 12.0),
+                                      rowWidget(
+                                          "Order pending to reach goal:", "2"),
+                                      SizedBox(height: 12.0),
+                                      rowWidget(
+                                          "Total cashback:",
+                                          "₹" +
+                                              snapshot.data[index]['cashback']),
+                                      SizedBox(height: 12.0),
+                                      Center(
+                                        child: Container(
+                                          height: displayHeight(context) * 0.05,
+                                          // padding: const EdgeInsets.only(top: ),
+                                          // margin: new EdgeInsets.only(
+                                          //   left: 60,
+                                          //   right: 60,
+                                          //   top: 18,
+                                          // ),
+                                          margin: EdgeInsets.all(
+                                              displayHeight(context) * 0.01),
+                                          child: MaterialButton(
+                                            onPressed: () {
+                                              /*Navigator.push(
                                 context, SlideLeftRoute(page: Topup()));*/
-                          },
-                          minWidth: 250.0,
-                          height: 10,
-                          child: Text(
-                            "Upgrade",
-                            style: TextStyle(
-                              fontFamily: 'RobotoBold',
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            gradient: RadialGradient(radius: 15, colors: [
-                              Color(0xFF27DEBF),
-                              Color(0xFF465A64)
-                            ])),
-                      ),
-                    ),
-                    Center(
-                      child: Container(
-                        height: displayHeight(context) * 0.05,
-                        // padding: const EdgeInsets.only(top: ),
-                        // margin: new EdgeInsets.only(
-                        //   left: 60,
-                        //   right: 60,
-                        //   top: 18,
-                        // ),
-                        margin: EdgeInsets.all(displayHeight(context) * 0.01),
-                        child: MaterialButton(
-                          onPressed: () {
-                            /* Navigator.push(
+                                            },
+                                            minWidth: 250.0,
+                                            height: 10,
+                                            child: Text(
+                                              "Upgrade",
+                                              style: TextStyle(
+                                                fontFamily: 'RobotoBold',
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0)),
+                                              gradient: RadialGradient(
+                                                  radius: 15,
+                                                  colors: [
+                                                    Color(0xFF27DEBF),
+                                                    Color(0xFF465A64)
+                                                  ])),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          height: displayHeight(context) * 0.05,
+                                          // padding: const EdgeInsets.only(top: ),
+                                          // margin: new EdgeInsets.only(
+                                          //   left: 60,
+                                          //   right: 60,
+                                          //   top: 18,
+                                          // ),
+                                          margin: EdgeInsets.all(
+                                              displayHeight(context) * 0.01),
+                                          child: MaterialButton(
+                                            onPressed: () {
+                                              /* Navigator.push(
                                 context, SlideLeftRoute(page: Topup()));*/
-                          },
-                          minWidth: 250.0,
-                          height: 10,
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(
-                              fontFamily: 'RobotoBold',
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            gradient: RadialGradient(radius: 15, colors: [
-                              Color(0xFF27DEBF),
-                              Color(0xFF465A64)
-                            ])),
-                      ),
-                    ),
-                    Center(
-                      child: Container(
-                        height: displayHeight(context) * 0.05,
-                        // padding: const EdgeInsets.only(top: ),
-                        // margin: new EdgeInsets.only(
-                        //   left: 60,
-                        //   right: 60,
-                        //   top: 18,
-                        // ),
-                        margin: EdgeInsets.all(displayHeight(context) * 0.01),
-                        child: MaterialButton(
-                          onPressed: () {
-                            /*Navigator.push(
+                                            },
+                                            minWidth: 250.0,
+                                            height: 10,
+                                            child: Text(
+                                              "Cancel",
+                                              style: TextStyle(
+                                                fontFamily: 'RobotoBold',
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0)),
+                                              gradient: RadialGradient(
+                                                  radius: 15,
+                                                  colors: [
+                                                    Color(0xFF27DEBF),
+                                                    Color(0xFF465A64)
+                                                  ])),
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Container(
+                                          height: displayHeight(context) * 0.05,
+                                          // padding: const EdgeInsets.only(top: ),
+                                          // margin: new EdgeInsets.only(
+                                          //   left: 60,
+                                          //   right: 60,
+                                          //   top: 18,
+                                          // ),
+                                          margin: EdgeInsets.all(
+                                              displayHeight(context) * 0.01),
+                                          child: MaterialButton(
+                                            onPressed: () {
+                                              /*Navigator.push(
                                 context, SlideLeftRoute(page: Topup()));*/
-                          },
-                          minWidth: 250.0,
-                          height: 10,
-                          child: Text(
-                            "Renew",
-                            style: TextStyle(
-                              fontFamily: 'RobotoBold',
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(15.0)),
-                            gradient: RadialGradient(radius: 15, colors: [
-                              Color(0xFF27DEBF),
-                              Color(0xFF465A64)
-                            ])),
+                                            },
+                                            minWidth: 250.0,
+                                            height: 10,
+                                            child: Text(
+                                              "Renew",
+                                              style: TextStyle(
+                                                fontFamily: 'RobotoBold',
+                                                fontSize: 18,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0)),
+                                              gradient: RadialGradient(
+                                                  radius: 15,
+                                                  colors: [
+                                                    Color(0xFF27DEBF),
+                                                    Color(0xFF465A64)
+                                                  ])),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+                    );
+                  });
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
         ));
   }
 }

@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:postmaster/Screens/signupotp.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -246,16 +247,13 @@ class _SignupState extends State<Signup> {
     print(phn_number);
 
     Map data = {
-      "first_name": firstName,
-      "last_name": lastName,
+      "phn_number": phn_number,
       "email": email,
-      "password": "dev12345",
-      "phn_number": phn_number
     };
     var body = json.encode(data);
 
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/register.php',
+      'https://www.mitrahtechnology.in/apis/mitrah-api/register_send_otp.php',
       /* headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },*/
@@ -264,13 +262,21 @@ class _SignupState extends State<Signup> {
 
     print(res.body);
     var responseData = json.decode(res.body);
-    if (responseData['success'] == 1) {
-      Navigator.push(context, SlideLeftRoute(page: Otpclass()));
+    if (responseData['status'] == 200) {
+      Navigator.push(
+          context,
+          SlideLeftRoute(
+              page: Signupotpclass(
+            phn_number: phn_number,
+            first_name: firstNameController.text,
+            last_name: lastNameController.text,
+            email: emailController.text,
+          )));
     } else if (responseData['status'] == 500) {
       showDialog(
           context: context,
           builder: (context) =>
-              CustomDialogError("Error", "User already Exists", "Cancel"));
+              CustomDialogError("Error", responseData['message'], "Cancel"));
     } else {
       showDialog(
           context: context,

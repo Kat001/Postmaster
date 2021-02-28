@@ -68,9 +68,9 @@ class _LoginState extends State<Login> {
                         if (value.isEmpty) {
                           return "Please enter valid username.";
                         }
-                        if (!EmailValidator.validate(value)) {
+                        /*if (!EmailValidator.validate(value)) {
                           return "Enter valid email";
-                        }
+                        }*/
                         //return "";
                       },
                       decoration: InputDecoration(

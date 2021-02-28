@@ -9,19 +9,26 @@ import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/Screens/signupsetpassword.dart';
 
-class Otpclass extends StatefulWidget {
-  Otpclass({
+class Signupotpclass extends StatefulWidget {
+  Signupotpclass({
     Key key,
     this.phn_number,
+    this.first_name,
+    this.last_name,
+    this.email,
   }) : super(key: key);
 
   final String phn_number;
+  final String first_name;
+  final String last_name;
+  final String email;
   @override
-  _OtpclassState createState() => _OtpclassState();
+  _SignupotpclassState createState() => _SignupotpclassState();
 }
 
-class _OtpclassState extends State<Otpclass> {
+class _SignupotpclassState extends State<Signupotpclass> {
   FocusNode pin2FocusNode;
   FocusNode pin3FocusNode;
   FocusNode pin4FocusNode;
@@ -301,20 +308,35 @@ class _OtpclassState extends State<Otpclass> {
 
     //String body = json.encode(data);
 
+    Map data = {
+      "phn_number": widget.phn_number,
+      "email": widget.email,
+      "otp": code
+    };
+    var body = json.encode(data);
+
     http.Response res = await http.post(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/forgot_password_verify_otp.php',
-      headers: <String, String>{
+      'https://www.mitrahtechnology.in/apis/mitrah-api/register_send_otp.php',
+      /*headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'phn_number': widget.phn_number,
         'otp': code,
-      },
+      },*/
+      body: body,
     );
 
     print(res.body);
     var responseData = json.decode(res.body);
     if (responseData['status'] == 200) {
-      Navigator.push(context,
-          SlideLeftRoute(page: Setpassword(phn_number: widget.phn_number)));
+      Navigator.push(
+          context,
+          SlideLeftRoute(
+              page: Signupsetpassword(
+            phn_number: widget.phn_number,
+            first_name: widget.first_name,
+            last_name: widget.last_name,
+            email: widget.email,
+          )));
     } else {
       showDialog(
           context: context,

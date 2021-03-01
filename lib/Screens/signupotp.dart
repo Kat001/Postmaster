@@ -260,7 +260,7 @@ class _SignupotpclassState extends State<Signupotpclass> {
                   )),
               Container(
                 margin: new EdgeInsets.only(
-                    left: 75, right: 75, bottom: 20, top: 60),
+                    left: 75, right: 75, bottom: 10, top: 60),
                 child: MaterialButton(
                   // color: Color(0xFF27DEBF),
                   onPressed: () {
@@ -288,6 +288,45 @@ class _SignupotpclassState extends State<Signupotpclass> {
                         radius: 15,
                         colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
               ),
+              Center(
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        margin:
+                            new EdgeInsets.only(bottom: 30, top: 4.0, left: 85),
+                        child: Text(
+                          "- Resend Otp -",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Color(0xFF707070), fontSize: 16.0),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          reSendOtp();
+                          //Navigator.push(
+                          //context, SlideLeftRoute(page: ForgotPassword()));
+                        },
+                        child: Container(
+                          margin: new EdgeInsets.only(
+                            bottom: 30,
+                            top: 4.0,
+                          ),
+                          child: Text(
+                            " Click Here",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Color(0xFF27DEBF),
+                                fontSize: 16.0,
+                                fontFamily: 'Roboto'),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -337,6 +376,42 @@ class _SignupotpclassState extends State<Signupotpclass> {
             last_name: widget.last_name,
             email: widget.email,
           )));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+    return res;
+  }
+
+  Future<http.Response> reSendOtp() async {
+    Map data = {
+      "phn_number": widget.phn_number,
+      "email": widget.phn_number,
+    };
+    var body = json.encode(data);
+
+    http.Response res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/register_send_otp.php',
+      /* headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },*/
+      body: body,
+    );
+
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Success", responseData['message'], "Cancel"));
+    } else if (responseData['status'] == 500) {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
     } else {
       showDialog(
           context: context,

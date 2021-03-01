@@ -3,16 +3,24 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
+//import 'package:flutter/services.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:postmaster/Components/animate.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Components/sizes_helpers.dart';
 import 'dart:io';
-import 'package:postmaster/Components/animate.dart';
 import 'package:contact_picker/contact_picker.dart';
 
-class NewOrderStore extends StatefulWidget {
-  NewOrderStore({
+class NewOrder1 extends StatefulWidget {
+  NewOrder1({
     Key key,
     this.weightData,
     this.itemData,
@@ -24,16 +32,16 @@ class NewOrderStore extends StatefulWidget {
   final Future<String> rate;
 
   @override
-  _NewOrderStoreState createState() => _NewOrderStoreState();
+  _NewOrder1State createState() => _NewOrder1State();
 }
 
-class _NewOrderStoreState extends State<NewOrderStore> {
+class _NewOrder1State extends State<NewOrder1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Buy from your favorite store",
+          "Send your package",
           style: TextStyle(
               fontFamily: "RobotoBold",
               fontSize: 20.0,
@@ -68,6 +76,7 @@ class MyCustomForm extends StatefulWidget {
   final Future<List<dynamic>> weightData;
   final Future<List<dynamic>> itemData;
   final Future<String> rate;
+  static final kInitialPosition = LatLng(-33.8567844, 151.213108);
   @override
   MyCustomFormState createState() {
     return MyCustomFormState();
@@ -77,45 +86,48 @@ class MyCustomForm extends StatefulWidget {
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
+  PickResult selectedPlace;
   Color _textColor = Colors.green;
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
-  // Note: This is a GlobalKey<FormState>,
-  TimeOfDay _time = TimeOfDay.now();
-  DateTime _dateTime;
-
   final ContactPicker _contactPicker = new ContactPicker();
   Contact _contact;
-
+  // Note: This is a GlobalKey<FormState>,
+  DateTime _dateTime;
+  TimeOfDay _time = TimeOfDay.now();
   // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
-  bool isSwitched = false;
   bool isApply = true;
+  bool isSwitched = false;
   double _totalPayment = 0;
-
   double _weightPayment = 0;
   double _parcelValuePayment = 0;
-  double _promoCodePayment = 0;
   double ratePercent;
-  double _tax_amount = 0;
 
-  final TextEditingController _shopNameController = TextEditingController();
+  double _promoCodePayment = 0;
+  final _formKey = GlobalKey<FormState>();
+  FocusNode focusNode = FocusNode();
+
   final TextEditingController _pickupAddressController =
       TextEditingController();
-  final TextEditingController _costOfItemController = TextEditingController();
-  final TextEditingController _itemNameController = TextEditingController();
+  final TextEditingController _pickupPhoneController = TextEditingController();
+  final TextEditingController _pickupDateController = TextEditingController();
+  final TextEditingController _pickupTimeController = TextEditingController();
+  final TextEditingController _pickupCommentController =
+      TextEditingController();
 
   final TextEditingController _dropAddressController = TextEditingController();
-  final TextEditingController _dropPhoneNumberController =
-      TextEditingController();
-  final TextEditingController _deliveryDateController = TextEditingController();
-  final TextEditingController _deliveryTimeController = TextEditingController();
+  final TextEditingController _dropPhoneController = TextEditingController();
+  final TextEditingController _dropDateController = TextEditingController();
+  final TextEditingController _dropTimeController = TextEditingController();
+  final TextEditingController _dropCommentController = TextEditingController();
 
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _itemController = TextEditingController();
   final TextEditingController _parcelValueController = TextEditingController();
   final TextEditingController _promoCodeController = TextEditingController();
+  final TextEditingController _itemDescriptionController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -148,18 +160,17 @@ class MyCustomFormState extends State<MyCustomForm> {
     setState(() {
       if (_parcelValueController.text.isEmpty) {
         _parcelValuePayment = 0;
-        _totalPayment = _weightPayment +
+        /* _totalPayment = _weightPayment +
             _parcelValuePayment -
             _promoCodePayment +
-            (((_promoCodePayment +
-                        _weightPayment +
-                        _parcelValuePayment -
-                        _promoCodePayment) *
-                    18) /
-                100);
+            ((_parcelValuePayment * 100) / 100);*/
       } else {
         double data = double.parse(_parcelValueController.text);
         _parcelValuePayment = ((data * ratePercent) / 100);
+
+        print(data);
+        print(_parcelValuePayment);
+        print(ratePercent);
 
         _totalPayment = _weightPayment +
             _parcelValuePayment -
@@ -183,7 +194,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   }
 
   void _changeWeightPrice(String weight, String price) {
-    _weightController.text = weight;
+    setState(() {
+      _weightController.text = weight;
+    });
     print(price);
 
     setState(() {
@@ -261,35 +274,38 @@ class MyCustomFormState extends State<MyCustomForm> {
                   padding: EdgeInsets.all(8),
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            _itemController.text = snapshot.data[index]["item"];
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.only(
-                                left: displayWidth(context) * 0.02,
-                                top: displayHeight(context) * 0.01),
-                            height: displayHeight(context) * 0.05,
-                            width: displayWidth(context) * 0.3,
-                            child: Text(
-                              snapshot.data[index]["item"],
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'RobotoBold',
-                                color: Colors.white,
-                                fontSize: displayWidth(context) * 0.05,
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50.0),
-                                color: Color(0xFF27DEBF)),
-                          ),
-                        )
-                      ],
-                    );
+                    return index == 0
+                        ? Container()
+                        : Row(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () {
+                                  _itemController.text =
+                                      snapshot.data[index]["item"];
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.only(
+                                      left: displayWidth(context) * 0.02,
+                                      top: displayHeight(context) * 0.01),
+                                  height: displayHeight(context) * 0.05,
+                                  width: displayWidth(context) * 0.3,
+                                  child: Text(
+                                    snapshot.data[index]["item"],
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'RobotoBold',
+                                      color: Colors.white,
+                                      fontSize: displayWidth(context) * 0.05,
+                                    ),
+                                  ),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50.0),
+                                      color: Color(0xFF27DEBF)),
+                                ),
+                              )
+                            ],
+                          );
                   }),
             );
           } else {
@@ -300,8 +316,6 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-
     return Column(
       children: [
         Expanded(
@@ -311,6 +325,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
+                  //TextField(),
                   Padding(
                     padding: const EdgeInsets.only(
                       left: 15.0,
@@ -320,10 +335,10 @@ class MyCustomFormState extends State<MyCustomForm> {
                     child: TextFormField(
                       controller: _weightController,
                       readOnly: true,
-                      /*controller: emailController,*/
+
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please select the weight";
+                          return "Please select weight.";
                         }
                       },
                       //initialValue: "data(1)",
@@ -339,6 +354,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                   ),
 
                   projectWidget(),
+                  //itemWidget(),
 
                   //Pickup Point
                   ExpansionTile(
@@ -360,7 +376,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         ),
                       ),
                       maintainState: true,
-                      key: PageStorageKey("tests"),
+                      key: PageStorageKey("test"),
                       title: Text(
                         "Pickup Point",
                         style: TextStyle(color: _textColor),
@@ -373,122 +389,74 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            controller: _shopNameController,
-                            decoration: InputDecoration(
-                              labelText: "Shop name",
-                            ),
-                            key: PageStorageKey("tests2"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter the shop name';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
                             controller: _pickupAddressController,
+                            //readOnly: true,
+                            /*onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return PlacePicker(
+                                      apiKey:
+                                          "AIzaSyCy2iHXEQ9U4c77tJSBW5WPD5vRA8EEH94",
+                                      initialPosition:
+                                          MyCustomForm.kInitialPosition,
+                                      useCurrentLocation: true,
+                                      selectInitialPosition: true,
+
+                                      //usePlaceDetailSearch: true,
+                                      onPlacePicked: (result) {
+                                        selectedPlace = result;
+                                        Navigator.of(context).pop();
+                                        setState(() {});
+                                      },
+                                      //forceSearchOnZoomChanged: true,
+                                      //automaticallyImplyAppBarLeading: false,
+                                      //autocompleteLanguage: "ko",
+                                      //region: 'au',
+                                      //selectInitialPosition: true,
+                                      // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+                                      //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
+                                      //   return isSearchBarFocused
+                                      //       ? Container()
+                                      //       : FloatingCard(
+                                      //           bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+                                      //           leftPosition: 0.0,
+                                      //           rightPosition: 0.0,
+                                      //           width: 500,
+                                      //           borderRadius: BorderRadius.circular(12.0),
+                                      //           child: state == SearchingState.Searching
+                                      //               ? Center(child: CircularProgressIndicator())
+                                      //               : RaisedButton(
+                                      //                   child: Text("Pick Here"),
+                                      //                   onPressed: () {
+                                      //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
+                                      //                     //            this will override default 'Select here' Button.
+                                      //                     print("do something with [selectedPlace] data");
+                                      //                     Navigator.of(context).pop();
+                                      //                   },
+                                      //                 ),
+                                      //         );
+                                      // },
+                                      // pinBuilder: (context, state) {
+                                      //   if (state == PinState.Idle) {
+                                      //     return Icon(Icons.favorite_border);
+                                      //   } else {
+                                      //     return Icon(Icons.favorite);
+                                      //   }
+                                      // },
+                                    );
+                                  },
+                                ),
+                              );
+                            },*/
                             decoration: InputDecoration(
-                              labelText: "Address",
+                              labelText: 'address',
                             ),
-                            key: PageStorageKey("tests3"),
+                            key: PageStorageKey("test2"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter the address';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            controller: _costOfItemController,
-                            decoration: InputDecoration(
-                              labelText: "Cost of item",
-                            ),
-                            key: PageStorageKey("tests4"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter the cost of item';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05,
-                              top: displayHeight(context) * 0.01),
-                          child: TextFormField(
-                            controller: _itemNameController,
-                            decoration: InputDecoration(
-                              labelText: "Item name",
-                            ),
-                            key: PageStorageKey("tests5"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter item name';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ]),
-                  //Droppoint
-                  ExpansionTile(
-                      onExpansionChanged: (Expanded) {
-                        setState(() {
-                          if (Expanded) {
-                            _textColor = Color(0xFF2BCDB4);
-                          } else {
-                            _textColor = Color(0xFF465A64);
-                          }
-                        });
-                      },
-                      leading: Container(
-                        width: 25,
-                        height: 25,
-                        child: SvgPicture.asset(
-                          droppoint,
-                          color: _textColor,
-                        ),
-                      ),
-                      maintainState: true,
-                      key: PageStorageKey("tests6"),
-                      title: Text(
-                        "Drop Point",
-                        style: TextStyle(color: _textColor),
-                        textAlign: TextAlign.start,
-                      ),
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            controller: _dropAddressController,
-                            decoration: InputDecoration(
-                              labelText: "Address",
-                            ),
-                            key: PageStorageKey("tests7"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter drop address';
+                                return 'Please enter some text';
                               }
                               return null;
                             },
@@ -509,7 +477,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   inputFormatters: [
                                     WhitelistingTextInputFormatter.digitsOnly
                                   ],
-                                  controller: _dropPhoneNumberController,
+                                  controller: _pickupPhoneController,
 
                                   /*controller: emailController,*/
                                   validator: (String value) {
@@ -536,13 +504,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                                         _contact = contact;
                                         if (_contact.phoneNumber.number
                                             .contains("+")) {
-                                          _dropPhoneNumberController.text =
+                                          _pickupPhoneController.text =
                                               replaceWhitespacesUsingRegex(
                                                   _contact.phoneNumber.number
                                                       .substring(3),
                                                   '');
                                         } else {
-                                          _dropPhoneNumberController.text =
+                                          _pickupPhoneController.text =
                                               replaceWhitespacesUsingRegex(
                                                   _contact.phoneNumber.number,
                                                   '');
@@ -573,20 +541,20 @@ class MyCustomFormState extends State<MyCustomForm> {
                                 setState(() {
                                   //_dateTime = date;
                                   if (date != null) {
-                                    _deliveryDateController.text =
+                                    _pickupDateController.text =
                                         date.toString().substring(0, 10);
                                   }
                                 });
                               });
                             },
-                            controller: _deliveryDateController,
+                            controller: _pickupDateController,
                             decoration: InputDecoration(
-                              labelText: "Delivery date",
+                              labelText: "Pickup date",
                             ),
-                            key: PageStorageKey("tests9"),
+                            key: PageStorageKey("test4"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please select delivery date';
+                                return 'Please enter pickup date';
                               }
                               return null;
                             },
@@ -604,27 +572,46 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   context: context, initialTime: _time);
                               if (picked != null) {
                                 setState(() {
-                                  _deliveryTimeController.text =
+                                  _pickupTimeController.text =
                                       picked.toString().substring(10, 15);
                                 });
                               }
                             },
-                            controller: _deliveryTimeController,
+                            controller: _pickupTimeController,
                             decoration: InputDecoration(
-                              labelText: "Delivery time",
+                              labelText: 'Pickup time',
                             ),
-                            key: PageStorageKey("tests0"),
+                            key: PageStorageKey("test6"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please select delivery time';
+                                return 'Please select pickup time';
                               }
                               return null;
                             },
                           ),
                         ),
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.15,
+                              right: displayWidth(context) * 0.05,
+                              top: displayHeight(context) * 0.01),
+                          child: TextFormField(
+                            controller: _pickupCommentController,
+                            decoration: InputDecoration(
+                              labelText: 'Comment',
+                            ),
+                            key: PageStorageKey("test5"),
+                            /*validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },*/
+                          ),
+                        ),
                       ]),
-                  //Store Detailes
-                  /*ExpansionTile(
+                  //Droppoint
+                  ExpansionTile(
                       onExpansionChanged: (Expanded) {
                         setState(() {
                           if (Expanded) {
@@ -638,14 +625,14 @@ class MyCustomFormState extends State<MyCustomForm> {
                         width: 25,
                         height: 25,
                         child: SvgPicture.asset(
-                          pickuppoint,
+                          droppoint,
                           color: _textColor,
                         ),
                       ),
                       maintainState: true,
-                      key: PageStorageKey("tests11"),
+                      key: PageStorageKey("test6"),
                       title: Text(
-                        "Store details",
+                        "Drop Point",
                         style: TextStyle(color: _textColor),
                         textAlign: TextAlign.start,
                       ),
@@ -656,16 +643,77 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
+                            controller: _dropAddressController,
                             decoration: InputDecoration(
-                              labelText: "Address",
+                              labelText: 'Address',
                             ),
-                            key: PageStorageKey("tests12"),
+                            key: PageStorageKey("test7"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please select the address';
                               }
                               return null;
                             },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: displayHeight(context) * 0.01,
+                                left: displayWidth(context) * 0.15,
+                                right: displayWidth(context) * 0.05),
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _dropPhoneController,
+
+                                  /*controller: emailController,*/
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return "Please enter the parcel value.";
+                                    }
+                                  },
+                                  //initialValue: "data(1)",
+                                  style: TextStyle(
+                                    fontFamily: 'roboto',
+                                    fontSize: 18,
+                                  ),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.only(bottom: 0),
+                                    labelText: 'Phone number',
+                                    prefixText: "+91 ",
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      Contact contact =
+                                          await _contactPicker.selectContact();
+                                      setState(() {
+                                        _contact = contact;
+                                        if (_contact.phoneNumber.number
+                                            .contains("+")) {
+                                          _dropPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number
+                                                      .substring(3),
+                                                  '');
+                                        } else {
+                                          _dropPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number,
+                                                  '');
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(Icons.contact_page)),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -674,31 +722,33 @@ class MyCustomFormState extends State<MyCustomForm> {
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
                           child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: "Phone Number",
-                            ),
-                            key: PageStorageKey("tests13"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
+                            controller: _dropDateController,
+                            readOnly: true,
+                            onTap: () {
+                              showDatePicker(
+                                      context: context,
+                                      initialDate: _dateTime == null
+                                          ? DateTime.now()
+                                          : _dateTime,
+                                      firstDate: DateTime(2001),
+                                      lastDate: DateTime(2022))
+                                  .then((date) {
+                                setState(() {
+                                  //_dateTime = date;
+                                  if (date != null) {
+                                    _dropDateController.text =
+                                        date.toString().substring(0, 10);
+                                  }
+                                });
+                              });
                             },
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
                             decoration: InputDecoration(
-                              labelText: "Arrival",
+                              labelText: 'Arrival date',
                             ),
-                            key: PageStorageKey("tests14"),
+                            key: PageStorageKey("test9"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please enter arrival date';
                               }
                               return null;
                             },
@@ -710,19 +760,50 @@ class MyCustomFormState extends State<MyCustomForm> {
                               right: displayWidth(context) * 0.05,
                               top: displayHeight(context) * 0.01),
                           child: TextFormField(
+                            readOnly: true,
+                            onTap: () async {
+                              TimeOfDay picked = await showTimePicker(
+                                  context: context, initialTime: _time);
+                              if (picked != null) {
+                                setState(() {
+                                  _dropTimeController.text =
+                                      picked.toString().substring(10, 15);
+                                });
+                              }
+                            },
+                            controller: _dropTimeController,
                             decoration: InputDecoration(
-                              labelText: "Delivery time",
+                              labelText: 'Arrival time',
                             ),
-                            key: PageStorageKey("tests15"),
+                            key: PageStorageKey("test11"),
                             validator: (value) {
                               if (value.isEmpty) {
-                                return 'Please enter some text';
+                                return 'Please select arrival time';
                               }
                               return null;
                             },
                           ),
                         ),
-                      ]),*/
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.15,
+                              right: displayWidth(context) * 0.05,
+                              top: displayHeight(context) * 0.01),
+                          child: TextFormField(
+                            controller: _dropCommentController,
+                            decoration: InputDecoration(
+                              labelText: 'Comment',
+                            ),
+                            key: PageStorageKey("test10"),
+                            /*validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },*/
+                          ),
+                        ),
+                      ]),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
@@ -732,7 +813,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                       /*controller: emailController,*/
                       validator: (String value) {
                         if (value.isEmpty) {
-                          return "Please select the item";
+                          return "Please select the item.";
                         }
                       },
                       //initialValue: "data(1)",
@@ -747,7 +828,29 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                   ),
                   itemWidget(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 12.0, right: 12.0, bottom: 2.0, top: 2.0),
+                    child: TextFormField(
+                      controller: _itemDescriptionController,
 
+                      /*controller: emailController,*/
+                      /*validator: (String value) {
+                        if (value.isEmpty) {
+                          return "Please select the item.";
+                        }
+                      },*/
+                      //initialValue: "data(1)",
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(bottom: 0),
+                        labelText: 'Item description',
+                      ),
+                      style: TextStyle(
+                        fontFamily: 'roboto',
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: 12.0, right: 12.0, bottom: 2.0),
@@ -883,12 +986,8 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   _totalPayment = _weightPayment +
                                       _parcelValuePayment -
                                       _promoCodePayment +
-                                      (((_promoCodePayment +
-                                                  _weightPayment +
-                                                  _parcelValuePayment -
-                                                  _promoCodePayment) *
-                                              18) /
-                                          100);
+                                      ((_parcelValuePayment * 18) / 100) +
+                                      ((_weightPayment * 18) / 100);
                                 });
                                 showDialog(
                                   context: context,
@@ -903,9 +1002,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                                 setState(() {
                                   isApply = true;
                                   _promoCodeController.text = "";
-
                                   //print(responseData["message"][0]["amount"]);
                                 });
+
                                 showDialog(
                                     context: context,
                                     builder: (context) => CustomDialogError(
@@ -935,7 +1034,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                           )),
                     ),
                   ),
-                  /*Container(
+                  Container(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -970,7 +1069,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                         ),
                       ],
                     ),
-                  ),*/
+                  ),
                   Container(
                     margin: EdgeInsets.only(top: 20, left: 20),
                     child: InkWell(
@@ -1128,30 +1227,44 @@ class MyCustomFormState extends State<MyCustomForm> {
       "weight": _weightController.text,
       "pickup_point": [
         {
-          "shop_name": _shopNameController.text,
-          "item_name": _itemNameController.text,
           "address": _pickupAddressController.text,
-          "cost_of_item": _costOfItemController.text,
+          "phn_number": _pickupPhoneController.text,
+          "pickup_time": _pickupTimeController.text,
+          "pickup_date": _pickupDateController.text,
+          "comment": _pickupCommentController.text
         }
       ],
       "delivery_point": [
         {
           "address": _dropAddressController.text,
-          "phn_number": _dropPhoneNumberController.text,
-          "delivery_date": _deliveryDateController.text,
-          "delivery_time": _deliveryTimeController.text,
+          "phn_number": _dropPhoneController.text,
+          "arrive_date": _dropDateController.text,
+          "arrive_time": _dropTimeController.text,
+          "comment": _dropCommentController.text,
+        },
+        {
+          "address": "d2",
+          "phn_number": "789654",
+          "arrive_date": "10 Feb 2021",
+          "arrive_time": "d21:21",
+          "comment": "d2222222"
         }
       ],
-      "promo_code": _promoCodeController.text,
-      "comment": "jjjjjjjjjjjjjaaaaaaaaa",
+      "item_type": _itemController.text,
+      "item_description": _itemDescriptionController.text,
       "parcel_value": _parcelValueController.text,
+      "promo_code": _promoCodeController.text,
+      "promo_amount": _promoCodePayment,
+      "contact_number": "2020202",
+      "is_notified": isSwitched ? 1 : 0,
+      "is_accept": 0,
       "tax_amount": ratePercent,
-      "order_amount": _totalPayment
+      "order_amount": _totalPayment,
     };
     var body = json.encode(data);
 
     http.Response res = await http.post(
-        'https://www.mitrahtechnology.in/apis/mitrah-api/buy_from_store.php',
+        'https://www.mitrahtechnology.in/apis/mitrah-api/send_package.php',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           "Authorization": token,
@@ -1159,7 +1272,7 @@ class MyCustomFormState extends State<MyCustomForm> {
         body: body);
     print(res.body);
     var responseData = json.decode(res.body);
-    if (responseData["success"] == 1) {
+    if (responseData["status"] == 200) {
       showDialog(
         context: context,
         builder: (context) =>

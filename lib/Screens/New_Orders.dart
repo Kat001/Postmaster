@@ -3,6 +3,7 @@ import 'package:postmaster/Screens/Favroite_store.dart';
 import 'package:postmaster/Screens/Neworderstore.dart';
 import 'package:postmaster/Screens/active_orders.dart';
 import 'package:postmaster/Screens/completed_orders.dart';
+import 'package:postmaster/Screens/sendorderwithoutlogin.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
@@ -19,6 +20,12 @@ import 'dart:async';
 import 'dart:convert';
 
 class Neworder extends StatefulWidget {
+  Neworder({
+    Key key,
+    this.notLogin,
+  }) : super(key: key);
+
+  final bool notLogin;
   @override
   _NeworderState createState() => _NeworderState();
 }
@@ -106,7 +113,15 @@ class _NeworderState extends State<Neworder> {
     /*
     */
     setState(() {
-      _isdata = false;
+      if (widget.notLogin == true) {
+        Navigator.pushReplacement(
+            context,
+            SlideLeftRoute(
+                page: NewOrder1(
+                    weightData: weightData, itemData: itemData, rate: rate)));
+      } else {
+        _isdata = false;
+      }
     });
 
     return json.decode(res.body)['message'];
@@ -123,7 +138,7 @@ class _NeworderState extends State<Neworder> {
               onTap: (index) {},
               indicatorColor: Color(0xFF2BCDB4),
               indicator: BoxDecoration(
-                color: Color(0xFF2BCDB4),
+                color: widget.notLogin ? Colors.white : Color(0xFF2BCDB4),
                 borderRadius: BorderRadius.circular(15),
               ),
               tabs: [

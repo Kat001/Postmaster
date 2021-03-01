@@ -93,7 +93,7 @@ class _ReferState extends State<Refer> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 5.0.h),
+            margin: EdgeInsets.only(top: 3.0.h),
             child: Row(
               children: [
                 Container(
@@ -124,7 +124,7 @@ class _ReferState extends State<Refer> {
                 Container(
                   margin: EdgeInsets.only(left: 5.0.w),
                   child: Text(
-                    "Share your referral Code",
+                    "Referral code - 70078",
                     style: TextStyle(
                         fontFamily: "RobotoBold",
                         fontSize: 15.0.sp,
@@ -166,7 +166,7 @@ class _ReferState extends State<Refer> {
                 Container(
                   margin: EdgeInsets.only(left: 5.0.w),
                   child: Text(
-                    "Your friend register with us",
+                    "Share your referral Code",
                     style: TextStyle(
                         fontFamily: "RobotoBold",
                         fontSize: 15.0.sp,
@@ -185,6 +185,48 @@ class _ReferState extends State<Refer> {
                   child: Center(
                     child: Text(
                       "3",
+                      style: TextStyle(
+                          fontFamily: "RobotoBold",
+                          fontSize: 20.0.sp,
+                          color: Color(0xFF2BCDB4)),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  width: 45.0,
+                  height: 45.0,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFFF0F0F0),
+                          blurRadius: 5.0,
+                          spreadRadius: 5.0,
+                        )
+                      ]),
+                ),
+                Container(
+                  margin: EdgeInsets.only(left: 5.0.w),
+                  child: Text(
+                    "Your friend register with us",
+                    style: TextStyle(
+                        fontFamily: "RobotoBold",
+                        fontSize: 15.0.sp,
+                        color: Color(0xFF465A64)),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 3.0.h),
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 5.0.w),
+                  child: Center(
+                    child: Text(
+                      "4",
                       style: TextStyle(
                           fontFamily: "RobotoBold",
                           fontSize: 20.0.sp,

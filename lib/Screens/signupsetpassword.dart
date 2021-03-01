@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:postmaster/Components/animate.dart';
+import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Screens/Otp.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
@@ -160,17 +161,19 @@ class _SignupsetpasswordState extends State<Signupsetpassword> {
         /*headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'phn_number': widget.phn_number,
-        'new_password': _passwordController.text,
+        'new_password': _passwordController.text,  
       },*/
         body: body);
 
     print(res.body);
     var responseData = json.decode(res.body);
-    if (responseData['status'] == 200) {
+    if (responseData['status'] == 201) {
+      print("jhkjasdhjk");
+      Navigator.push(context, SlideLeftRoute(page: Login()));
       showDialog(
         context: context,
         builder: (context) =>
-            CustomDialog("Success", responseData['message'], "Okay", 2),
+            CustomDialog("Success", responseData['message'], "Okay", 3),
       );
     } else {
       showDialog(

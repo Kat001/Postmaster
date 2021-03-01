@@ -377,11 +377,6 @@ class _ProfileState extends State<Profile> {
           InkWell(
             onTap: () {
               Navigator.push(context, SlideLeftRoute(page: AppVersion()));
-              showDialog(
-                context: context,
-                builder: (context) => CustomDialog(
-                    "Success", "Password Created Successfully", "Okay", 1),
-              );
             },
             child: Container(
               margin: EdgeInsets.only(top: 20, left: 20),
@@ -458,6 +453,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
           ),
+          SizedBox(height: 100.0)
         ],
       ),
     ));

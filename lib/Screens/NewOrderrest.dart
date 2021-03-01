@@ -17,6 +17,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'dart:io';
+import 'package:contact_picker/contact_picker.dart';
 
 class NewOrder extends StatefulWidget {
   NewOrder({
@@ -90,6 +91,8 @@ class MyCustomFormState extends State<MyCustomForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   //
+  final ContactPicker _contactPicker = new ContactPicker();
+  Contact _contact;
   // Note: This is a GlobalKey<FormState>,
   DateTime _dateTime;
   TimeOfDay _time = TimeOfDay.now();
@@ -144,7 +147,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       String rate = data;
 
       setState(() {
-        String price = rate.substring(0, rate.length - 1);
+        String price = rate.substring(0, rate.length);
         ratePercent = double.parse(price);
       });
     }, onError: (e) {
@@ -157,16 +160,37 @@ class MyCustomFormState extends State<MyCustomForm> {
     setState(() {
       if (_parcelValueController.text.isEmpty) {
         _parcelValuePayment = 0;
-        _totalPayment =
-            _weightPayment + _parcelValuePayment - _promoCodePayment;
+        /* _totalPayment = _weightPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            ((_parcelValuePayment * 100) / 100);*/
       } else {
         double data = double.parse(_parcelValueController.text);
-        _parcelValuePayment = ((data * ratePercent) / 100) +
-            (((data * ratePercent) / 100) * 18) / 100;
-        _totalPayment =
-            _weightPayment + _parcelValuePayment - _promoCodePayment;
+        _parcelValuePayment = ((data * ratePercent) / 100);
+
+        print(data);
+        print(_parcelValuePayment);
+        print(ratePercent);
+
+        _totalPayment = _weightPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            ((_parcelValuePayment * 18) / 100) +
+            ((_weightPayment * 18) / 100);
       }
     });
+  }
+
+  String replaceWhitespacesUsingRegex(String s, String replace) {
+    if (s == null) {
+      return null;
+    }
+
+    // This pattern means "at least one space, or more"
+    // \\s : space
+    // +   : one or more
+    final pattern = RegExp('\\s+');
+    return s.replaceAll(pattern, replace);
   }
 
   void _changeWeightPrice(String weight, String price) {
@@ -177,7 +201,11 @@ class MyCustomFormState extends State<MyCustomForm> {
 
     setState(() {
       _weightPayment = double.parse(price);
-      _totalPayment = _weightPayment + _parcelValuePayment - _promoCodePayment;
+      _totalPayment = _weightPayment +
+          _parcelValuePayment -
+          _promoCodePayment +
+          ((_weightPayment * 18) / 100) +
+          ((_parcelValuePayment * 18) / 100);
     });
   }
 
@@ -194,40 +222,37 @@ class MyCustomFormState extends State<MyCustomForm> {
                   padding: EdgeInsets.all(8),
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return index == 0
-                        ? Container()
-                        : Row(
-                            children: <Widget>[
-                              InkWell(
-                                onTap: () {
-                                  String weight =
-                                      snapshot.data[index]["weight"];
-                                  String price = snapshot.data[index]["price"];
-                                  _changeWeightPrice(weight, price);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.02,
-                                      top: displayHeight(context) * 0.01),
-                                  height: displayHeight(context) * 0.05,
-                                  width: displayWidth(context) * 0.3,
-                                  child: Text(
-                                    snapshot.data[index]["weight"],
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'RobotoBold',
-                                      color: Colors.white,
-                                      fontSize: displayWidth(context) * 0.05,
-                                    ),
-                                  ),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50.0),
-                                      color: Color(0xFF27DEBF)),
-                                ),
-                              )
-                            ],
-                          );
+                    return Row(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            String weight = snapshot.data[index]["weight"];
+                            String price = snapshot.data[index]["price"];
+                            _changeWeightPrice(weight, price);
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                                left: displayWidth(context) * 0.02,
+                                top: displayHeight(context) * 0.01),
+                            height: displayHeight(context) * 0.05,
+                            width: displayWidth(context) * 0.3,
+                            child: Text(
+                              snapshot.data[index]["weight"],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'RobotoBold',
+                                color: Colors.white,
+                                fontSize: displayWidth(context) * 0.05,
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50.0),
+                                color: Color(0xFF27DEBF)),
+                          ),
+                        )
+                      ],
+                    );
                   }),
             );
           } else {
@@ -437,29 +462,64 @@ class MyCustomFormState extends State<MyCustomForm> {
                             },
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            controller: _pickupPhoneController,
-                            maxLength: 10,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Phone number',
-                              prefixText: '+91 ',
+                        Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: displayHeight(context) * 0.01,
+                                left: displayWidth(context) * 0.15,
+                                right: displayWidth(context) * 0.05),
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _pickupPhoneController,
+
+                                  /*controller: emailController,*/
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return "Please enter the parcel value.";
+                                    }
+                                  },
+                                  //initialValue: "data(1)",
+                                  style: TextStyle(
+                                    fontFamily: 'roboto',
+                                    fontSize: 18,
+                                  ),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.only(bottom: 0),
+                                    labelText: 'Phone number',
+                                    prefixText: "+91 ",
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      Contact contact =
+                                          await _contactPicker.selectContact();
+                                      setState(() {
+                                        _contact = contact;
+                                        if (_contact.phoneNumber.number
+                                            .contains("+")) {
+                                          _pickupPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number
+                                                      .substring(3),
+                                                  '');
+                                        } else {
+                                          _pickupPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number,
+                                                  '');
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(Icons.contact_page)),
+                              ],
                             ),
-                            key: PageStorageKey("test3"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter phone number';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                         Container(
@@ -596,27 +656,64 @@ class MyCustomFormState extends State<MyCustomForm> {
                             },
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            controller: _dropPhoneController,
-                            maxLength: 10,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                                labelText: 'Phone number', prefixText: "91+ "),
-                            key: PageStorageKey("test8"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter phone number';
-                              }
-                              return null;
-                            },
+                        Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: displayHeight(context) * 0.01,
+                                left: displayWidth(context) * 0.15,
+                                right: displayWidth(context) * 0.05),
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _dropPhoneController,
+
+                                  /*controller: emailController,*/
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return "Please enter the parcel value.";
+                                    }
+                                  },
+                                  //initialValue: "data(1)",
+                                  style: TextStyle(
+                                    fontFamily: 'roboto',
+                                    fontSize: 18,
+                                  ),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.only(bottom: 0),
+                                    labelText: 'Phone number',
+                                    prefixText: "+91 ",
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      Contact contact =
+                                          await _contactPicker.selectContact();
+                                      setState(() {
+                                        _contact = contact;
+                                        if (_contact.phoneNumber.number
+                                            .contains("+")) {
+                                          _dropPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number
+                                                      .substring(3),
+                                                  '');
+                                        } else {
+                                          _dropPhoneController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number,
+                                                  '');
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(Icons.contact_page)),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -888,7 +985,9 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   _promoCodePayment = amount;
                                   _totalPayment = _weightPayment +
                                       _parcelValuePayment -
-                                      _promoCodePayment;
+                                      _promoCodePayment +
+                                      ((_parcelValuePayment * 18) / 100) +
+                                      ((_weightPayment * 18) / 100);
                                 });
                                 showDialog(
                                   context: context,

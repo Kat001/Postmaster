@@ -247,7 +247,7 @@ class _SignupState extends State<Signup> {
     print(phn_number);
 
     Map data = {
-      "phn_number": phn_number,
+      "phn_number": phn_number1,
       "email": email,
     };
     var body = json.encode(data);
@@ -267,7 +267,7 @@ class _SignupState extends State<Signup> {
           context,
           SlideLeftRoute(
               page: Signupotpclass(
-            phn_number: phn_number,
+            phn_number: phn_number1,
             first_name: firstNameController.text,
             last_name: lastNameController.text,
             email: emailController.text,

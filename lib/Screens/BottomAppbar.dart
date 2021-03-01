@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-//import 'package:postmaster/Screens/Createorder.dart';
-//import 'package:postmaster/Screens/Homepage.dart';
+
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/animate.dart';
@@ -23,9 +22,10 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentstate = 1;
+
   final List<Widget> _children = [
     Info(),
-    Neworder(),
+    Neworder(notLogin: false),
     Chat(),
     Profile(),
   ];

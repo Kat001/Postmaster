@@ -10,6 +10,7 @@ import 'package:postmaster/Screens/Otp.dart';
 import 'package:postmaster/Screens/Region.dart';
 import 'package:postmaster/Screens/SetPassword.dart';
 import 'package:postmaster/Screens/example.dart';
+import 'package:postmaster/Screens/signupotp.dart';
 import 'package:postmaster/Screens/signupsetpassword.dart';
 //import 'package:postmaster/Screens/faq.dart';
 //import 'package:postmaster/Screens/privacy.dart';

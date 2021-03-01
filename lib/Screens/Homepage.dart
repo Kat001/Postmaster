@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:postmaster/Screens/Createorder.dart';
+import 'package:postmaster/Screens/NewOrderrest.dart';
+import 'package:postmaster/Screens/New_Orders.dart';
 import 'package:postmaster/Screens/Signup.dart';
 import 'package:postmaster/Screens/Login.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:postmaster/Screens/sendorderwithoutlogin.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -13,6 +17,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  bool notLogin = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +108,8 @@ class _HomepageState extends State<Homepage> {
             child: MaterialButton(
               // color: Color(0xFF27DEBF),
               onPressed: () {
-                Navigator.push(context, SlideLeftRoute(page: CreateOrder()));
+                Navigator.push(context,
+                    SlideLeftRoute(page: Neworder(notLogin: notLogin)));
               },
               minWidth: displayWidth(context) * 0.5,
               // shape: RoundedRectangleBorder(

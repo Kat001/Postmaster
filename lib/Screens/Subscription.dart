@@ -178,7 +178,7 @@ class _SubscriptionState extends State<Subscription> {
                                   SizedBox(width: 15.0),
                                   InkWell(
                                     onTap: () {
-                                      showDialog(
+                                      /*showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
@@ -245,7 +245,8 @@ class _SubscriptionState extends State<Subscription> {
                                                 ],
                                               ),
                                             );
-                                          });
+                                          })*/
+                                      ;
                                     },
                                     child: Container(
                                         //alignment: Alignment.center,

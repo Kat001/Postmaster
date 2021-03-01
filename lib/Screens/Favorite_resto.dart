@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 
 import 'package:postmaster/Components/animate.dart';
+import 'package:contact_picker/contact_picker.dart';
 
 class FavoriteResto extends StatefulWidget {
   FavoriteResto({
@@ -95,6 +96,9 @@ class MyCustomFormState extends State<MyCustomForm> {
   TimeOfDay _time = TimeOfDay.now();
   DateTime _dateTime;
 
+  final ContactPicker _contactPicker = new ContactPicker();
+  Contact _contact;
+
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
   bool isSwitched = false;
@@ -147,7 +151,7 @@ class MyCustomFormState extends State<MyCustomForm> {
       String rate = data;
 
       setState(() {
-        String price = rate.substring(0, rate.length - 1);
+        String price = rate.substring(0, rate.length);
         ratePercent = double.parse(price);
       });
     }, onError: (e) {
@@ -160,15 +164,24 @@ class MyCustomFormState extends State<MyCustomForm> {
     setState(() {
       if (_parcelValueController.text.isEmpty) {
         _parcelValuePayment = 0;
-        _totalPayment =
-            _weightPayment + _parcelValuePayment - _promoCodePayment;
+        _totalPayment = _weightPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            (((_promoCodePayment +
+                        _weightPayment +
+                        _parcelValuePayment -
+                        _promoCodePayment) *
+                    18) /
+                100);
       } else {
         double data = double.parse(_parcelValueController.text);
-        _parcelValuePayment = ((data * ratePercent) / 100) +
-            (((data * ratePercent) / 100) * 18) / 100;
+        _parcelValuePayment = ((data * ratePercent) / 100);
 
-        _totalPayment =
-            _weightPayment + _parcelValuePayment - _promoCodePayment;
+        _totalPayment = _weightPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            ((_parcelValuePayment * 18) / 100) +
+            ((_weightPayment * 18) / 100);
       }
     });
   }
@@ -179,8 +192,24 @@ class MyCustomFormState extends State<MyCustomForm> {
 
     setState(() {
       _weightPayment = double.parse(price);
-      _totalPayment = _weightPayment + _parcelValuePayment - _promoCodePayment;
+      _totalPayment = _weightPayment +
+          _parcelValuePayment -
+          _promoCodePayment +
+          ((_weightPayment * 18) / 100) +
+          ((_parcelValuePayment * 18) / 100);
     });
+  }
+
+  String replaceWhitespacesUsingRegex(String s, String replace) {
+    if (s == null) {
+      return null;
+    }
+
+    // This pattern means "at least one space, or more"
+    // \\s : space
+    // +   : one or more
+    final pattern = RegExp('\\s+');
+    return s.replaceAll(pattern, replace);
   }
 
   Widget projectWidget() {
@@ -403,8 +432,7 @@ class MyCustomFormState extends State<MyCustomForm> {
                             readOnly: true,
                             controller: _pickupPhonenumberController,
                             decoration: InputDecoration(
-                              hintText: "Contact number",
-                            ),
+                                hintText: "Contact number", prefixText: "+91 "),
                             key: PageStorageKey("tests4"),
                             validator: (value) {
                               if (value.isEmpty) {
@@ -499,28 +527,64 @@ class MyCustomFormState extends State<MyCustomForm> {
                             },
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: displayHeight(context) * 0.01,
-                              left: displayWidth(context) * 0.15,
-                              right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            controller: _dropPhoneNumberController,
-                            maxLength: 10,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              hintText: "Contact Number",
+                        Padding(
+                          padding: EdgeInsets.all(0.0),
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                top: displayHeight(context) * 0.01,
+                                left: displayWidth(context) * 0.15,
+                                right: displayWidth(context) * 0.05),
+                            child: Stack(
+                              alignment: Alignment.centerRight,
+                              children: [
+                                TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _dropPhoneNumberController,
+
+                                  /*controller: emailController,*/
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return "Please enter the phone number.";
+                                    }
+                                  },
+                                  //initialValue: "data(1)",
+                                  style: TextStyle(
+                                    fontFamily: 'roboto',
+                                    fontSize: 18,
+                                  ),
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.only(bottom: 0),
+                                    labelText: 'Phone number',
+                                    prefixText: "+91 ",
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () async {
+                                      Contact contact =
+                                          await _contactPicker.selectContact();
+                                      setState(() {
+                                        _contact = contact;
+                                        if (_contact.phoneNumber.number
+                                            .contains("+")) {
+                                          _dropPhoneNumberController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number
+                                                      .substring(3),
+                                                  '');
+                                        } else {
+                                          _dropPhoneNumberController.text =
+                                              replaceWhitespacesUsingRegex(
+                                                  _contact.phoneNumber.number,
+                                                  '');
+                                        }
+                                      });
+                                    },
+                                    icon: Icon(Icons.contact_page)),
+                              ],
                             ),
-                            key: PageStorageKey("tests9"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter phone number';
-                              }
-                              return null;
-                            },
                           ),
                         ),
                         Container(
@@ -802,7 +866,13 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   _promoCodePayment = amount;
                                   _totalPayment = _weightPayment +
                                       _parcelValuePayment -
-                                      _promoCodePayment;
+                                      _promoCodePayment +
+                                      (((_promoCodePayment +
+                                                  _weightPayment +
+                                                  _parcelValuePayment -
+                                                  _promoCodePayment) *
+                                              18) /
+                                          100);
                                 });
                                 showDialog(
                                   context: context,

@@ -266,79 +266,33 @@ class _ReferState extends State<Refer> {
             },
             child: Container(
               margin: EdgeInsets.only(left: 5.0.w, top: 4.0.h),
-              child: Row(children: [
-                Container(
-                  margin: EdgeInsets.only(left: 5.0.w, right: 10.0.w),
-                  width: 35.0.w,
-                  height: 7.0.h,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Color(0xFFE4EDEF),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFFF0F0F0),
-                          blurRadius: 5.0,
-                          spreadRadius: 5.0,
-                        ),
-                      ]),
-                  child: Center(
-                    child: Container(
-                      //margin: EdgeInsets.only(left: 5.0.w),
-                      child: Text(
-                        "Invite",
-                        style: TextStyle(
-                            fontSize: 12.0.sp,
-                            fontFamily: 'RobotoBold',
-                            color: Color(0xFF465A64)),
+              child: Container(
+                margin: EdgeInsets.only(left: 5.0.w, right: 10.0.w),
+                width: 35.0.w,
+                height: 7.0.h,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0xFFE4EDEF),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFFF0F0F0),
+                        blurRadius: 5.0,
+                        spreadRadius: 5.0,
                       ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // SocialShare.shareWhatsapp("Hello");
-                    Share.share("Invite friend");
-                  },
+                    ]),
+                child: Center(
                   child: Container(
-                    margin: EdgeInsets.only(left: 0.0.w, right: 10.0.w),
-                    width: 35.0.w,
-                    height: 7.0.h,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Color(0xFFE4EDEF),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFFF0F0F0),
-                            blurRadius: 5.0,
-                            spreadRadius: 5.0,
-                          ),
-                        ]),
-                    child: Center(
-                      child: Row(children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 5.0.w, right: 2.0.w),
-                          //  margin: EdgeInsets.only(left: 5.0.w),
-                          child: Text(
-                            "Share Via ",
-                            style: TextStyle(
-                                fontSize: 12.0.sp,
-                                fontFamily: 'RobotoBold',
-                                color: Color(0xFF465A64)),
-                          ),
-                        ),
-                        Container(
-                          width: 25,
-                          height: 25,
-                          child: SvgPicture.asset(
-                            wa,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ]),
+                    //margin: EdgeInsets.only(left: 5.0.w),
+                    child: Text(
+                      "Invite",
+                      style: TextStyle(
+                          fontSize: 12.0.sp,
+                          fontFamily: 'RobotoBold',
+                          color: Color(0xFF465A64)),
                     ),
                   ),
                 ),
-              ]),
+              ),
             ),
           ),
         ],

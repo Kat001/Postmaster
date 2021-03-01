@@ -16,6 +16,7 @@ class Mysubscription extends StatefulWidget {
 
 class _MysubscriptionState extends State<Mysubscription> {
   Future<List<dynamic>> mySubscription;
+  bool _isdata = true;
   @override
   void initState() {
     super.initState();
@@ -36,14 +37,11 @@ class _MysubscriptionState extends State<Mysubscription> {
     var responseData = json.decode(res.body);
     print(responseData['message']);
 
-    /*if (responseData["status"] == 200) {
-      String price1 = responseData["message"][0]["rate"];
-      String price = price1.substring(0, price1.length - 1);
-      double fPrice = double.parse(price);
-
-      //price + parcelValue;
-
-    }*/
+    if (responseData["status"] == 404) {
+      setState(() {
+        _isdata = false;
+      });
+    }
     return json.decode(res.body)['message'];
   }
 
@@ -274,7 +272,11 @@ class _MysubscriptionState extends State<Mysubscription> {
                     );
                   });
             } else {
-              return Center(child: CircularProgressIndicator());
+              if (_isdata == true) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                return Center(child: Text("No Subscription !"));
+              }
             }
           },
         ));

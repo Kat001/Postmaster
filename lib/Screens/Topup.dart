@@ -4,9 +4,18 @@ import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/BottomAppbar.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:postmaster/Components/customicons.dart';
+import 'package:postmaster/Screens/NewOrderrest.dart';
+import 'package:postmaster/Screens/Profile.dart';
 import 'package:postmaster/Screens/payment.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+//import 'package:flutter/services.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+import 'dart:convert';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
@@ -40,7 +49,7 @@ class _TopupState extends State<Topup> {
       'key': 'rzp_test_eAO1C3UKqngmHc',
       'amount': double.parse(_amountController.text) * 100,
       'name': 'Postmaster',
-      'description': 'Postmaster',
+      'description': 'Send your Pacakages',
       'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
       'external': {
         'wallets': ['paytm']
@@ -66,7 +75,10 @@ class _TopupState extends State<Topup> {
           elevation: 0,
           leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
             },
             icon: Icon(Icons.arrow_back_ios),
           ),
@@ -148,6 +160,7 @@ class _TopupState extends State<Topup> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    _addWalletBalanace();
     Fluttertoast.showToast(
         msg: "SUCCESS: " + response.paymentId, timeInSecForIosWeb: 4);
   }
@@ -161,5 +174,34 @@ class _TopupState extends State<Topup> {
   void _handleExternalWallet(ExternalWalletResponse response) {
     Fluttertoast.showToast(
         msg: "EXTERNAL_WALLET: " + response.walletName, timeInSecForIosWeb: 4);
+  }
+
+  Future<http.Response> _addWalletBalanace() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "amount": _amountController.text,
+      "type": "credit",
+      "status": "success",
+      "payment_mode": "UPI",
+      "comment": "DONT KNOW"
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/wallet_transaction.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    return res;
   }
 }

@@ -44,10 +44,13 @@ class _ProfileState extends State<Profile> {
   String email = "";
   String phon = "";
 
+  double amount = 0;
+
   @override
   void initState() {
     super.initState();
     fetchInformation();
+    fetchamount();
   }
 
   Future fetchInformation() async {
@@ -61,39 +64,32 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  /* Future<http.Response> fetchInformation() async {
+  Future<http.Response> fetchamount() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
     http.Response res;
-    if (token != null) {
-      res = await http.get(
-        'https://www.mitrahtechnology.in/apis/mitrah-api/user-info.php',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          "Authorization": token,
-        },
-      );
-      print(res.body);
-      var responseData = json.decode(res.body);
 
-      var data = responseData["message"];
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/fetch_wallet_balance.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
 
+    if (responseData['status'] == 200) {
+      var balance = responseData['wallet_balance'];
+      double data = double.parse(balance);
       setState(() {
-        firstName = data["first_name"];
-        lastName = data["last_name"];
-        email = data["email"];
-        phon = data["phn_number"];
+        amount = data;
       });
-    } else {}
+    }
 
-    /*} else {
-      showDialog(
-          context: context,
-          builder: (context) =>
-              CustomDialogError("Error", responseData['message'], "Cancel"));
-    }*/
     return res;
-  */
+  }
+
   Widget rowWidget(String str1, String str2) {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -171,9 +167,8 @@ class _ProfileState extends State<Profile> {
                     //mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      rowWidget("Current Balance:", "₹0"),
                       SizedBox(height: 12.0),
-                      rowWidget("Available Balance:", "₹0"),
+                      rowWidget("Available Balance:", "₹" + amount.toString()),
                       SizedBox(height: 12.0),
                       Center(
                         child: Container(

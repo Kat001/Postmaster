@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:postmaster/Components/customicons.dart';
+
 import 'package:postmaster/Components/sizes_helpers.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+//import 'package:flutter/services.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -15,12 +24,53 @@ class Subscription extends StatefulWidget {
 }
 
 class _SubscriptionState extends State<Subscription> {
+  Razorpay _razorpay;
+  double _setAmount;
   Future<List<dynamic>> subscriptionData;
+
+  String subscriptionId = "";
+  String plan = "";
+  String amount = "";
+  String validity = "";
+  String minDelivery = "";
+  String cashBack = "";
+  String roi = "";
+
   final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
     subscriptionData = fetchSubscriptionData();
+
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _razorpay.clear();
+  }
+
+  void openCheckout(double amount) async {
+    var options = {
+      'key': 'rzp_test_eAO1C3UKqngmHc',
+      'amount': amount * 100,
+      'name': 'Postmaster',
+      'description': 'Send your Pacakages',
+      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
   }
 
   Widget rowWidget(String str1, String str2) {
@@ -63,7 +113,7 @@ class _SubscriptionState extends State<Subscription> {
         "table_name": "subscription"
       },
     );
-    print(res.body);
+    //print(res.body);
     var responseData = json.decode(res.body);
 
     if (responseData["status"] == 200) {}
@@ -178,75 +228,25 @@ class _SubscriptionState extends State<Subscription> {
                                   SizedBox(width: 15.0),
                                   InkWell(
                                     onTap: () {
-                                      /*showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              content: Stack(
-                                                overflow: Overflow.visible,
-                                                children: <Widget>[
-                                                  Positioned(
-                                                    right: -40.0,
-                                                    top: -40.0,
-                                                    child: InkResponse(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child: CircleAvatar(
-                                                        child:
-                                                            Icon(Icons.close),
-                                                        backgroundColor:
-                                                            Colors.red,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Form(
-                                                    key: _formKey,
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: <Widget>[
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  8.0),
-                                                          child:
-                                                              TextFormField(),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.all(
-                                                                  8.0),
-                                                          child:
-                                                              TextFormField(),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: RaisedButton(
-                                                            child:
-                                                                Text("Submitß"),
-                                                            onPressed: () {
-                                                              if (_formKey
-                                                                  .currentState
-                                                                  .validate()) {
-                                                                _formKey
-                                                                    .currentState
-                                                                    .save();
-                                                              }
-                                                            },
-                                                          ),
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          })*/
-                                      ;
+                                      double data = double.parse(
+                                          snapshot.data[index]['amount']);
+                                      setState(() {
+                                        _setAmount = data;
+                                        subscriptionId =
+                                            snapshot.data[index]['id'];
+
+                                        plan = snapshot.data[index]['plan'];
+
+                                        amount = snapshot.data[index]['amount'];
+                                        validity =
+                                            snapshot.data[index]['validity'];
+                                        minDelivery = snapshot.data[index]
+                                            ['minimum_delivery'];
+                                        cashBack =
+                                            snapshot.data[index]['cashback'];
+                                        roi = snapshot.data[index]['roi'];
+                                      });
+                                      openCheckout(data);
                                     },
                                     child: Container(
                                         //alignment: Alignment.center,
@@ -453,5 +453,85 @@ class _SubscriptionState extends State<Subscription> {
             ),*/
           ],
         ));
+  }
+
+  void _handlePaymentSuccess(
+    PaymentSuccessResponse response,
+  ) {
+    _addWalletBalanace();
+    _getSubscribed();
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId, timeInSecForIosWeb: 4);
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message,
+        timeInSecForIosWeb: 4);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName, timeInSecForIosWeb: 4);
+  }
+
+  Future<http.Response> _addWalletBalanace() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "amount": _setAmount,
+      "type": "credit",
+      "status": "success",
+      "payment_mode": "UPI",
+      "comment": "DONT KNOW"
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/wallet_transaction.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    return res;
+  }
+
+  Future<http.Response> _getSubscribed() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "subscription_id": subscriptionId,
+      "plan": plan,
+      "amount": double.parse(amount),
+      "validity": validity,
+      "minimum_delivery": minDelivery,
+      "cashback": cashBack,
+      "roi": roi
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/subscription.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print("ksjdjksandjksa" + res.body);
+    var responseData = json.decode(res.body);
+
+    return res;
   }
 }

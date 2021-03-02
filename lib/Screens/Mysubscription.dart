@@ -131,16 +131,23 @@ class _MysubscriptionState extends State<Mysubscription> {
                                       rowWidget("Subscription plan:",
                                           snapshot.data[index]['plan']),
                                       SizedBox(height: 12.0),
-                                      rowWidget("Status:", "True"),
+                                      rowWidget("Validy:",
+                                          snapshot.data[index]['validity']),
                                       SizedBox(height: 12.0),
-                                      rowWidget("Starting date:", "20-12-1910"),
+                                      rowWidget(
+                                          "Starting date:",
+                                          snapshot.data[index]
+                                              ['starting_date']),
                                       SizedBox(height: 12.0),
-                                      rowWidget("Expiry date:", "20-12-2021"),
+                                      rowWidget("Expiry date:",
+                                          snapshot.data[index]['expiry_date']),
                                       SizedBox(height: 12.0),
                                       rowWidget("Order completed:", "10"),
                                       SizedBox(height: 12.0),
                                       rowWidget(
-                                          "Order pending to reach goal:", "2"),
+                                          "Minimum delivery:",
+                                          snapshot.data[index]
+                                              ['minimum_delivery']),
                                       SizedBox(height: 12.0),
                                       rowWidget(
                                           "Total cashback:",

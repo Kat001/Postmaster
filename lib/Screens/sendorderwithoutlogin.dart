@@ -4,7 +4,7 @@ import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
 //import 'package:flutter/services.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+import 'package:google_map_location_picker/google_map_location_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,7 +86,7 @@ class MyCustomForm extends StatefulWidget {
 // Create a corresponding State class.
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm> {
-  PickResult selectedPlace;
+  //PickResult selectedPlace;
   Color _textColor = Colors.green;
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.

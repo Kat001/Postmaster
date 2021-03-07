@@ -7,9 +7,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:postmaster/Screens/Setnewpassword.dart';
-
 import 'package:postmaster/Components/animate.dart';
+
+import 'package:postmaster/Screens/Setnewpassword.dart';
 
 class PersonalDetails extends StatefulWidget {
   @override

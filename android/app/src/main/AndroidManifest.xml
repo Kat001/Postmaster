@@ -4,11 +4,13 @@
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
    <application
+      
    
         android:label="postmaster"
         android:icon="@mipmap/ic_launcher">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyCke6HvKMXsCcc5JpyuVPeGy7vVEAeJlUc"/>
+         <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyCy2iHXEQ9U4c77tJSBW5WPD5vRA8EEH94"/>
+        
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -53,6 +53,7 @@ dependencies:
   path_provider: ^1.6.11
   flutter_otp: ^0.3.2
   google_maps_place_picker: ^1.0.1
+  google_map_location_picker: ^4.1.6
   google_maps_flutter: ^1.2.0
   flutter_plugin_android_lifecycle: ^1.0.4
   

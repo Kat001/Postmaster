@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/Screens/Profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/Otp.dart';
@@ -168,7 +169,7 @@ class _SetNewPasswordState extends State<SetNewPassword> {
         builder: (context) =>
             CustomDialog("Success", responseData['message'], "Okay", 2),
       );
-      //Navigator.push(context, SlideLeftRoute(page: Profile()));
+      Navigator.push(context, SlideLeftRoute(page: Profile()));
     } else if (responseData['status'] == 500) {
       showDialog(
           context: context,

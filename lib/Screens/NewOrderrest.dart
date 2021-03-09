@@ -12,8 +12,16 @@ import 'package:postmaster/Components/animate.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:postmaster/Screens/Location.dart';
 
 import 'package:contact_picker/contact_picker.dart';
+
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_map_location_picker/generated/l10n.dart'
+    as location_picker;
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NewOrder extends StatefulWidget {
   NewOrder({
@@ -93,6 +101,9 @@ class MyCustomFormState extends State<MyCustomForm>
   var arrivedateTECs = <TextEditingController>[];
   var arrivetimeTECs = <TextEditingController>[];
   var commentTECs = <TextEditingController>[];
+
+  LocationResult _pickedLocation;
+  FocusNode _phoneNumberFocusNode;
 
   //
   var cards = <Widget>[];
@@ -260,23 +271,57 @@ class MyCustomFormState extends State<MyCustomForm>
         //textAlign: TextAlign.start,
       ),
       children: [
-        Container(
-          margin: EdgeInsets.only(
-              top: displayHeight(context) * 0.01,
-              left: displayWidth(context) * 0.15,
-              right: displayWidth(context) * 0.05),
-          child: TextFormField(
-            controller: addressController,
-            decoration: InputDecoration(
-              labelText: 'Address',
+        Padding(
+          padding: EdgeInsets.all(0.0),
+          child: Container(
+            margin: EdgeInsets.only(
+                top: displayHeight(context) * 0.01,
+                left: displayWidth(context) * 0.15,
+                right: displayWidth(context) * 0.05),
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                TextFormField(
+                  maxLines: null,
+                  readOnly: true,
+                  key: PageStorageKey('mytextfield'),
+
+                  onTap: () async {
+                    String address = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Locaton(),
+                      ),
+                    );
+                    setState(() {
+                      addressController.text = address;
+                    });
+                  },
+
+                  controller: addressController,
+
+                  /*controller: emailController,*/
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Please enter address";
+                    }
+                  },
+                  //initialValue: "data(1)",
+                  style: TextStyle(
+                    fontFamily: 'roboto',
+                    fontSize: 18,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(bottom: 0, right: 28.0),
+                    labelText: 'Address',
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {},
+                  icon: Icon(Icons.location_on),
+                )
+              ],
             ),
-            key: PageStorageKey("test7"),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please select the address';
-              }
-              return null;
-            },
           ),
         ),
         Padding(
@@ -449,23 +494,57 @@ class MyCustomFormState extends State<MyCustomForm>
         //textAlign: TextAlign.start,
       ),
       children: [
-        Container(
-          margin: EdgeInsets.only(
-              top: displayHeight(context) * 0.01,
-              left: displayWidth(context) * 0.15,
-              right: displayWidth(context) * 0.05),
-          child: TextFormField(
-            controller: addressTECs.last,
-            decoration: InputDecoration(
-              labelText: 'Address',
+        Padding(
+          padding: EdgeInsets.all(0.0),
+          child: Container(
+            margin: EdgeInsets.only(
+                top: displayHeight(context) * 0.01,
+                left: displayWidth(context) * 0.15,
+                right: displayWidth(context) * 0.05),
+            child: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                TextFormField(
+                  maxLines: null,
+                  readOnly: true,
+                  key: PageStorageKey('mytextfield'),
+
+                  onTap: () async {
+                    String address = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Locaton(),
+                      ),
+                    );
+                    setState(() {
+                      addressTECs.last.text = address;
+                    });
+                  },
+
+                  controller: addressTECs.last,
+
+                  /*controller: emailController,*/
+                  validator: (String value) {
+                    if (value.isEmpty) {
+                      return "Please enter address";
+                    }
+                  },
+                  //initialValue: "data(1)",
+                  style: TextStyle(
+                    fontFamily: 'roboto',
+                    fontSize: 18,
+                  ),
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.only(bottom: 0, right: 28.0),
+                    labelText: 'Address',
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {},
+                  icon: Icon(Icons.location_on),
+                )
+              ],
             ),
-            key: PageStorageKey("test7"),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please select the address';
-              }
-              return null;
-            },
           ),
         ),
         Padding(
@@ -708,6 +787,21 @@ class MyCustomFormState extends State<MyCustomForm>
       length: 2,
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          location_picker.S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const <Locale>[
+          Locale('en', ''),
+          Locale('ar', ''),
+          Locale('pt', ''),
+          Locale('tr', ''),
+          Locale('es', ''),
+          Locale('it', ''),
+          Locale('ru', ''),
+        ],
         home: Scaffold(
             resizeToAvoidBottomPadding: false,
             resizeToAvoidBottomInset: false,
@@ -843,116 +937,68 @@ class MyCustomFormState extends State<MyCustomForm>
                                         textAlign: TextAlign.start,
                                       ),
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              top:
-                                                  displayHeight(context) * 0.01,
-                                              left:
-                                                  displayWidth(context) * 0.15,
-                                              right:
-                                                  displayWidth(context) * 0.05),
-                                          child: TextFormField(
-                                            controller:
-                                                _pickupAddressController,
-                                            readOnly: true,
-                                            /*onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return PlacePicker(
-                                                      apiKey:
-                                                          "AIzaSyA0tKe1TVWfYekFFY0WisJc6WQkI-6gXEs",
-                                                      initialPosition:
-                                                          MyCustomForm
-                                                              .kInitialPosition,
-                                                      useCurrentLocation: true,
-                                                      selectInitialPosition:
-                                                          true,
+                                        Padding(
+                                          padding: EdgeInsets.all(0.0),
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: displayHeight(context) *
+                                                    0.01,
+                                                left: displayWidth(context) *
+                                                    0.15,
+                                                right: displayWidth(context) *
+                                                    0.05),
+                                            child: Stack(
+                                              alignment: Alignment.centerRight,
+                                              children: [
+                                                TextFormField(
+                                                  maxLines: null,
+                                                  readOnly: true,
+                                                  key: PageStorageKey(
+                                                      'mytextfield'),
 
-                                                      //usePlaceDetailSearch: true,
-                                                      onPlacePicked: (result) {
-                                                        selectedPlace = result;
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        setState(() {});
-                                                      },
-                                                      forceSearchOnZoomChanged:
-                                                          true,
-                                                      automaticallyImplyAppBarLeading:
-                                                          false,
-                                                      autocompleteLanguage:
-                                                          "ko",
-                                                      region: 'au',
-                                                      //selectInitialPosition: true,
-                                                      selectedPlaceWidgetBuilder:
-                                                          (_,
-                                                              selectedPlace,
-                                                              state,
-                                                              isSearchBarFocused) {
-                                                        print(
-                                                            "state: $state, isSearchBarFocused: $isSearchBarFocused");
-                                                        return isSearchBarFocused
-                                                            ? Container()
-                                                            : FloatingCard(
-                                                                bottomPosition:
-                                                                    0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                                                leftPosition:
-                                                                    0.0,
-                                                                rightPosition:
-                                                                    0.0,
-                                                                width: 500,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            12.0),
-                                                                child: state ==
-                                                                        SearchingState
-                                                                            .Searching
-                                                                    ? Center(
-                                                                        child:
-                                                                            CircularProgressIndicator())
-                                                                    : RaisedButton(
-                                                                        child: Text(
-                                                                            "Pick Here"),
-                                                                        onPressed:
-                                                                            () {
-                                                                          // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-                                                                          //            this will override default 'Select here' Button.
-                                                                          print(
-                                                                              "do something with [selectedPlace] data");
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                        },
-                                                                      ),
-                                                              );
-                                                      },
-                                                      pinBuilder:
-                                                          (context, state) {
-                                                        if (state ==
-                                                            PinState.Idle) {
-                                                          return Icon(Icons
-                                                              .favorite_border);
-                                                        } else {
-                                                          return Icon(
-                                                              Icons.favorite);
-                                                        }
-                                                      },
+                                                  onTap: () async {
+                                                    String address =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Locaton(),
+                                                      ),
                                                     );
+                                                    setState(() {
+                                                      _pickupAddressController
+                                                          .text = address;
+                                                    });
                                                   },
+
+                                                  controller:
+                                                      _pickupAddressController,
+
+                                                  /*controller: emailController,*/
+                                                  validator: (String value) {
+                                                    if (value.isEmpty) {
+                                                      return "Please enter address";
+                                                    }
+                                                  },
+                                                  //initialValue: "data(1)",
+                                                  style: TextStyle(
+                                                    fontFamily: 'roboto',
+                                                    fontSize: 18,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                            right: 28,
+                                                            bottom: 0),
+                                                    labelText: 'Address',
+                                                  ),
                                                 ),
-                                              );
-                                            },*/
-                                            decoration: InputDecoration(
-                                              labelText: 'address',
+                                                IconButton(
+                                                  onPressed: () async {},
+                                                  icon: Icon(Icons.location_on),
+                                                )
+                                              ],
                                             ),
-                                            key: PageStorageKey("test2"),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please enter some text';
-                                              }
-                                              return null;
-                                            },
                                           ),
                                         ),
                                         Padding(
@@ -1169,26 +1215,68 @@ class MyCustomFormState extends State<MyCustomForm>
                                         textAlign: TextAlign.start,
                                       ),
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              top:
-                                                  displayHeight(context) * 0.01,
-                                              left:
-                                                  displayWidth(context) * 0.15,
-                                              right:
-                                                  displayWidth(context) * 0.05),
-                                          child: TextFormField(
-                                            controller: _dropAddressController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Address',
+                                        Padding(
+                                          padding: EdgeInsets.all(0.0),
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: displayHeight(context) *
+                                                    0.01,
+                                                left: displayWidth(context) *
+                                                    0.15,
+                                                right: displayWidth(context) *
+                                                    0.05),
+                                            child: Stack(
+                                              alignment: Alignment.bottomRight,
+                                              children: [
+                                                TextFormField(
+                                                  maxLines: null,
+                                                  readOnly: true,
+                                                  key: PageStorageKey(
+                                                      'mytextfield'),
+
+                                                  onTap: () async {
+                                                    String address =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Locaton(),
+                                                      ),
+                                                    );
+                                                    setState(() {
+                                                      _dropAddressController
+                                                          .text = address;
+                                                    });
+                                                  },
+
+                                                  controller:
+                                                      _dropAddressController,
+
+                                                  /*controller: emailController,*/
+                                                  validator: (String value) {
+                                                    if (value.isEmpty) {
+                                                      return "Please enter address";
+                                                    }
+                                                  },
+                                                  //initialValue: "data(1)",
+                                                  style: TextStyle(
+                                                    fontFamily: 'roboto',
+                                                    fontSize: 18,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                            bottom: 0,
+                                                            right: 28.0),
+                                                    labelText: 'Address',
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () async {},
+                                                  icon: Icon(Icons.location_on),
+                                                )
+                                              ],
                                             ),
-                                            key: PageStorageKey("test7"),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please select the address';
-                                              }
-                                              return null;
-                                            },
                                           ),
                                         ),
                                         Padding(
@@ -1960,116 +2048,68 @@ class MyCustomFormState extends State<MyCustomForm>
                                         textAlign: TextAlign.start,
                                       ),
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              top:
-                                                  displayHeight(context) * 0.01,
-                                              left:
-                                                  displayWidth(context) * 0.15,
-                                              right:
-                                                  displayWidth(context) * 0.05),
-                                          child: TextFormField(
-                                            controller:
-                                                _pickupAddressController,
-                                            //readOnly: true,
-                                            /*onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return PlacePicker(
-                                                      apiKey:
-                                                          "AIzaSyA0tKe1TVWfYekFFY0WisJc6WQkI-6gXEs",
-                                                      initialPosition:
-                                                          MyCustomForm
-                                                              .kInitialPosition,
-                                                      useCurrentLocation: true,
-                                                      selectInitialPosition:
-                                                          true,
+                                        Padding(
+                                          padding: EdgeInsets.all(0.0),
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: displayHeight(context) *
+                                                    0.01,
+                                                left: displayWidth(context) *
+                                                    0.15,
+                                                right: displayWidth(context) *
+                                                    0.05),
+                                            child: Stack(
+                                              alignment: Alignment.bottomRight,
+                                              children: [
+                                                TextFormField(
+                                                  maxLines: null,
+                                                  readOnly: true,
+                                                  key: PageStorageKey(
+                                                      'mytextfield'),
 
-                                                      //usePlaceDetailSearch: true,
-                                                      onPlacePicked: (result) {
-                                                        selectedPlace = result;
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        setState(() {});
-                                                      },
-                                                      forceSearchOnZoomChanged:
-                                                          true,
-                                                      automaticallyImplyAppBarLeading:
-                                                          false,
-                                                      autocompleteLanguage:
-                                                          "ko",
-                                                      region: 'au',
-                                                      //selectInitialPosition: true,
-                                                      selectedPlaceWidgetBuilder:
-                                                          (_,
-                                                              selectedPlace,
-                                                              state,
-                                                              isSearchBarFocused) {
-                                                        print(
-                                                            "state: $state, isSearchBarFocused: $isSearchBarFocused");
-                                                        return isSearchBarFocused
-                                                            ? Container()
-                                                            : FloatingCard(
-                                                                bottomPosition:
-                                                                    0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                                                leftPosition:
-                                                                    0.0,
-                                                                rightPosition:
-                                                                    0.0,
-                                                                width: 500,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            12.0),
-                                                                child: state ==
-                                                                        SearchingState
-                                                                            .Searching
-                                                                    ? Center(
-                                                                        child:
-                                                                            CircularProgressIndicator())
-                                                                    : RaisedButton(
-                                                                        child: Text(
-                                                                            "Pick Here"),
-                                                                        onPressed:
-                                                                            () {
-                                                                          // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-                                                                          //            this will override default 'Select here' Button.
-                                                                          print(
-                                                                              "do something with [selectedPlace] data");
-                                                                          Navigator.of(context)
-                                                                              .pop();
-                                                                        },
-                                                                      ),
-                                                              );
-                                                      },
-                                                      pinBuilder:
-                                                          (context, state) {
-                                                        if (state ==
-                                                            PinState.Idle) {
-                                                          return Icon(Icons
-                                                              .favorite_border);
-                                                        } else {
-                                                          return Icon(
-                                                              Icons.favorite);
-                                                        }
-                                                      },
+                                                  onTap: () async {
+                                                    String address =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Locaton(),
+                                                      ),
                                                     );
+                                                    setState(() {
+                                                      _pickupAddressController
+                                                          .text = address;
+                                                    });
                                                   },
+
+                                                  controller:
+                                                      _pickupAddressController,
+
+                                                  /*controller: emailController,*/
+                                                  validator: (String value) {
+                                                    if (value.isEmpty) {
+                                                      return "Please enter address";
+                                                    }
+                                                  },
+                                                  //initialValue: "data(1)",
+                                                  style: TextStyle(
+                                                    fontFamily: 'roboto',
+                                                    fontSize: 18,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                            bottom: 0,
+                                                            right: 28.0),
+                                                    labelText: 'Address',
+                                                  ),
                                                 ),
-                                              );
-                                            },*/
-                                            decoration: InputDecoration(
-                                              labelText: 'address',
+                                                IconButton(
+                                                  onPressed: () async {},
+                                                  icon: Icon(Icons.location_on),
+                                                )
+                                              ],
                                             ),
-                                            key: PageStorageKey("test2"),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please enter some text';
-                                              }
-                                              return null;
-                                            },
                                           ),
                                         ),
                                         Padding(
@@ -2284,26 +2324,68 @@ class MyCustomFormState extends State<MyCustomForm>
                                         textAlign: TextAlign.start,
                                       ),
                                       children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              top:
-                                                  displayHeight(context) * 0.01,
-                                              left:
-                                                  displayWidth(context) * 0.15,
-                                              right:
-                                                  displayWidth(context) * 0.05),
-                                          child: TextFormField(
-                                            controller: _dropAddressController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Address',
+                                        Padding(
+                                          padding: EdgeInsets.all(0.0),
+                                          child: Container(
+                                            margin: EdgeInsets.only(
+                                                top: displayHeight(context) *
+                                                    0.01,
+                                                left: displayWidth(context) *
+                                                    0.15,
+                                                right: displayWidth(context) *
+                                                    0.05),
+                                            child: Stack(
+                                              alignment: Alignment.bottomRight,
+                                              children: [
+                                                TextFormField(
+                                                  maxLines: null,
+                                                  readOnly: true,
+                                                  key: PageStorageKey(
+                                                      'mytextfield'),
+
+                                                  onTap: () async {
+                                                    String address =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Locaton(),
+                                                      ),
+                                                    );
+                                                    setState(() {
+                                                      _dropAddressController
+                                                          .text = address;
+                                                    });
+                                                  },
+
+                                                  controller:
+                                                      _dropAddressController,
+
+                                                  /*controller: emailController,*/
+                                                  validator: (String value) {
+                                                    if (value.isEmpty) {
+                                                      return "Please enter address";
+                                                    }
+                                                  },
+                                                  //initialValue: "data(1)",
+                                                  style: TextStyle(
+                                                    fontFamily: 'roboto',
+                                                    fontSize: 18,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                            bottom: 0,
+                                                            right: 28.0),
+                                                    labelText: 'Address',
+                                                  ),
+                                                ),
+                                                IconButton(
+                                                  onPressed: () async {},
+                                                  icon: Icon(Icons.location_on),
+                                                )
+                                              ],
                                             ),
-                                            key: PageStorageKey("test7"),
-                                            validator: (value) {
-                                              if (value.isEmpty) {
-                                                return 'Please select the address';
-                                              }
-                                              return null;
-                                            },
                                           ),
                                         ),
                                         Padding(

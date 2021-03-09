@@ -1,137 +1,131 @@
-/*import 'package:flutter/cupertino.dart';
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Map extends StatefulWidget {
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:postmaster/Screens/Location.dart';
+
+class Locaton extends StatefulWidget {
   @override
-  _MapState createState() => _MapState();
+  _LocatonState createState() => _LocatonState();
 }
 
-class _MapState extends State<Map> {
-  Completer<GoogleMapController> controller1;
+class _LocatonState extends State<Locaton> {
+  TextEditingController addressController = TextEditingController();
 
-  //sflutter run
-  tatic LatLng _center = LatLng(-15.4630239974464, 28.363397732282127);
-  static LatLng _initialPosition;
-  final Set<Marker> _markers = {};
-  static LatLng _lastMapPosition = _initialPosition;
+  void findLocationFromMap() async {
+    LocationResult _pickedLocation;
+    LocationResult result = await showLocationPicker(
+      context,
+      "AIzaSyA0tKe1TVWfYekFFY0WisJc6WQkI-6gXEs",
+      initialCenter: LatLng(22.311199, 73.181976),
+      automaticallyAnimateToCurrentLocation: true,
+      mapStylePath: 'assets/mapStyle.json',
+      myLocationButtonEnabled: true,
+      // requiredGPS: true,
+      layersButtonEnabled: true,
+      // countries: ['AE', 'NG']
 
-  @override
-  void initState() {
-    super.initState();
-    _getUserLocation();
-  }
-
-  void _getUserLocation() async {
-    Position position = await Geolocator()
-        .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    List<Placemark> placemark = await Geolocator()
-        .placemarkFromCoordinates(position.latitude, position.longitude);
-    setState(() {
-      _initialPosition = LatLng(position.latitude, position.longitude);
-      print('${placemark[0].name}');
-    });
-  }
-
-  _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      controller1.complete(controller);
-    });
-  }
-
-  MapType _currentMapType = MapType.normal;
-
-  void _onMapTypeButtonPressed() {
-    setState(() {
-      _currentMapType = _currentMapType == MapType.normal
-          ? MapType.satellite
-          : MapType.normal;
-    });
-  }
-
-  _onCameraMove(CameraPosition position) {
-    _lastMapPosition = position.target;
-  }
-
-  _onAddMarkerButtonPressed() {
-    setState(() {
-      _markers.add(Marker(
-          markerId: MarkerId(_lastMapPosition.toString()),
-          position: _lastMapPosition,
-          infoWindow: InfoWindow(
-              title: "Pizza Parlour",
-              snippet: "This is a snippet",
-              onTap: () {}),
-          onTap: () {},
-          icon: BitmapDescriptor.defaultMarker));
-    });
-  }
-
-  Widget mapButton(Function function, Icon icon, Color color) {
-    return RawMaterialButton(
-      onPressed: function,
-      child: icon,
-      shape: new CircleBorder(),
-      elevation: 2.0,
-      fillColor: color,
-      padding: const EdgeInsets.all(7.0),
+//                      resultCardAlignment: Alignment.bottomCenter,
+      desiredAccuracy: LocationAccuracy.best,
     );
+    print("result = $result");
+    setState(() {
+      _pickedLocation = result;
+      addressController.text = result.address;
+    });
+    Navigator.pop(context, addressController.text);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _initialPosition == null
-          ? Container(
-              child: Center(
+      appBar: AppBar(
+        title: Text(
+          "Address selection",
+          style: TextStyle(
+              fontFamily: "RobotoBold",
+              fontSize: 20.0,
+              color: Color(0xFF2AD0B5)),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios),
+        ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: 10.0, top: 20.0),
+            child: Row(
+              children: [
+                Container(
+                  child: Flexible(
+                    child: TextFormField(
+                      maxLines: null,
+                      autofocus: true,
+                      controller: addressController,
+                      decoration: new InputDecoration(hintText: 'Address'),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Icon(
+                  Icons.location_on,
+                  color: Color(0xFF2AD0B5),
+                ),
+                InkWell(
+                  onTap: () {
+                    findLocationFromMap();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(right: 10.0),
+                    child: Text(
+                      "Map",
+                      style: TextStyle(
+                          fontFamily: "RobotoBold",
+                          fontSize: 20.0,
+                          color: Color(0xFF2AD0B5)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Center(
+            child: Container(
+              margin: new EdgeInsets.only(top: 40),
+              child: MaterialButton(
+                // color: Color(0xFF27DEBF),
+                onPressed: () {
+                  Navigator.pop(context, addressController.text);
+                },
+                minWidth: 250.0,
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(8.0)),
+                height: 45.0,
                 child: Text(
-                  'loading map..',
+                  "Done",
                   style: TextStyle(
-                      fontFamily: 'Avenir-Medium', color: Colors.grey[400]),
+                    color: Colors.white,
+                    fontSize: 22.0,
+                    fontFamily: 'RobotoBold',
+                  ),
                 ),
               ),
-            )
-          : Container(
-              child: Stack(children: <Widget>[
-                GoogleMap(
-                  markers: _markers,
-                  mapType: _currentMapType,
-                  initialCameraPosition: CameraPosition(
-                    target: _initialPosition,
-                    zoom: 14.4746,
-                  ),
-                  onMapCreated: _onMapCreated,
-                  zoomGesturesEnabled: true,
-                  onCameraMove: _onCameraMove,
-                  myLocationEnabled: true,
-                  compassEnabled: true,
-                  myLocationButtonEnabled: false,
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                      margin: EdgeInsets.fromLTRB(0.0, 50.0, 0.0, 0.0),
-                      child: Column(
-                        children: <Widget>[
-                          mapButton(_onAddMarkerButtonPressed,
-                              Icon(Icons.add_location), Colors.blue),
-                          mapButton(
-                              _onMapTypeButtonPressed,
-                              Icon(
-                                IconData(0xf473,
-                                    fontFamily: CupertinoIcons.iconFont,
-                                    fontPackage:
-                                        CupertinoIcons.iconFontPackage),
-                              ),
-                              Colors.green),
-                        ],
-                      )),
-                )
-              ]),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  gradient: RadialGradient(
+                      radius: 15,
+                      colors: [Color(0xFF27DEBF), Color(0xFF465A64)])),
             ),
+          ),
+        ],
+      ),
     );
   }
 }
-*/

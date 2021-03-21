@@ -3,12 +3,20 @@ import 'package:http/http.dart' as http;
 import 'package:postmaster/Components/animate.dart';
 import 'package:postmaster/Screens/Location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoder/geocoder.dart';
+
+import 'package:flutter/services.dart';
 
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
+import 'package:location/location.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Example extends StatefulWidget {
   @override
@@ -16,89 +24,97 @@ class Example extends StatefulWidget {
 }
 
 class _ExampleState extends State<Example> {
-  double data = 0;
-  var textdata = "";
-  bool isApply = true;
-  TextEditingController _dataController = TextEditingController();
-  TextEditingController _itemController = TextEditingController();
-  TextEditingController _promoCodeController = TextEditingController();
   List<String> items;
+
+  Set<Marker> _markers = {};
+  BitmapDescriptor mapMarker;
+
+  var lat = 22.307159;
+  var lang = 73.181221;
+
+  LatLng _initialcameraposition = LatLng(22.307159, 73.181221);
+  GoogleMapController _controller;
+  Location _location = Location();
+
+  void _onMapCreated(GoogleMapController _cntlr) {
+    _controller = _cntlr;
+    _location.onLocationChanged.listen((l) {
+      _controller.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(l.latitude, l.longitude), zoom: 15),
+        ),
+      );
+    });
+  }
+
+  void setCustomMarker() {
+    //mapMarker = BitmapDescriptor.fromAssetImage(configuration, assetName);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
-    fetchInitialData();
-  }
 
-  String _name(dynamic user) {
-    return user['item'];
-  }
-
-  String _age(Map<dynamic, dynamic> user) {
-    return user['id'].toString();
-  }
-
-  Future<List<dynamic>> fetchInitialData() async {
-    http.Response res = await http.get(
-      'https://www.mitrahtechnology.in/apis/mitrah-api/order/getdetail.php',
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        "user": "admin",
-        "password": "1234",
-        "table_name": "item"
-      },
-    );
-    //print(res.body);
-    //var responseData = json.decode(res.body);
-
-    //print(responseData);
-    /*
-    */
-
-    return json.decode(res.body)['message'];
-  }
-
-  Widget item(String itemtype) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _itemController.text = itemtype;
-        });
-      },
-      child: Container(
-        //height: 50.0,
-        //width: 100.0,
-        //color: Colors.red,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(itemtype),
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-          color: Colors.cyan,
-        ),
-      ),
-    );
+    _markers.add(Marker(
+      markerId: MarkerId("id-1"),
+      position: LatLng(lat, lang),
+      //icon:Icon(Icons.add),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: RaisedButton(
-          child: Text('Add entries'),
-          onPressed: () async {
-            String persons = await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Locaton(),
+      body: FlatButton(
+        child: Center(child: Text("Click yrr")),
+        onPressed: () async {
+          try {
+            var address = await Geocoder.local
+                .findAddressesFromQuery("Shyamal County Vadodara,India");
+            //print(address.first.coordinates);
+            print(address.last.coordinates);
+          } on Exception catch (exception) {
+            print(exception);
+          } catch (error) {
+            // executed for errors of all types other than Exception
+          }
+        },
+      ), /*Padding(
+        padding: EdgeInsets.all(0.0),
+        child: Container(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              GoogleMap(
+                onMapCreated: _onMapCreated,
+                myLocationEnabled: true,
+                //mapType: MapType.hybrid,
+                initialCameraPosition: CameraPosition(
+                  target: _initialcameraposition,
+                  zoom: 12,
+                ),
+                markers: _markers,
+
+                onCameraMove: (_position) {
+                  print(_position);
+                },
+                onCameraIdle: () {
+                  print("Donemlkdsjfkldsfds");
+                },
               ),
-            );
-            if (persons != null) print(persons);
-          },
+              Container(
+                child: Icon(
+                  Icons.location_on,
+                  color: Colors.pink[400],
+                  size: 20.0,
+                ),
+              )
+            ],
+          ),
         ),
-      ),
+      ),*/
     );
   }
 }

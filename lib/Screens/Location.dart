@@ -3,15 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:postmaster/Screens/Location.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_map_location_picker/generated/l10n.dart'
+    as location_picker;
+import 'package:google_map_location_picker/google_map_location_picker.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Locaton extends StatefulWidget {
+  Locaton({
+    Key key,
+    this.address,
+  }) : super(key: key);
+
+  final String address;
   @override
   _LocatonState createState() => _LocatonState();
 }
 
 class _LocatonState extends State<Locaton> {
   TextEditingController addressController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    addressController.text = widget.address;
+  }
 
   void findLocationFromMap() async {
     LocationResult _pickedLocation;
@@ -24,7 +43,7 @@ class _LocatonState extends State<Locaton> {
       myLocationButtonEnabled: true,
       // requiredGPS: true,
       layersButtonEnabled: true,
-      // countries: ['AE', 'NG']
+      countries: ['IN'],
 
 //                      resultCardAlignment: Alignment.bottomCenter,
       desiredAccuracy: LocationAccuracy.best,

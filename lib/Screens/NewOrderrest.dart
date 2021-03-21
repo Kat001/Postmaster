@@ -3,11 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/animate.dart';
+import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoder/geocoder.dart';
+
+import 'package:flutter/services.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -22,6 +27,8 @@ import 'package:google_map_location_picker/generated/l10n.dart'
 import 'package:google_map_location_picker/google_map_location_picker.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class NewOrder extends StatefulWidget {
   NewOrder({
@@ -91,7 +98,6 @@ class MyCustomForm extends StatefulWidget {
 // This class holds data related to the form.
 class MyCustomFormState extends State<MyCustomForm>
     with TickerProviderStateMixin {
-  PickResult selectedPlace;
   Color _textColor = Colors.green;
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
@@ -121,7 +127,17 @@ class MyCustomFormState extends State<MyCustomForm>
   double _totalPayment = 0;
   double _weightPayment = 0;
   double _parcelValuePayment = 0;
+  double _distanceFirstPayment = 0;
   double ratePercent;
+  //--------------------------------------
+  bool valuefirst = false;
+  bool valuesecond = false;
+  bool valuethird = false;
+  double walletBalance = 0;
+  //------------------------------------------
+  Razorpay _razorpay;
+  //----------------------------------------
+  FocusNode pickup1FocusNode;
 
   double _promoCodePayment = 0;
   final _formKey = GlobalKey<FormState>();
@@ -157,16 +173,17 @@ class MyCustomFormState extends State<MyCustomForm>
     _parcelValueController.dispose();
     //tabController.dispose();
     super.dispose();
+    _razorpay.clear();
+    pickup1FocusNode.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    //tabController = TabController(length: 2, vsync: this, initialIndex: 0);
-
-    //tabController.addListener(_handleTabChange);
+    pickup1FocusNode = FocusNode();
 
     _parcelValueController.addListener(_printLatestValue);
+    // _pickupAddressController.addListener(_findPickUpDistance);
 
     widget.rate.then((data) {
       String rate = data;
@@ -178,6 +195,77 @@ class MyCustomFormState extends State<MyCustomForm>
     }, onError: (e) {
       print(e);
     });
+    fetchWalletBalance();
+    _razorpay = Razorpay();
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  void openCheckout(int onlineMinusAmount) async {
+    var options = {
+      'key': 'rzp_test_eAO1C3UKqngmHc',
+      'amount': onlineMinusAmount * 100,
+      'name': 'Postmaster',
+      'description': 'Send your Pacakages',
+      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
+      'external': {
+        'wallets': ['paytm']
+      }
+    };
+
+    try {
+      _razorpay.open(options);
+    } catch (e) {
+      debugPrint(e);
+    }
+  }
+
+  Future<http.Response> fetchWalletBalance() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/fetch_wallet_balance.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData['status'] == 200) {
+      var balance = responseData['wallet_balance'];
+      double data = double.parse(balance);
+      setState(() {
+        walletBalance = data;
+      });
+    }
+
+    return res;
+  }
+
+  _getLocation(TextEditingController _controller) async {
+    Position position = await Geolocator.getCurrentPosition();
+    debugPrint('location: ${position.latitude}');
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    var first = addresses.first;
+    print("${first.featureName} : ${first.addressLine}");
+    setState(() {
+      _controller.text = first.addressLine;
+    });
+    var distance =
+        Geolocator.distanceBetween(22.313863, 73.151014, 21.203510, 72.839230);
+    print(distance.toDouble() / 1000);
+  }
+
+  String currentLocation() {
+    return "hii";
   }
 
   Widget removeWidget() {
@@ -217,7 +305,7 @@ class MyCustomFormState extends State<MyCustomForm>
               SizedBox(width: 3.0),
               Expanded(
                 child: Text(
-                  "Remove Address",
+                  "",
                   style: TextStyle(
                       fontFamily: 'Robotobold',
                       fontSize: 17,
@@ -290,12 +378,55 @@ class MyCustomFormState extends State<MyCustomForm>
                     String address = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Locaton(),
+                        builder: (context) =>
+                            Locaton(address: addressController.text),
                       ),
                     );
                     setState(() {
                       addressController.text = address;
                     });
+
+                    if (_pickupAddressController.text.isEmpty) {
+                      addressController.text = "";
+                      showDialog(
+                          context: context,
+                          builder: (context) => CustomDialogError(
+                              "Error",
+                              "Pickup Address is required fill it first",
+                              "Cancel"));
+                    } else {
+                      print("---------------------------------------------");
+                      var point1 = _pickupAddressController.text;
+                      var point2 = _dropAddressController.text;
+                      double price = 0;
+                      for (int i = 0; i <= addressTECs.length; i++) {
+                        if (point2.isEmpty) {
+                          if (i == addressTECs.length) {
+                          } else {
+                            point2 = addressTECs[i].text;
+                          }
+                        } else {
+                          var amount = await _givesDistance1(point1, point2);
+                          print("---------------------------------------" +
+                              amount);
+                          price += double.parse(amount); //amount;
+                          point1 = point2;
+                          if (i == addressTECs.length) {
+                          } else {
+                            point2 = addressTECs[i].text;
+                          }
+                        }
+                      }
+                      setState(() {
+                        _distanceFirstPayment = price;
+                        _totalPayment = _weightPayment +
+                            _distanceFirstPayment +
+                            _parcelValuePayment -
+                            _promoCodePayment +
+                            ((_weightPayment * 18) / 100) +
+                            ((_parcelValuePayment * 18) / 100);
+                      });
+                    }
                   },
 
                   controller: addressController,
@@ -317,7 +448,9 @@ class MyCustomFormState extends State<MyCustomForm>
                   ),
                 ),
                 IconButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    _getLocation(addressController);
+                  },
                   icon: Icon(Icons.location_on),
                 )
               ],
@@ -513,11 +646,23 @@ class MyCustomFormState extends State<MyCustomForm>
                     String address = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Locaton(),
+                        builder: (context) =>
+                            Locaton(address: addressTECs.last.text),
                       ),
                     );
                     setState(() {
                       addressTECs.last.text = address;
+                    });
+                    setState(() {
+                      if (addressTECs.last.text.isEmpty) {
+                        addressTECs.last.text = "";
+                        showDialog(
+                            context: context,
+                            builder: (context) => CustomDialogError(
+                                "Error",
+                                "Pickup Address is required fill it first",
+                                "Cancel"));
+                      }
                     });
                   },
 
@@ -540,7 +685,9 @@ class MyCustomFormState extends State<MyCustomForm>
                   ),
                 ),
                 IconButton(
-                  onPressed: () async {},
+                  onPressed: () async {
+                    _getLocation(addressTECs.last);
+                  },
                   icon: Icon(Icons.location_on),
                 )
               ],
@@ -640,6 +787,7 @@ class MyCustomFormState extends State<MyCustomForm>
         print(ratePercent);
 
         _totalPayment = _weightPayment +
+            _distanceFirstPayment +
             _parcelValuePayment -
             _promoCodePayment +
             ((_parcelValuePayment * 18) / 100) +
@@ -669,6 +817,7 @@ class MyCustomFormState extends State<MyCustomForm>
     setState(() {
       _weightPayment = double.parse(price);
       _totalPayment = _weightPayment +
+          _distanceFirstPayment +
           _parcelValuePayment -
           _promoCodePayment +
           ((_weightPayment * 18) / 100) +
@@ -821,7 +970,10 @@ class MyCustomFormState extends State<MyCustomForm>
                       unselectedLabelColor: Color(0xFF465A64),
                       tabs: [
                         Container(
-                          padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                          padding: EdgeInsets.only(
+                            left: 30.0,
+                            right: 30.0,
+                          ),
                           child: Column(
                             children: [
                               Icon(Icons.run_circle),
@@ -953,6 +1105,7 @@ class MyCustomFormState extends State<MyCustomForm>
                                                 TextFormField(
                                                   maxLines: null,
                                                   readOnly: true,
+                                                  focusNode: pickup1FocusNode,
                                                   key: PageStorageKey(
                                                       'mytextfield'),
 
@@ -962,12 +1115,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            Locaton(),
+                                                            Locaton(
+                                                                address:
+                                                                    _pickupAddressController
+                                                                        .text),
                                                       ),
                                                     );
                                                     setState(() {
                                                       _pickupAddressController
                                                           .text = address;
+                                                    });
+                                                    setState(() {
+                                                      if (_dropAddressController
+                                                          .text.isEmpty) {
+                                                      } else {
+                                                        _givesDistance(
+                                                            _pickupAddressController
+                                                                .text,
+                                                            _dropAddressController
+                                                                .text);
+                                                      }
                                                     });
                                                   },
 
@@ -994,7 +1161,12 @@ class MyCustomFormState extends State<MyCustomForm>
                                                   ),
                                                 ),
                                                 IconButton(
-                                                  onPressed: () async {},
+                                                  onPressed: () async {
+                                                    pickup1FocusNode
+                                                        .requestFocus();
+                                                    _getLocation(
+                                                        _pickupAddressController);
+                                                  },
                                                   icon: Icon(Icons.location_on),
                                                 )
                                               ],
@@ -1240,12 +1412,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            Locaton(),
+                                                            Locaton(
+                                                                address:
+                                                                    _dropAddressController
+                                                                        .text),
                                                       ),
                                                     );
                                                     setState(() {
                                                       _dropAddressController
                                                           .text = address;
+                                                    });
+                                                    setState(() {
+                                                      if (_pickupAddressController
+                                                          .text.isEmpty) {
+                                                      } else {
+                                                        _givesDistance(
+                                                            _pickupAddressController
+                                                                .text,
+                                                            _dropAddressController
+                                                                .text);
+                                                      }
                                                     });
                                                   },
 
@@ -1272,7 +1458,10 @@ class MyCustomFormState extends State<MyCustomForm>
                                                   ),
                                                 ),
                                                 IconButton(
-                                                  onPressed: () async {},
+                                                  onPressed: () async {
+                                                    _getLocation(
+                                                        _dropAddressController);
+                                                  },
                                                   icon: Icon(Icons.location_on),
                                                 )
                                               ],
@@ -1502,6 +1691,12 @@ class MyCustomFormState extends State<MyCustomForm>
                                       ],
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         left: 12.0, right: 12.0, bottom: 2.0),
@@ -1724,16 +1919,15 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       responseData["message"][0]
                                                           ["amount"]);
                                                   _promoCodePayment = amount;
-                                                  _totalPayment =
-                                                      _weightPayment +
-                                                          _parcelValuePayment -
-                                                          _promoCodePayment +
-                                                          ((_parcelValuePayment *
-                                                                  18) /
-                                                              100) +
-                                                          ((_weightPayment *
-                                                                  18) /
-                                                              100);
+                                                  _totalPayment = _weightPayment +
+                                                      _distanceFirstPayment +
+                                                      _parcelValuePayment -
+                                                      _promoCodePayment +
+                                                      ((_parcelValuePayment *
+                                                              18) /
+                                                          100) +
+                                                      ((_weightPayment * 18) /
+                                                          100);
                                                 });
                                                 showDialog(
                                                   context: context,
@@ -1788,6 +1982,12 @@ class MyCustomFormState extends State<MyCustomForm>
                                           )),
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                   Container(
                                     child: Row(
                                       mainAxisAlignment:
@@ -1795,7 +1995,7 @@ class MyCustomFormState extends State<MyCustomForm>
                                       children: [
                                         Container(
                                           margin: EdgeInsets.only(
-                                            top: displayHeight(context) * 0.03,
+                                            //top: displayHeight(context) * 0.03,
                                             left: displayWidth(context) * 0.03,
                                           ),
                                           child: Text("Notify recipient by SMS",
@@ -1811,8 +2011,8 @@ class MyCustomFormState extends State<MyCustomForm>
                                           //padding: EdgeInsets.only(right: 0.01),
                                           margin: EdgeInsets.only(
                                               //left: displayWidth(context) * 0.2,
-                                              top: displayHeight(context) *
-                                                  0.03),
+                                              //top: displayHeight(context) *
+                                              ),
                                           child: Switch(
                                             value: isSwitched,
                                             onChanged: (value) {
@@ -1829,90 +2029,98 @@ class MyCustomFormState extends State<MyCustomForm>
                                       ],
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
                                   Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              money,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Cash",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  CheckboxListTile(
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        money,
+                                        color: Color(0xFF465A64),
+                                      ),
+                                    ), //const Icon(Icons.money),
+                                    title: const Text(
+                                      'Cash',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
                                       ),
                                     ),
+
+                                    value: this.valuefirst,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuefirst = value;
+                                        this.valuesecond = false;
+                                        this.valuethird = false;
+                                      });
+                                    },
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              wallet,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Balance",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                  CheckboxListTile(
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        wallet,
+                                        color: Color(0xFF465A64),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              mobilepayment,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Online",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                    title: const Text(
+                                      'Balance',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
                                       ),
                                     ),
+                                    value: this.valuesecond,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuesecond = value;
+                                        this.valuefirst = false;
+                                        this.valuethird = false;
+                                      });
+                                    },
                                   ),
+                                  CheckboxListTile(
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        mobilepayment,
+                                        color: Color(0xFF465A64),
+                                      ),
+                                    ),
+                                    title: const Text(
+                                      'Online',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                    value: this.valuethird,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuethird = value;
+                                        this.valuefirst = false;
+                                        this.valuesecond = false;
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 70.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                 ],
                               ),
                             ),
@@ -1944,10 +2152,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                   ),
                                 ),
                                 InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     if (_formKey.currentState.validate()) {
-                                      print("on submiy");
-                                      sendPackage();
+                                      if (valuefirst == true) {
+                                        sendPackage();
+                                      } else if (valuesecond == true) {
+                                        if (walletBalance >= _totalPayment) {
+                                          _minusWalletBalanace(_totalPayment);
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CustomDialogError(
+                                                      "Error",
+                                                      "You do not have sufficient balance",
+                                                      "Cancel"));
+                                        }
+                                      } else if (valuethird == true) {
+                                        int value = _totalPayment.round();
+                                        openCheckout(value);
+                                      }
                                     }
                                   },
                                   child: Container(
@@ -2064,6 +2288,7 @@ class MyCustomFormState extends State<MyCustomForm>
                                                 TextFormField(
                                                   maxLines: null,
                                                   readOnly: true,
+                                                  focusNode: pickup1FocusNode,
                                                   key: PageStorageKey(
                                                       'mytextfield'),
 
@@ -2073,12 +2298,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            Locaton(),
+                                                            Locaton(
+                                                                address:
+                                                                    _pickupAddressController
+                                                                        .text),
                                                       ),
                                                     );
                                                     setState(() {
                                                       _pickupAddressController
                                                           .text = address;
+                                                    });
+                                                    setState(() {
+                                                      if (_dropAddressController
+                                                          .text.isEmpty) {
+                                                      } else {
+                                                        _givesDistance(
+                                                            _pickupAddressController
+                                                                .text,
+                                                            _dropAddressController
+                                                                .text);
+                                                      }
                                                     });
                                                   },
 
@@ -2105,7 +2344,10 @@ class MyCustomFormState extends State<MyCustomForm>
                                                   ),
                                                 ),
                                                 IconButton(
-                                                  onPressed: () async {},
+                                                  onPressed: () async {
+                                                    _getLocation(
+                                                        _pickupAddressController);
+                                                  },
                                                   icon: Icon(Icons.location_on),
                                                 )
                                               ],
@@ -2140,7 +2382,7 @@ class MyCustomFormState extends State<MyCustomForm>
                                                   /*controller: emailController,*/
                                                   validator: (String value) {
                                                     if (value.isEmpty) {
-                                                      return "Please enter the parcel value.";
+                                                      return "Please enter phone number.";
                                                     }
                                                   },
                                                   //initialValue: "data(1)",
@@ -2349,12 +2591,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) =>
-                                                            Locaton(),
+                                                            Locaton(
+                                                                address:
+                                                                    _dropAddressController
+                                                                        .text),
                                                       ),
                                                     );
                                                     setState(() {
                                                       _dropAddressController
                                                           .text = address;
+                                                    });
+                                                    setState(() {
+                                                      if (_pickupAddressController
+                                                          .text.isEmpty) {
+                                                      } else {
+                                                        _givesDistance(
+                                                            _pickupAddressController
+                                                                .text,
+                                                            _dropAddressController
+                                                                .text);
+                                                      }
                                                     });
                                                   },
 
@@ -2381,7 +2637,10 @@ class MyCustomFormState extends State<MyCustomForm>
                                                   ),
                                                 ),
                                                 IconButton(
-                                                  onPressed: () async {},
+                                                  onPressed: () async {
+                                                    _getLocation(
+                                                        _dropAddressController);
+                                                  },
                                                   icon: Icon(Icons.location_on),
                                                 )
                                               ],
@@ -2613,6 +2872,12 @@ class MyCustomFormState extends State<MyCustomForm>
                                       ],
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                         left: 12.0, right: 12.0, bottom: 2.0),
@@ -2835,16 +3100,15 @@ class MyCustomFormState extends State<MyCustomForm>
                                                       responseData["message"][0]
                                                           ["amount"]);
                                                   _promoCodePayment = amount;
-                                                  _totalPayment =
-                                                      _weightPayment +
-                                                          _parcelValuePayment -
-                                                          _promoCodePayment +
-                                                          ((_parcelValuePayment *
-                                                                  18) /
-                                                              100) +
-                                                          ((_weightPayment *
-                                                                  18) /
-                                                              100);
+                                                  _totalPayment = _weightPayment +
+                                                      _distanceFirstPayment +
+                                                      _parcelValuePayment -
+                                                      _promoCodePayment +
+                                                      ((_parcelValuePayment *
+                                                              18) /
+                                                          100) +
+                                                      ((_weightPayment * 18) /
+                                                          100);
                                                 });
                                                 showDialog(
                                                   context: context,
@@ -2899,6 +3163,12 @@ class MyCustomFormState extends State<MyCustomForm>
                                           )),
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                   Container(
                                     child: Row(
                                       mainAxisAlignment:
@@ -2906,7 +3176,7 @@ class MyCustomFormState extends State<MyCustomForm>
                                       children: [
                                         Container(
                                           margin: EdgeInsets.only(
-                                            top: displayHeight(context) * 0.03,
+                                            //top: displayHeight(context) * 0.03,
                                             left: displayWidth(context) * 0.03,
                                           ),
                                           child: Text("Notify recipient by SMS",
@@ -2922,8 +3192,8 @@ class MyCustomFormState extends State<MyCustomForm>
                                           //padding: EdgeInsets.only(right: 0.01),
                                           margin: EdgeInsets.only(
                                               //left: displayWidth(context) * 0.2,
-                                              top: displayHeight(context) *
-                                                  0.03),
+                                              //top: displayHeight(context) *
+                                              ),
                                           child: Switch(
                                             value: isSwitched,
                                             onChanged: (value) {
@@ -2940,90 +3210,99 @@ class MyCustomFormState extends State<MyCustomForm>
                                       ],
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
                                   Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              money,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Cash",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                    height: 20.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
+
+                                  CheckboxListTile(
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        money,
+                                        color: Color(0xFF465A64),
+                                      ),
+                                    ), //const Icon(Icons.money),
+                                    title: const Text(
+                                      'Cash',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
                                       ),
                                     ),
+
+                                    value: this.valuefirst,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuefirst = value;
+                                        this.valuesecond = false;
+                                        this.valuethird = false;
+                                      });
+                                    },
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              wallet,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Balance",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                  CheckboxListTile(
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        wallet,
+                                        color: Color(0xFF465A64),
                                       ),
                                     ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 20, left: 20),
-                                    child: InkWell(
-                                      onTap: () {},
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(right: 20),
-                                            width: 25,
-                                            height: 25,
-                                            child: SvgPicture.asset(
-                                              mobilepayment,
-                                              color: Color(0xFF465A64),
-                                            ),
-                                          ),
-                                          Container(
-                                            child: Text(
-                                              "Online",
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 17,
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                    title: const Text(
+                                      'Balance',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
                                       ),
                                     ),
+                                    value: this.valuesecond,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuesecond = value;
+                                        this.valuefirst = false;
+                                        this.valuethird = false;
+                                      });
+                                    },
                                   ),
+                                  CheckboxListTile(
+                                    controlAffinity:
+                                        ListTileControlAffinity.trailing,
+                                    secondary: Container(
+                                      width: 25,
+                                      height: 25,
+                                      child: SvgPicture.asset(
+                                        mobilepayment,
+                                        color: Color(0xFF465A64),
+                                      ),
+                                    ),
+                                    title: const Text(
+                                      'Online',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                    value: this.valuethird,
+                                    onChanged: (bool value) {
+                                      setState(() {
+                                        this.valuethird = value;
+                                        this.valuefirst = false;
+                                        this.valuesecond = false;
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    height: 70.0,
+                                    color: Colors.grey[200],
+                                  ),
+                                  SizedBox(height: 5.0),
                                 ],
                               ),
                             ),
@@ -3055,10 +3334,26 @@ class MyCustomFormState extends State<MyCustomForm>
                                   ),
                                 ),
                                 InkWell(
-                                  onTap: () {
+                                  onTap: () async {
                                     if (_formKey.currentState.validate()) {
-                                      print("on submiy");
-                                      sendPackage();
+                                      if (valuefirst == true) {
+                                        sendPackage();
+                                      } else if (valuesecond == true) {
+                                        if (walletBalance >= _totalPayment) {
+                                          _minusWalletBalanace(_totalPayment);
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) =>
+                                                  CustomDialogError(
+                                                      "Error",
+                                                      "You do not have sufficient balance",
+                                                      "Cancel"));
+                                        }
+                                      } else if (valuethird == true) {
+                                        int value = _totalPayment.round();
+                                        openCheckout(value);
+                                      }
                                     }
                                   },
                                   child: Container(
@@ -3100,6 +3395,26 @@ class MyCustomFormState extends State<MyCustomForm>
   Future<http.Response> sendPackage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString("token");
+    List<Map> dropData = [
+      {
+        "address": _dropAddressController.text,
+        "phn_number": _dropPhoneController.text,
+        "arrive_date": _dropDateController.text,
+        "arrive_time": _dropTimeController.text,
+        "comment": _dropCommentController.text,
+      },
+    ];
+
+    for (var i = 0; i < addressTECs.length; i++) {
+      var extraaddressdata = {
+        "address": addressTECs[i].text,
+        "phn_number": phoneTECs[i].text,
+        "arrive_date": arrivedateTECs[i].text,
+        "arrive_time": arrivetimeTECs[i].text,
+        "comment": commentTECs[i].text,
+      };
+      dropData.add(extraaddressdata);
+    }
 
     Map data = {
       "weight": _weightController.text,
@@ -3112,22 +3427,8 @@ class MyCustomFormState extends State<MyCustomForm>
           "comment": _pickupCommentController.text
         }
       ],
-      "delivery_point": [
-        {
-          "address": _dropAddressController.text,
-          "phn_number": _dropPhoneController.text,
-          "arrive_date": _dropDateController.text,
-          "arrive_time": _dropTimeController.text,
-          "comment": _dropCommentController.text,
-        },
-        {
-          "address": "d2",
-          "phn_number": "789654",
-          "arrive_date": "10 Feb 2021",
-          "arrive_time": "d21:21",
-          "comment": "d2222222"
-        }
-      ],
+      "delivery_point": dropData,
+      //------------------------------
       "item_type": _itemController.text,
       "item_description": _itemDescriptionController.text,
       "parcel_value": _parcelValueController.text,
@@ -3139,6 +3440,7 @@ class MyCustomFormState extends State<MyCustomForm>
       "tax_amount": ratePercent,
       "order_amount": _totalPayment,
     };
+
     var body = json.encode(data);
 
     http.Response res = await http.post(
@@ -3160,5 +3462,140 @@ class MyCustomFormState extends State<MyCustomForm>
       //
     }
     return res;
+  }
+
+  Future<http.Response> _minusWalletBalanace(double minusAmount) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "amount": minusAmount.round(),
+      "type": "debit",
+      "status": "success",
+      "payment_mode": "UPI",
+      "comment": "DONT KNOW"
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/wallet_transaction.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      sendPackage();
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", responseData['message'], "Cancel"));
+    }
+
+    return res;
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Fluttertoast.showToast(
+        msg: "SUCCESS: " + response.paymentId, timeInSecForIosWeb: 4);
+    sendPackage();
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Fluttertoast.showToast(
+        msg: "ERROR: " + response.code.toString() + " - " + response.message,
+        timeInSecForIosWeb: 4);
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Fluttertoast.showToast(
+        msg: "EXTERNAL_WALLET: " + response.walletName, timeInSecForIosWeb: 4);
+  }
+
+  Future<http.Response> _givesDistance(String address1, String address2) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "address_from": address1,
+      "address_to": address2,
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/calculate_distance.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+    if (responseData['status'] == 200) {
+      setState(() {
+        _distanceFirstPayment = 100;
+        _totalPayment = _weightPayment +
+            _distanceFirstPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            ((_weightPayment * 18) / 100) +
+            ((_parcelValuePayment * 18) / 100);
+      });
+    } else {
+      setState(() {
+        _distanceFirstPayment = 0;
+        _totalPayment = _weightPayment +
+            _distanceFirstPayment +
+            _parcelValuePayment -
+            _promoCodePayment +
+            ((_weightPayment * 18) / 100) +
+            ((_parcelValuePayment * 18) / 100);
+      });
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CustomDialogError("Error", "Address is required", "Cancel"));
+    }
+
+    return res;
+  }
+
+  Future<dynamic> _givesDistance1(String address1, String address2) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("token");
+    http.Response res;
+
+    Map data = {
+      "address_from": address1,
+      "address_to": address2,
+    };
+
+    var body = json.encode(data);
+
+    res = await http.post(
+      'https://www.mitrahtechnology.in/apis/mitrah-api/calculate_distance.php',
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        "Authorization": token,
+      },
+      body: body,
+    );
+    print(res.body);
+    var responseData = json.decode(res.body);
+
+    if (responseData['status'] == 200) {
+      return responseData['amount'];
+    } else {
+      return responseData['amount'];
+    }
   }
 }

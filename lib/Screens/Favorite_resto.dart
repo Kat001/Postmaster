@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/Screens/Location.dart';
 import 'package:postmaster/models/restaurant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -11,6 +12,8 @@ import 'package:flutter/services.dart';
 
 import 'package:postmaster/Components/animate.dart';
 import 'package:contact_picker/contact_picker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoder/geocoder.dart';
 
 class FavoriteResto extends StatefulWidget {
   FavoriteResto({
@@ -157,6 +160,23 @@ class MyCustomFormState extends State<MyCustomForm> {
     }, onError: (e) {
       print(e);
     });
+  }
+
+  _getLocation(TextEditingController _controller) async {
+    Position position = await Geolocator.getCurrentPosition();
+    debugPrint('location: ${position.latitude}');
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    var first = addresses.first;
+    print("${first.featureName} : ${first.addressLine}");
+    setState(() {
+      _controller.text = first.addressLine;
+    });
+    var distance =
+        Geolocator.distanceBetween(22.313863, 73.151014, 21.203510, 72.839230);
+    print(distance.toDouble() / 1000);
   }
 
   _printLatestValue() {
@@ -513,18 +533,53 @@ class MyCustomFormState extends State<MyCustomForm> {
                               top: displayHeight(context) * 0.01,
                               left: displayWidth(context) * 0.15,
                               right: displayWidth(context) * 0.05),
-                          child: TextFormField(
-                            controller: _dropAddressController,
-                            decoration: InputDecoration(
-                              hintText: "Address",
-                            ),
-                            key: PageStorageKey("tests8"),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter the name';
-                              }
-                              return null;
-                            },
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              TextFormField(
+                                maxLines: null,
+                                readOnly: true,
+                                key: PageStorageKey('mytextfield'),
+
+                                onTap: () async {
+                                  String address = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Locaton(
+                                          address: _dropAddressController.text),
+                                    ),
+                                  );
+                                  setState(() {
+                                    _dropAddressController.text = address;
+                                  });
+                                },
+
+                                controller: _dropAddressController,
+
+                                /*controller: emailController,*/
+                                validator: (String value) {
+                                  if (value.isEmpty) {
+                                    return "Please enter address";
+                                  }
+                                },
+                                //initialValue: "data(1)",
+                                style: TextStyle(
+                                  fontFamily: 'roboto',
+                                  fontSize: 18,
+                                ),
+                                decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.only(bottom: 0, right: 28.0),
+                                  labelText: 'Address',
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () async {
+                                  _getLocation(_dropAddressController);
+                                },
+                                icon: Icon(Icons.location_on),
+                              )
+                            ],
                           ),
                         ),
                         Padding(
@@ -731,6 +786,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                     ),
                   ),
                   itemWidget(),*/
+                  SizedBox(height: 5.0),
+                  Container(
+                    height: 20.0,
+                    color: Colors.grey[200],
+                  ),
+                  SizedBox(height: 5.0),
 
                   Padding(
                     padding: const EdgeInsets.only(
@@ -955,6 +1016,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                       ],
                     ),
                   ),*/
+                  SizedBox(height: 20.0),
+                  Container(
+                    height: 20.0,
+                    color: Colors.grey[200],
+                  ),
+                  SizedBox(height: 5.0),
                   Container(
                     margin: EdgeInsets.only(top: 20, left: 20),
                     child: InkWell(

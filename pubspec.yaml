@@ -44,6 +44,7 @@ dependencies:
       git:
         url: git://github.com/razorpay/razorpay-flutter.git
         ref: master
+ 
   fluttertoast: ^7.1.8
   contact_picker: ^0.0.2
 
@@ -52,7 +53,7 @@ dependencies:
  
   path_provider: ^1.6.11
   flutter_otp: ^0.3.2
-  google_maps_place_picker: ^1.0.1
+  #google_maps_place_picker: ^1.0.1
   google_map_location_picker: ^4.1.6
   google_maps_flutter: ^1.2.0
   flutter_plugin_android_lifecycle: ^1.0.4
@@ -61,9 +62,10 @@ dependencies:
   share: ^0.6.5
   social_share: ^2.0.5
   image_picker: ^0.6.3+1
-
-
-  
+  url_launcher:
+  geocoder: ^0.2.1
+  geolocator: 
+  location:
 
 flutter_localizations:
   sdk: flutter

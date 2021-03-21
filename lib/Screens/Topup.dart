@@ -8,7 +8,6 @@ import 'package:postmaster/Screens/NewOrderrest.dart';
 import 'package:postmaster/Screens/Profile.dart';
 import 'package:postmaster/Screens/payment.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 //import 'package:flutter/services.dart';
 
@@ -18,6 +17,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 
 class Topup extends StatefulWidget {
   @override

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:location/location.dart';
 import 'package:postmaster/Components/customicons.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
 import 'package:http/http.dart' as http;
+import 'package:postmaster/Screens/Location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -10,6 +12,10 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:postmaster/Components/animate.dart';
 import 'package:contact_picker/contact_picker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoder/geocoder.dart';
+
+import 'package:flutter/services.dart';
 
 class NewOrderStore extends StatefulWidget {
   NewOrderStore({
@@ -154,6 +160,23 @@ class MyCustomFormState extends State<MyCustomForm> {
     });
   }
 
+  _getLocation(TextEditingController _controller) async {
+    Position position = await Geolocator.getCurrentPosition();
+    debugPrint('location: ${position.latitude}');
+    final coordinates = new Coordinates(position.latitude, position.longitude);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+
+    var first = addresses.first;
+    print("${first.featureName} : ${first.addressLine}");
+    setState(() {
+      _controller.text = first.addressLine;
+    });
+    var distance =
+        Geolocator.distanceBetween(22.313863, 73.151014, 21.203510, 72.839230);
+    print(distance.toDouble() / 1000);
+  }
+
   Widget removeWidget() {
     if (cards.isEmpty) {
       return Container(
@@ -191,7 +214,7 @@ class MyCustomFormState extends State<MyCustomForm> {
               SizedBox(width: 3.0),
               Expanded(
                 child: Text(
-                  "Remove Address",
+                  "",
                   style: TextStyle(
                       fontFamily: 'Robotobold',
                       fontSize: 17,
@@ -250,18 +273,52 @@ class MyCustomFormState extends State<MyCustomForm> {
               top: displayHeight(context) * 0.01,
               left: displayWidth(context) * 0.15,
               right: displayWidth(context) * 0.05),
-          child: TextFormField(
-            controller: addressController,
-            decoration: InputDecoration(
-              labelText: 'Address',
-            ),
-            key: PageStorageKey("test7"),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please select the address';
-              }
-              return null;
-            },
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              TextFormField(
+                maxLines: null,
+                readOnly: true,
+                key: PageStorageKey('mytextfield'),
+
+                onTap: () async {
+                  String address = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Locaton(address: addressController.text),
+                    ),
+                  );
+                  setState(() {
+                    addressController.text = address;
+                  });
+                },
+
+                controller: addressController,
+
+                /*controller: emailController,*/
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return "Please enter address";
+                  }
+                },
+                //initialValue: "data(1)",
+                style: TextStyle(
+                  fontFamily: 'roboto',
+                  fontSize: 18,
+                ),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 0, right: 28.0),
+                  labelText: 'Address',
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  _getLocation(addressController);
+                },
+                icon: Icon(Icons.location_on),
+              )
+            ],
           ),
         ),
         Padding(
@@ -439,18 +496,52 @@ class MyCustomFormState extends State<MyCustomForm> {
               top: displayHeight(context) * 0.01,
               left: displayWidth(context) * 0.15,
               right: displayWidth(context) * 0.05),
-          child: TextFormField(
-            controller: addressTECs.last,
-            decoration: InputDecoration(
-              labelText: 'Address',
-            ),
-            key: PageStorageKey("test7"),
-            validator: (value) {
-              if (value.isEmpty) {
-                return 'Please select the address';
-              }
-              return null;
-            },
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              TextFormField(
+                maxLines: null,
+                readOnly: true,
+                key: PageStorageKey('mytextfield'),
+
+                onTap: () async {
+                  String address = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          Locaton(address: addressTECs.last.text),
+                    ),
+                  );
+                  setState(() {
+                    addressTECs.last.text = address;
+                  });
+                },
+
+                controller: addressTECs.last,
+
+                /*controller: emailController,*/
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return "Please enter address";
+                  }
+                },
+                //initialValue: "data(1)",
+                style: TextStyle(
+                  fontFamily: 'roboto',
+                  fontSize: 18,
+                ),
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(bottom: 0, right: 28.0),
+                  labelText: 'Address',
+                ),
+              ),
+              IconButton(
+                onPressed: () async {
+                  _getLocation(addressTECs.last);
+                },
+                icon: Icon(Icons.location_on),
+              )
+            ],
           ),
         ),
         Padding(
@@ -845,18 +936,59 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        controller: _pickupAddressController,
-                                        decoration: InputDecoration(
-                                          labelText: "Address",
-                                        ),
-                                        key: PageStorageKey("tests3"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter the address';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          TextFormField(
+                                            maxLines: null,
+                                            readOnly: true,
+                                            key: PageStorageKey('mytextfield'),
+
+                                            onTap: () async {
+                                              String address =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Locaton(
+                                                      address:
+                                                          _pickupAddressController
+                                                              .text),
+                                                ),
+                                              );
+                                              setState(() {
+                                                _pickupAddressController.text =
+                                                    address;
+                                              });
+                                            },
+
+                                            controller:
+                                                _pickupAddressController,
+
+                                            /*controller: emailController,*/
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter address";
+                                              }
+                                            },
+                                            //initialValue: "data(1)",
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                  bottom: 0, right: 28.0),
+                                              labelText: 'Address',
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              _getLocation(
+                                                  _pickupAddressController);
+                                            },
+                                            icon: Icon(Icons.location_on),
+                                          )
+                                        ],
                                       ),
                                     ),
                                     Container(
@@ -864,23 +996,96 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          WhitelistingTextInputFormatter
-                                              .digitsOnly
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            key: PageStorageKey('mytextfield'),
+                                            inputFormatters: [
+                                              WhitelistingTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            controller: _costOfItemController,
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter the  value.";
+                                              }
+                                            },
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.only(bottom: 0),
+                                              labelText: 'Approximate cost ',
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: Stack(
+                                                          overflow:
+                                                              Overflow.visible,
+                                                          children: <Widget>[
+                                                            Positioned(
+                                                              right: -40.0,
+                                                              top: -40.0,
+                                                              child:
+                                                                  InkResponse(
+                                                                onTap: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    CircleAvatar(
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .close),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Form(
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                      "Courier boy will buy goods on your behalf and you will need to pay him during delivery",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontFamily:
+                                                                            'Robotobold',
+                                                                        fontSize:
+                                                                            17,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              icon: Icon(Icons.info_outline)),
                                         ],
-                                        controller: _costOfItemController,
-                                        decoration: InputDecoration(
-                                          labelText: "Cost of item",
-                                        ),
-                                        key: PageStorageKey("tests4"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter the cost of item';
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                     Container(
@@ -888,18 +1093,92 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05,
                                           top: displayHeight(context) * 0.01),
-                                      child: TextFormField(
-                                        controller: _itemNameController,
-                                        decoration: InputDecoration(
-                                          labelText: "Item name",
-                                        ),
-                                        key: PageStorageKey("tests5"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter item name';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            key: PageStorageKey("tests5"),
+                                            controller: _itemNameController,
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter the  value.";
+                                              }
+                                            },
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.only(bottom: 0),
+                                              labelText: 'What to buy',
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: Stack(
+                                                          overflow:
+                                                              Overflow.visible,
+                                                          children: <Widget>[
+                                                            Positioned(
+                                                              right: -40.0,
+                                                              top: -40.0,
+                                                              child:
+                                                                  InkResponse(
+                                                                onTap: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    CircleAvatar(
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .close),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Form(
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                      "Please order items that can fit in one bag",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontFamily:
+                                                                            'Robotobold',
+                                                                        fontSize:
+                                                                            17,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              icon: Icon(Icons.info_outline)),
+                                        ],
                                       ),
                                     ),
                                   ]),
@@ -935,18 +1214,58 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        controller: _dropAddressController,
-                                        decoration: InputDecoration(
-                                          labelText: "Address",
-                                        ),
-                                        key: PageStorageKey("tests7"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter drop address';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          TextFormField(
+                                            maxLines: null,
+                                            readOnly: true,
+                                            key: PageStorageKey('mytextfield'),
+
+                                            onTap: () async {
+                                              String address =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Locaton(
+                                                      address:
+                                                          _dropAddressController
+                                                              .text),
+                                                ),
+                                              );
+                                              setState(() {
+                                                _dropAddressController.text =
+                                                    address;
+                                              });
+                                            },
+
+                                            controller: _dropAddressController,
+
+                                            /*controller: emailController,*/
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter address";
+                                              }
+                                            },
+                                            //initialValue: "data(1)",
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                  bottom: 0, right: 28.0),
+                                              labelText: 'Address',
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              _getLocation(
+                                                  _dropAddressController);
+                                            },
+                                            icon: Icon(Icons.location_on),
+                                          )
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -1157,6 +1476,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 5.0),
+                              Container(
+                                height: 20.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
 
                               //Store Detailes
                               /*ExpansionTile(
@@ -1258,30 +1583,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                           ),
                         ),
                         ]),*/
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 12.0, right: 12.0, bottom: 2.0),
-                                child: TextFormField(
-                                  controller: _itemController,
-                                  readOnly: true,
-                                  /*controller: emailController,*/
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return "Please select the item";
-                                    }
-                                  },
-                                  //initialValue: "data(1)",
-                                  decoration: InputDecoration(
-                                    contentPadding: EdgeInsets.only(bottom: 0),
-                                    labelText: 'What are you sending?',
-                                  ),
-                                  style: TextStyle(
-                                    fontFamily: 'roboto',
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                              itemWidget(),
 
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -1500,6 +1801,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                       )),
                                 ),
                               ),
+                              SizedBox(height: 25.0),
+                              Container(
+                                height: 20.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
                               /*Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1620,6 +1927,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: 5.0),
+                              Container(
+                                height: 70.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
                             ],
                           ),
                         ),
@@ -1773,18 +2086,59 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        controller: _pickupAddressController,
-                                        decoration: InputDecoration(
-                                          labelText: "Address",
-                                        ),
-                                        key: PageStorageKey("tests3"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter the address';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          TextFormField(
+                                            maxLines: null,
+                                            readOnly: true,
+                                            key: PageStorageKey('mytextfield'),
+
+                                            onTap: () async {
+                                              String address =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Locaton(
+                                                      address:
+                                                          _pickupAddressController
+                                                              .text),
+                                                ),
+                                              );
+                                              setState(() {
+                                                _pickupAddressController.text =
+                                                    address;
+                                              });
+                                            },
+
+                                            controller:
+                                                _pickupAddressController,
+
+                                            /*controller: emailController,*/
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter address";
+                                              }
+                                            },
+                                            //initialValue: "data(1)",
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                  bottom: 0, right: 28.0),
+                                              labelText: 'Address',
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              _getLocation(
+                                                  _pickupAddressController);
+                                            },
+                                            icon: Icon(Icons.location_on),
+                                          )
+                                        ],
                                       ),
                                     ),
                                     Container(
@@ -1792,23 +2146,96 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        key: PageStorageKey('mytextfield'),
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          WhitelistingTextInputFormatter
-                                              .digitsOnly
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            key: PageStorageKey('mytextfield'),
+                                            inputFormatters: [
+                                              WhitelistingTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            controller: _costOfItemController,
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter the  value.";
+                                              }
+                                            },
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.only(bottom: 0),
+                                              labelText: 'Approximate cost ',
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: Stack(
+                                                          overflow:
+                                                              Overflow.visible,
+                                                          children: <Widget>[
+                                                            Positioned(
+                                                              right: -40.0,
+                                                              top: -40.0,
+                                                              child:
+                                                                  InkResponse(
+                                                                onTap: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    CircleAvatar(
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .close),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Form(
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                      "Courier boy will buy goods on your behalf and you will need to pay him during delivery",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontFamily:
+                                                                            'Robotobold',
+                                                                        fontSize:
+                                                                            17,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              icon: Icon(Icons.info_outline)),
                                         ],
-                                        controller: _costOfItemController,
-                                        decoration: InputDecoration(
-                                          labelText: "Cost of item",
-                                        ),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter the cost of item';
-                                          }
-                                          return null;
-                                        },
                                       ),
                                     ),
                                     Container(
@@ -1816,18 +2243,92 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05,
                                           top: displayHeight(context) * 0.01),
-                                      child: TextFormField(
-                                        controller: _itemNameController,
-                                        decoration: InputDecoration(
-                                          labelText: "Item name",
-                                        ),
-                                        key: PageStorageKey("tests5"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter item name';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.centerRight,
+                                        children: [
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            key: PageStorageKey("tests5"),
+                                            controller: _itemNameController,
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter the  value.";
+                                              }
+                                            },
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.only(bottom: 0),
+                                              labelText: 'What to buy',
+                                            ),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        content: Stack(
+                                                          overflow:
+                                                              Overflow.visible,
+                                                          children: <Widget>[
+                                                            Positioned(
+                                                              right: -40.0,
+                                                              top: -40.0,
+                                                              child:
+                                                                  InkResponse(
+                                                                onTap: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    CircleAvatar(
+                                                                  child: Icon(
+                                                                      Icons
+                                                                          .close),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .red,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Form(
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: <
+                                                                    Widget>[
+                                                                  Padding(
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                      "Please order items that can fit in one bag",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontFamily:
+                                                                            'Robotobold',
+                                                                        fontSize:
+                                                                            17,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              icon: Icon(Icons.info_outline)),
+                                        ],
                                       ),
                                     ),
                                     Container(
@@ -1937,18 +2438,58 @@ class MyCustomFormState extends State<MyCustomForm> {
                                           top: displayHeight(context) * 0.01,
                                           left: displayWidth(context) * 0.15,
                                           right: displayWidth(context) * 0.05),
-                                      child: TextFormField(
-                                        controller: _dropAddressController,
-                                        decoration: InputDecoration(
-                                          labelText: "Address",
-                                        ),
-                                        key: PageStorageKey("tests7"),
-                                        validator: (value) {
-                                          if (value.isEmpty) {
-                                            return 'Please enter drop address';
-                                          }
-                                          return null;
-                                        },
+                                      child: Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          TextFormField(
+                                            maxLines: null,
+                                            readOnly: true,
+                                            key: PageStorageKey('mytextfield'),
+
+                                            onTap: () async {
+                                              String address =
+                                                  await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Locaton(
+                                                      address:
+                                                          _dropAddressController
+                                                              .text),
+                                                ),
+                                              );
+                                              setState(() {
+                                                _dropAddressController.text =
+                                                    address;
+                                              });
+                                            },
+
+                                            controller: _dropAddressController,
+
+                                            /*controller: emailController,*/
+                                            validator: (String value) {
+                                              if (value.isEmpty) {
+                                                return "Please enter address";
+                                              }
+                                            },
+                                            //initialValue: "data(1)",
+                                            style: TextStyle(
+                                              fontFamily: 'roboto',
+                                              fontSize: 18,
+                                            ),
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.only(
+                                                  bottom: 0, right: 28.0),
+                                              labelText: 'Address',
+                                            ),
+                                          ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              _getLocation(
+                                                  _dropAddressController);
+                                            },
+                                            icon: Icon(Icons.location_on),
+                                          )
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -2139,6 +2680,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 5.0),
+                              Container(
+                                height: 20.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
                               //Store Detailes
                               /*ExpansionTile(
                         onExpansionChanged: (Expanded) {
@@ -2482,6 +3029,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                       )),
                                 ),
                               ),
+                              SizedBox(height: 25.0),
+                              Container(
+                                height: 20.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
                               /*Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2602,6 +3155,12 @@ class MyCustomFormState extends State<MyCustomForm> {
                                   ),
                                 ),
                               ),
+                              SizedBox(height: 5.0),
+                              Container(
+                                height: 70.0,
+                                color: Colors.grey[200],
+                              ),
+                              SizedBox(height: 5.0),
                             ],
                           ),
                         ),

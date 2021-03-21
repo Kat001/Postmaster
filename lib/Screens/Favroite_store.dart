@@ -17,6 +17,7 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FavoriteStore extends StatefulWidget {
   FavoriteStore({
@@ -37,6 +38,8 @@ class _FavoriteStoreState extends State<FavoriteStore> {
   bool _isdata = true;
   List<Restaurant> _restaurants = List<Restaurant>();
   List<Restaurant> _restaurantsForDisplay = List<Restaurant>();
+  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  Completer<GoogleMapController> _controller = Completer();
 
   List<String> restoData = [];
 
@@ -54,6 +57,10 @@ class _FavoriteStoreState extends State<FavoriteStore> {
         //print(_restaurants);
       });
     });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
   }
 
   Future<List<Restaurant>> fetchrestoData() async {
@@ -148,89 +155,96 @@ class _FavoriteStoreState extends State<FavoriteStore> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TextFormField(
-          controller: _searchcontroller,
-          onChanged: (text) {
-            text = text.toLowerCase();
-            setState(() {
-              _restaurantsForDisplay = _restaurants.where((note) {
-                var restaurantName = note.name.toLowerCase();
-                return restaurantName.contains(text);
-              }).toList();
-            });
-          },
-          decoration: InputDecoration(
-              hintText: "Search",
-              hintStyle: TextStyle(color: Color(0xFF757575), fontSize: 16),
-              prefixIcon: Icon(
-                Icons.search,
-                color: Color(0xFF757575),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              contentPadding: EdgeInsets.symmetric(vertical: 0),
-              fillColor: Color(0xFFEEEEEE),
-              filled: true),
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: TextFormField(
+            controller: _searchcontroller,
+            onChanged: (text) {
+              text = text.toLowerCase();
+              setState(() {
+                _restaurantsForDisplay = _restaurants.where((note) {
+                  var restaurantName = note.name.toLowerCase();
+                  return restaurantName.contains(text);
+                }).toList();
+              });
+            },
+            decoration: InputDecoration(
+                hintText: "Search",
+                hintStyle: TextStyle(color: Color(0xFF757575), fontSize: 16),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: Color(0xFF757575),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+                fillColor: Color(0xFFEEEEEE),
+                filled: true),
+          ),
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Color(0xFF2BCDB4),
-        onPressed: () {
-          String retname = _searchcontroller.text;
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Color(0xFF2BCDB4),
+          onPressed: () {
+            String retname = _searchcontroller.text;
 
-          bool flag;
-          for (var resturant in _restaurants) {
-            if (resturant.name == retname) {
-              obj = resturant;
-              flag = true;
-              break;
-            } else {
-              flag = false;
+            bool flag;
+            for (var resturant in _restaurants) {
+              if (resturant.name == retname) {
+                obj = resturant;
+                flag = true;
+                break;
+              } else {
+                flag = false;
+              }
             }
-          }
-          if (flag == true) {
-            Navigator.push(
-                context,
-                SlideLeftRoute(
-                    page: FavoriteResto(
-                  weightData: widget.weightData,
-                  itemData: widget.itemData,
-                  rate: widget.rate,
-                  restoName: _searchcontroller.text,
-                  obj: obj,
-                )));
-          } else {
-            showDialog(
-                context: context,
-                builder: (context) => CustomDialogError(
-                    "Error", "Restaurant not available", "Cancel"));
-          }
-        },
-        child: Container(
-          width: 25,
-          height: 25,
-          child: SvgPicture.asset(
-            arrow,
-            color: Colors.white,
+            if (flag == true) {
+              Navigator.push(
+                  context,
+                  SlideLeftRoute(
+                      page: FavoriteResto(
+                    weightData: widget.weightData,
+                    itemData: widget.itemData,
+                    rate: widget.rate,
+                    restoName: _searchcontroller.text,
+                    obj: obj,
+                  )));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (context) => CustomDialogError(
+                      "Error", "Restaurant not available", "Cancel"));
+            }
+          },
+          child: Container(
+            width: 25,
+            height: 25,
+            child: SvgPicture.asset(
+              arrow,
+              color: Colors.white,
+            ),
           ),
         ),
-      ),
-      body: _isdata
-          ? Center(child: CircularProgressIndicator())
-          : restaurant(), /*Column(
-        children: [
-          Container(
-            width: 400.0,
-            height: 300.0,
-            child: Image.asset('assets/images/mapp.jpg'),
+        body: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: _center,
+            zoom: 11.0,
           ),
-        ],
-      ),*/ //_isdata ? Center(child: CircularProgressIndicator()) : restaurant(),
+        ),
+        /*Column(
+          children: [
+            Container(
+              width: 400.0,
+              height: 300.0,
+              child: Image.asset('assets/images/mapp.jpg'),
+            ),
+          ],
+        ),*/ //_isdata ? Center(child: CircularProgressIndicator()) : restaurant(),
+      ),
     );
   }
 }

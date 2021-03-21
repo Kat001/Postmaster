@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:postmaster/Screens/example.dart';
-import 'package:postmaster/models/user_data.dart';
-import 'package:postmaster/Components/toast_utils.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:postmaster/Components/customicons.dart';
@@ -13,20 +10,13 @@ import 'package:postmaster/Screens/Region.dart';
 
 import 'package:postmaster/Screens/Mysubscription.dart';
 import 'package:postmaster/Screens/Topup.dart';
-import 'package:postmaster/Screens/example.dart';
 import 'package:sizer/sizer.dart';
 import 'package:postmaster/Components/animate.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:postmaster/Components/sizes_helpers.dart';
-import 'package:postmaster/Components/animate.dart';
 
-import 'package:postmaster/Screens/Forgot_pass.dart';
-//import 'package:http/http.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:http/http.dart' as http;
 //import 'package:flutter/services.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:async';
 import 'dart:convert';
@@ -416,8 +406,13 @@ class _ProfileState extends State<Profile> {
                             final SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
                             prefs.setString("token", null);
-                            Navigator.push(
-                                context, SlideLeftRoute(page: Login()));
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) => Login(),
+                              ),
+                              (route) => false,
+                            );
                           },
                           child: Text('Yes',
                               style: TextStyle(
